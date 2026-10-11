@@ -17,7 +17,6 @@ jobs:
     env:
       XWIN_ACCEPT_LICENSE: '1'
       CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
-      XWIN_CROSS_COMPILER: clang
       VP_CI_BENCH_CACHE_STATE: cold
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
@@ -27,8 +26,6 @@ jobs:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: windows-cross
           tools: cargo-nextest
-      - name: Download packaged MSVC sysroot
-        run: cargo xwin cache windows-msvc-sysroot
       - name: Check Windows target
         run: |
           eval "$(cargo xwin env --target x86_64-pc-windows-msvc | grep '^export ')"

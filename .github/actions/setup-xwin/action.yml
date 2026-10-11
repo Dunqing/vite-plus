@@ -1,5 +1,5 @@
 name: Setup cargo-xwin
-description: Install the Rust toolchain and cargo-xwin for cross-compiling to x86_64-pc-windows-msvc on Linux, with the MSVC CRT / Windows SDK cached.
+description: Install the Rust toolchain and cargo-xwin for cross-compiling to x86_64-pc-windows-msvc on Linux, with a pinned MSVC sysroot.
 inputs:
   cache-key:
     description: setup-rust cache-key prefix; pass a distinct value per caller.
@@ -24,10 +24,31 @@ runs:
       shell: bash
     - uses: taiki-e/install-action@83ac0ad63c0167e6f06796fab0fce28db1bf3db0
       with:
-        tool: ${{ inputs.tools != '' && format('{0},cargo-xwin', inputs.tools) || 'cargo-xwin' }}
+        tool: ${{ inputs.tools != '' && format('{0},cargo-xwin@0.23.1', inputs.tools) || 'cargo-xwin@0.23.1' }}
+    - name: Select packaged Windows SDK
+      shell: bash
+      run: echo 'XWIN_CROSS_COMPILER=clang' >> "$GITHUB_ENV"
     - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+      id: sysroot-cache
       with:
-        path: ~/.cache/cargo-xwin
-        key: vp-windows-sysroot-r1-cargo-xwin-msvc-17
-        fail-on-cache-miss: ${{ env.VP_CI_BENCH_CACHE_STATE == 'warm' }}
-      if: (true) && env.VP_CI_BENCH_CACHE_STATE != 'cold'
+        path: ~/.cache/cargo-xwin/windows-msvc-sysroot
+        key: vp-windows-sysroot-r2-cargo-xwin-sysroot-2026-09-15
+      if: env.VP_CI_BENCH_CACHE_STATE != 'cold'
+    - name: Download pinned Windows SDK
+      if: steps.sysroot-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        archive="$RUNNER_TEMP/windows-msvc-sysroot.tar.xz"
+        sysroot="$HOME/.cache/cargo-xwin/windows-msvc-sysroot"
+        curl --fail --location --retry 3 "$SYSROOT_URL" --output "$archive"
+        echo "$SYSROOT_SHA256  $archive" | sha256sum --check
+        mkdir -p "$sysroot"
+        tar -xJf "$archive" --strip-components=1 -C "$sysroot"
+        # cargo-xwin 0.23.1 expects the C++ headers under their previous name.
+        ln -s msvcstl "$sysroot/include/c++/stl"
+        # cargo-xwin recognizes this marker and reuses the verified sysroot.
+        echo "$SYSROOT_URL" > "$sysroot/DONE"
+        rm "$archive"
+      env:
+        SYSROOT_URL: https://github.com/trcrsired/windows-msvc-sysroot/releases/download/2026-09-15/windows-msvc-sysroot.tar.xz
+        SYSROOT_SHA256: 6aeecd2d25bcc90c72af09dc525dfdf7143c374d476dc4296692d42efb27a9b9

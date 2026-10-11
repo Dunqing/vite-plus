@@ -104,6 +104,32 @@ jobs:
       - uses: ./.github/actions/download-rolldown-binaries
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+  check:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
+    name: Check
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: namespace-profile-linux-x64-default
+            target: x86_64-unknown-linux-gnu
+          - os: namespace-profile-mac-default
+            target: aarch64-apple-darwin
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
+      - uses: ./.github/actions/clone
+
+      - uses: oxc-project/setup-rust@68c3199c5339f965e6e163924c3c450773eba42b # main (pending v1.0.17 — Swatinem/rust-cache v2.9.1 for node24)
+        with:
+          save-cache: ${{ github.ref_name == 'main' }}
+          cache-key: check
+
+      - run: cargo check --all-targets --all-features
+        env:
+          RUSTFLAGS: '-D warnings --cfg tokio_unstable' # also update .cargo/config.toml
+
   test:
     needs: detect-changes
     if: needs.detect-changes.outputs.code-changed == 'true'
@@ -127,11 +153,51 @@ jobs:
           cache-key: test
           tools: just
 
-      - run: cargo check --all-targets --all-features
-        env:
-          RUSTFLAGS: '-D warnings --cfg tokio_unstable' # also update .cargo/config.toml
-
       - run: just test
+
+  # Platform checks run independently so test execution does not wait for them.
+  check-windows:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
+    name: Check (Windows)
+    runs-on: namespace-profile-linux-x64-default
+    env:
+      XWIN_ACCEPT_LICENSE: '1'
+      CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
+    steps:
+      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
+      - uses: ./.github/actions/clone
+
+      - uses: ./.github/actions/setup-xwin
+        with:
+          save-cache: ${{ github.ref_name == 'main' }}
+          cache-key: windows-check
+
+      # `cargo xwin env` resolves the rustflags configured in
+      # .cargo/config.toml (including the cfg-based Windows section), appends
+      # its -Lnative Windows SDK paths, and re-exports the result as
+      # CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS, so plain cargo
+      # invocations cross-compile exactly like `cargo xwin` would. It renders
+      # its intended *removal* of RUSTFLAGS as `export RUSTFLAGS="";`, which
+      # must become a real unset: a set RUSTFLAGS takes precedence over the
+      # target-specific rustflags and would shadow them.
+      - name: Check Windows target
+        run: |
+          eval "$(cargo xwin env --target x86_64-pc-windows-msvc | grep '^export ')"
+          unset RUSTFLAGS
+          # Fail fast if cargo-xwin ever stops folding the repo's cfg-based
+          # Windows rustflags (--cfg tokio_unstable, /STACK:8388608) into the
+          # target env var; a dropped /STACK would be a silent runtime
+          # difference in the shipped test binaries.
+          case "$CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS" in
+            *tokio_unstable*STACK:8388608*) ;;
+            *)
+              echo "::error::cargo-xwin dropped the .cargo/config.toml Windows rustflags: $CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS"
+              exit 1
+              ;;
+          esac
+          export CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS="$CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS -D warnings"
+          cargo check --all-targets --all-features --target x86_64-pc-windows-msvc
 
   # Windows tests are cross-compiled on a fast Linux runner with cargo-xwin
   # (clang-cl + lld-link against the xwin-downloaded MSVC CRT/Windows SDK)
@@ -161,32 +227,6 @@ jobs:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: windows-cross
           tools: cargo-nextest
-
-      # `cargo xwin env` resolves the rustflags configured in
-      # .cargo/config.toml (including the cfg-based Windows section), appends
-      # its -Lnative Windows SDK paths, and re-exports the result as
-      # CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS, so plain cargo
-      # invocations cross-compile exactly like `cargo xwin` would. It renders
-      # its intended *removal* of RUSTFLAGS as `export RUSTFLAGS="";`, which
-      # must become a real unset: a set RUSTFLAGS takes precedence over the
-      # target-specific rustflags and would shadow them.
-      - name: Check Windows target
-        run: |
-          eval "$(cargo xwin env --target x86_64-pc-windows-msvc | grep '^export ')"
-          unset RUSTFLAGS
-          # Fail fast if cargo-xwin ever stops folding the repo's cfg-based
-          # Windows rustflags (--cfg tokio_unstable, /STACK:8388608) into the
-          # target env var; a dropped /STACK would be a silent runtime
-          # difference in the shipped test binaries.
-          case "$CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS" in
-            *tokio_unstable*STACK:8388608*) ;;
-            *)
-              echo "::error::cargo-xwin dropped the .cargo/config.toml Windows rustflags: $CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS"
-              exit 1
-              ;;
-          esac
-          export CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS="$CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS -D warnings"
-          cargo check --all-targets --all-features --target x86_64-pc-windows-msvc
 
       # Keep the package selection in sync with the `test` recipe in justfile.
       # vp_cli_snapshots is excluded there too: its snapshot suite needs a
@@ -1678,6 +1718,8 @@ jobs:
     if: always()
     needs:
       - docs-fmt
+      - check
+      - check-windows
       - test
       - build-windows-tests
       - build-windows-snapshots

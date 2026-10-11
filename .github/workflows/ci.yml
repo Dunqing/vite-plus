@@ -208,8 +208,27 @@ jobs:
           path: windows-tests.tar.zst
           retention-days: 7
 
+  # Snapshot shards need only the PTY runner, not the workspace check or unit tests.
+  build-windows-snapshots:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
+    name: Build Windows snapshot tests
+    runs-on: namespace-profile-linux-x64-default
+    env:
+      XWIN_ACCEPT_LICENSE: '1'
+      CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
+    steps:
+      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
+      - uses: ./.github/actions/clone
+
+      - uses: ./.github/actions/setup-xwin
+        with:
+          save-cache: ${{ github.ref_name == 'main' }}
+          cache-key: windows-snapshot-tests
+          tools: cargo-nextest
+
       # Separate archive for the PTY snapshot suite (excluded from the
-      # unit-test archive above): its suite needs vp, node, and a built
+      # unit-test archive): its suite needs vp, node, and a built
       # packages/cli/dist at runtime, which only cli-snapshot-test-windows
       # provides. The archive carries the cli_snapshots test binary plus the
       # vpt helper; nextest rewrites CARGO_MANIFEST_DIR/CARGO_BIN_EXE_vpt at
@@ -229,7 +248,11 @@ jobs:
 
   test-windows:
     needs: build-windows-tests
-    name: Test (Windows)
+    name: Test (Windows, shard ${{ matrix.shard }}/3)
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     runs-on: namespace-profile-windows-4c-8g
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
@@ -250,11 +273,10 @@ jobs:
       # --test-threads=1: nextest runs each test in its own process, so
       # serial_test's in-process locks no longer serialize tests that contend
       # on cross-process shared state (fixed temp paths, e.g.
-      # `vp-test-custom-home` in vp_shared::home tests). The whole suite is
-      # only ~1 minute of test time, so full serialization is cheap
-      # insurance; revisit if it becomes the bottleneck.
+      # `vp-test-custom-home` in vp_shared::home tests). Separate runners
+      # isolate the shards while tests within each shard remain serial.
       - name: Run tests
-        run: cargo-nextest nextest run -E 'platform(target)' --archive-file windows-tests.tar.zst --workspace-remap . --test-threads 1
+        run: cargo-nextest nextest run -E 'platform(target)' --archive-file windows-tests.tar.zst --workspace-remap . --partition hash:${{ matrix.shard }}/3 --test-threads 1
         env:
           RUST_MIN_STACK: '8388608'
           # Keep Windows env parity with the `test` recipe in justfile.
@@ -313,6 +335,14 @@ jobs:
 
       - name: Install Rust toolchain
         run: rustup show
+
+      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+        with:
+          shared-key: test-musl
+          save-if: ${{ github.ref_name == 'main' }}
+          workspaces: |
+            . -> target
+            crates/vp_trampoline -> target
 
       # Skip separate cargo check — cargo test already compiles everything.
       - run: just test
@@ -1022,14 +1052,14 @@ jobs:
   # build job. Only the TypeScript packages are built here for local-flavor
   # cases. Windows uses its cross-compiled artifacts in the separate job.
   cli-snapshot-test:
-    name: CLI snapshot test (${{ matrix.target }}, shard ${{ matrix.shard }}/3)
+    name: CLI snapshot test (${{ matrix.target }}, shard ${{ matrix.shard }}/6)
     needs:
       - build-cli-test-binaries
     strategy:
       fail-fast: false
       matrix:
         os: [namespace-profile-linux-x64-default, namespace-profile-mac-default]
-        shard: [1, 2, 3]
+        shard: [1, 2, 3, 4, 5, 6]
         include:
           - os: namespace-profile-linux-x64-default
             target: x86_64-unknown-linux-gnu
@@ -1116,7 +1146,7 @@ jobs:
           # process and VP_SNAP_SHARD partitioning as cargo test.
           CARGO_MANIFEST_DIR: ${{ github.workspace }}/crates/vp_cli_snapshots
           CARGO_BIN_EXE_vpt: ${{ github.workspace }}/target/snapshot-tests/vpt
-          VP_SNAP_SHARD: ${{ matrix.shard }}/3
+          VP_SNAP_SHARD: ${{ matrix.shard }}/6
           VP_SNAP_ARTIFACTS_DIR: ${{ runner.temp }}/snapshot-artifacts
 
       - name: Upload snapshot diagnostics and timings
@@ -1131,18 +1161,18 @@ jobs:
   # Runs the PTY snapshot suite (crates/vp_cli_snapshots) on Windows with
   # BOTH vp flavors, without a Rust toolchain on the runner: the test binary
   # and vpt arrive cross-compiled in the nextest archive from
-  # build-windows-tests, the global vp comes prebuilt from build-windows-cli,
+  # build-windows-snapshots, the global vp comes prebuilt from build-windows-cli,
   # and the JS CLI is built here (skip-native) for the local flavor.
   cli-snapshot-test-windows:
-    name: CLI snapshot test (Windows, shard ${{ matrix.shard }}/3)
+    name: CLI snapshot test (Windows, shard ${{ matrix.shard }}/6)
     needs:
       - download-previous-rolldown-binaries
       - build-windows-cli
-      - build-windows-tests
+      - build-windows-snapshots
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2, 3, 4, 5, 6]
     # Runs on the Namespace Windows runner. This is a PTY snapshot suite that
     # opens a pseudo-console (ConPTY) and spawns vp into it. It previously stayed
     # on GitHub-hosted windows-latest because Namespace's Windows runners ran
@@ -1266,7 +1296,7 @@ jobs:
           test_exit=0
           # This fixture requires case-sensitive directory support, which the
           # default temp directory on these runners does not provide.
-          cargo-nextest nextest run "${nextest_run_args[@]}" --partition hash:${{ matrix.shard }}/3 \
+          cargo-nextest nextest run "${nextest_run_args[@]}" --partition hash:${{ matrix.shard }}/6 \
             -E 'not test(windows_case_sensitive_shims)' || test_exit=$?
 
           if [[ '${{ matrix.shard }}' == '1' ]]; then
@@ -1650,6 +1680,7 @@ jobs:
       - docs-fmt
       - test
       - build-windows-tests
+      - build-windows-snapshots
       - test-windows
       - build-windows-cli
       - test-musl

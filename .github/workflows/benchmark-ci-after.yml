@@ -51,6 +51,29 @@ jobs:
       - uses: ./.github/actions/download-rolldown-binaries
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+  check:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
+    name: Check
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: namespace-profile-linux-x64-default
+            target: x86_64-unknown-linux-gnu
+          - os: namespace-profile-mac-default
+            target: aarch64-apple-darwin
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+      - uses: ./.github/actions/clone
+      - uses: ./.github/actions/benchmark-setup-rust
+        with:
+          save-cache: ${{ github.ref_name == 'main' }}
+          cache-key: check
+      - run: cargo check --all-targets --all-features
+        env:
+          RUSTFLAGS: -D warnings --cfg tokio_unstable
   test:
     needs: detect-changes
     if: needs.detect-changes.outputs.code-changed == 'true'
@@ -72,14 +95,11 @@ jobs:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: test
           tools: just
-      - run: cargo check --all-targets --all-features
-        env:
-          RUSTFLAGS: -D warnings --cfg tokio_unstable
       - run: just test
-  build-windows-tests:
+  check-windows:
     needs: detect-changes
     if: needs.detect-changes.outputs.code-changed == 'true'
-    name: Build Windows tests
+    name: Check (Windows)
     runs-on: namespace-profile-linux-x64-default
     env:
       XWIN_ACCEPT_LICENSE: '1'
@@ -90,8 +110,7 @@ jobs:
       - uses: ./.github/actions/setup-xwin
         with:
           save-cache: ${{ github.ref_name == 'main' }}
-          cache-key: windows-cross
-          tools: cargo-nextest
+          cache-key: windows-check
       - name: Check Windows target
         run: |
           eval "$(cargo xwin env --target x86_64-pc-windows-msvc | grep '^export ')"
@@ -109,6 +128,22 @@ jobs:
           esac
           export CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS="$CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS -D warnings"
           cargo check --all-targets --all-features --target x86_64-pc-windows-msvc
+  build-windows-tests:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
+    name: Build Windows tests
+    runs-on: namespace-profile-linux-x64-default
+    env:
+      XWIN_ACCEPT_LICENSE: '1'
+      CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
+    steps:
+      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+      - uses: ./.github/actions/clone
+      - uses: ./.github/actions/setup-xwin
+        with:
+          save-cache: ${{ github.ref_name == 'main' }}
+          cache-key: windows-cross
+          tools: cargo-nextest
       - name: Build test archive
         run: |
           eval "$(cargo xwin env --target x86_64-pc-windows-msvc | grep '^export ')"
@@ -1359,6 +1394,8 @@ jobs:
     if: always()
     needs:
       - docs-fmt
+      - check
+      - check-windows
       - test
       - build-windows-tests
       - build-windows-snapshots

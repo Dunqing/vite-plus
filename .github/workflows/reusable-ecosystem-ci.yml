@@ -29,6 +29,10 @@ jobs:
     permissions:
       contents: read
       packages: read
+    # Test native code without whole-program optimization.
+    env:
+      CARGO_PROFILE_RELEASE_LTO: 'off'
+      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone

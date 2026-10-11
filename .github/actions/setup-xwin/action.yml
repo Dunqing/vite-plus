@@ -27,12 +27,20 @@ runs:
         tool: ${{ inputs.tools != '' && format('{0},cargo-xwin@0.23.1', inputs.tools) || 'cargo-xwin@0.23.1' }}
     - name: Select packaged Windows SDK
       shell: bash
-      run: echo 'XWIN_CROSS_COMPILER=clang' >> "$GITHUB_ENV"
+      run: |
+        # The pinned C++ headers need template support missing from Clang 16.
+        if [ ! -x /usr/lib/llvm-18/bin/clang ]; then
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends clang-18
+        fi
+        /usr/lib/llvm-18/bin/clang --version
+        echo /usr/lib/llvm-18/bin >> "$GITHUB_PATH"
+        echo 'XWIN_CROSS_COMPILER=clang' >> "$GITHUB_ENV"
     - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       id: sysroot-cache
       with:
         path: ~/.cache/cargo-xwin/windows-msvc-sysroot
-        key: vp-windows-sysroot-r2-cargo-xwin-sysroot-2026-09-15
+        key: vp-windows-sysroot-r3-cargo-xwin-sysroot-2026-09-15
       if: env.VP_CI_BENCH_CACHE_STATE != 'cold'
     - name: Download pinned Windows SDK
       if: steps.sysroot-cache.outputs.cache-hit != 'true'

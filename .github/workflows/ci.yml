@@ -16,7 +16,7 @@ jobs:
     runs-on: namespace-profile-linux-x64-default
     env:
       XWIN_ACCEPT_LICENSE: '1'
-      CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
+      CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH -fdelayed-template-parsing
       VP_CI_BENCH_CACHE_STATE: cold
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
@@ -26,6 +26,13 @@ jobs:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: windows-cross
           tools: cargo-nextest
+      - name: Check C++ header compatibility
+        run: |
+          clang --version
+          printf '#include <type_traits>\nint main() { return 0; }\n' > "$RUNNER_TEMP/sdk-smoke.cpp"
+          eval "$(cargo xwin env --target x86_64-pc-windows-msvc | grep '^export ')"
+          # cargo-xwin emits compiler options as a space-separated string.
+          clang $CXXFLAGS_x86_64_pc_windows_msvc -fsyntax-only "$RUNNER_TEMP/sdk-smoke.cpp"
       - name: Check Windows target
         run: |
           eval "$(cargo xwin env --target x86_64-pc-windows-msvc | grep '^export ')"

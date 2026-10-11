@@ -1,6 +1,5 @@
 name: Reusable Ecosystem CI
-
-on:
+'on':
   workflow_call:
     inputs:
       runner:
@@ -11,13 +10,16 @@ on:
         description: Rust target for the package build.
         type: string
         required: true
-
+      cache_state:
+        type: string
+        required: true
+      variant:
+        type: string
+        required: true
 permissions: {}
-
 defaults:
   run:
     shell: bash
-
 jobs:
   build:
     name: Build vite-plus packages (${{ inputs.runner }})
@@ -26,46 +28,40 @@ jobs:
       contents: read
       packages: read
     steps:
-      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
+      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+      - name: Select migration source for benchmark
+        shell: bash
+        run: |
+          if [[ "$VP_CI_BENCH_VARIANT" == before ]]; then
+            cp .github/benchmark/migration-before.rs crates/vp_migration/src/ast_grep.rs
+          fi
       - uses: ./.github/actions/clone
-
-      # Disable Windows Defender real-time scanning to speed up I/O-heavy builds (~30-50% faster)
       - name: Disable Windows Defender
         if: runner.os == 'Windows'
         continue-on-error: true
         shell: powershell
         run: Set-MpPreference -DisableRealtimeMonitoring $true
-
-      # Windows builds against the prebuilt binaries from build-windows-cli, so
-      # it needs no Rust toolchain here.
-      - uses: oxc-project/setup-rust@68c3199c5339f965e6e163924c3c450773eba42b # main (pending v1.0.17 — Swatinem/rust-cache v2.9.1 for node24)
+      - uses: ./.github/actions/benchmark-setup-rust
         if: ${{ !contains(inputs.target, 'windows') }}
         with:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: e2e-build-${{ inputs.runner }}
-
-      - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a # main (Node before pnpm; unreleased)
-
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      - uses: ./.github/actions/benchmark-setup-node
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: rolldown-binaries
           path: ./rolldown/packages/rolldown/src
           merge-multiple: true
-
-      # Prebuilt by build-windows-cli (Linux + cargo-xwin); placed where
-      # build-upstream's skip-native pass and the pack step expect them.
       - name: Download prebuilt Windows binaries
         if: contains(inputs.target, 'windows')
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: windows-cli-binaries
-
       - name: Build with upstream
         uses: ./.github/actions/build-upstream
         with:
           target: ${{ inputs.target }}
           skip-native: ${{ contains(inputs.target, 'windows') }}
-
       - name: Pack packages into tgz
         env:
           BUILD_TARGET: ${{ inputs.target }}
@@ -88,18 +84,15 @@ jobs:
           cp "target/$BUILD_TARGET/release/vp" tmp/tgz/vp 2>/dev/null || cp "target/$BUILD_TARGET/release/vp.exe" tmp/tgz/vp.exe 2>/dev/null || true
           cp "target/$BUILD_TARGET/release/vp-shim.exe" tmp/tgz/vp-shim.exe 2>/dev/null || true
           ls -la tmp/tgz
-
       - name: Upload tgz artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: vite-plus-packages-${{ inputs.runner }}
           path: tmp/tgz/
           retention-days: 1
-
   e2e-test:
     name: ${{ matrix.project.name }} E2E test (${{ matrix.os }})
     env:
-      # For packing manager install from github package registry
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     permissions:
       contents: read
@@ -111,7 +104,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['${{ inputs.runner }}']
+        os:
+          - ${{ inputs.runner }}
         project:
           - name: vibe-dashboard
             node-version: 24
@@ -122,15 +116,6 @@ jobs:
               # Avoid Windows dynamic port reservations around Vitest's default 63315.
               vp test --api.port=3000
               vp run build
-          # FIXME: TypeError: Failed to fetch dynamically imported module
-          # - name: skeleton
-          #   node-version: 24
-          #   command: |
-          #     vp run format
-          #     vp run lint:check
-          #     vp run check
-          #     npx playwright install chromium
-          #     vp run test
           - name: rollipop
             node-version: 22
             command: |
@@ -162,28 +147,6 @@ jobs:
               vp run lint || true
               vp run type
               vp run test -- --coverage
-          # SKIP: vite-plugin-react - vite-task config loading incompatibility
-          # vite-task needs to load vite.config.js for all workspace packages to build the task graph,
-          # but the vite-plus process starts with workspace root as cwd.
-          # The plugin-react-swc playgrounds use SWC plugins (e.g., @swc/plugin-emotion) which
-          # cannot be resolved when loading the config from workspace root.
-          #
-          # Minimal reproduction:
-          #   git clone https://github.com/vitejs/vite-plugin-react /tmp/vite-plugin-react-test
-          #   cd /tmp/vite-plugin-react-test && pnpm install && pnpm run build
-          #   node packages/plugin-react-swc/playground/emotion-plugin/vite.config.js
-          #   # Error: Cannot find module '@swc/plugin-emotion'
-          #
-          # This works when running from within the playground directory (pnpm run build)
-          # because pnpm's symlink structure allows resolution, but fails when loading from workspace root.
-          # - name: vite-plugin-react
-          #   node-version: 22
-          #   command: |
-          #     vp run format
-          #     vp run lint -- --fix
-          #     # TODO(fengmk2): run all builds and tests after tsdown version upgrade
-          #     vp run @vitejs/plugin-rsc#build
-          #     vp run @vitejs/plugin-rsc#test
           - name: vitepress
             node-version: 24
             command: |
@@ -220,7 +183,6 @@ jobs:
           - name: dify
             node-version: 24
             directory: web
-            # Leave time for tests after migration and the Next.js build.
             timeout: 20
             command: |
               vp run type-check
@@ -238,9 +200,6 @@ jobs:
               vp test
           - name: vinext
             node-version: 24
-            # The full vinext suite (~7000 tests) outgrew a 15-minute budget
-            # on 4-core runners, so run one shard of the unit project here;
-            # the rest of the suite is covered by vinext's own CI.
             timeout: 20
             command: |
               # vp migrate's auto-install passes --ignore-scripts on pnpm v11
@@ -343,7 +302,6 @@ jobs:
               vp run test:coverage
           - name: nuxt-devtools
             node-version: 24
-            # The Windows build can exceed Node's default old-space limit.
             node-options: --max-old-space-size=4096
             command: |
               vp run build
@@ -356,7 +314,6 @@ jobs:
               vp run lint
               vp run test:unit
           - name: 10ten-ja-reader
-            # Match upstream's pin for its locked WebDriverIO/Undici versions.
             node-version: 24.15.0
             command: |
               vp test run --project browser --browser.name=chrome
@@ -371,7 +328,6 @@ jobs:
               vp test run --browser.enabled --browser.name=chrome --browser.headless
           - name: solid-vite-plugin
             node-version: 24
-            # The next branch's Vite 8 example uses Solid 2 and @solidjs/vite-plugin.
             directory: examples/vite-8
             command: |
               # Build the workspace plugin before vp run loads the example configs.
@@ -379,39 +335,30 @@ jobs:
               vp run build
               vp run test
         exclude:
-          # frm-stack uses Docker (testcontainers) which doesn't work the same way on Windows
           - os: namespace-profile-windows-4c-8g
             project:
               name: frm-stack
-          # dify only runs on Linux for now
           - os: namespace-profile-windows-4c-8g
             project:
               name: dify
-          # vinext uses workerd native deps that don't build on Windows
           - os: namespace-profile-windows-4c-8g
             project:
               name: vinext
-          # yaak is a Tauri app with Rust/wasm deps
           - os: namespace-profile-windows-4c-8g
             project:
               name: yaak
-          # npmx.dev is a Nuxt app, ubuntu-only for now
           - os: namespace-profile-windows-4c-8g
             project:
               name: npmx.dev
-          # varlet upstream CI is ubuntu-only
           - os: namespace-profile-windows-4c-8g
             project:
               name: varlet
-          # Codiff's upstream test job is Ubuntu-only and needs native-keymap system libraries.
           - os: namespace-profile-windows-4c-8g
             project:
               name: codiff
-          # tiptap upstream CI is ubuntu-only
           - os: namespace-profile-windows-4c-8g
             project:
               name: tiptap
-          # Match upstream's Linux Chrome jobs for these WebDriverIO suites.
           - os: namespace-profile-windows-4c-8g
             project:
               name: 10ten-ja-reader
@@ -421,12 +368,15 @@ jobs:
           - os: namespace-profile-windows-4c-8g
             project:
               name: brazilian-utils
-
     steps:
-      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
+      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+      - name: Select migration source for benchmark
+        shell: bash
+        run: |
+          if [[ "$VP_CI_BENCH_VARIANT" == before ]]; then
+            cp .github/benchmark/migration-before.rs crates/vp_migration/src/ast_grep.rs
+          fi
       - uses: ./.github/actions/clone
-
-      # The project clone only needs the bootstrap Node.js from the clone action.
       - name: Clone ecosystem project
         id: ecosystem-project
         background: true
@@ -435,31 +385,25 @@ jobs:
           node ecosystem-ci/clone.ts "$ECOSYSTEM_PROJECT"
         env:
           ECOSYSTEM_PROJECT: ${{ matrix.project.name }}
-
-      # Disable Windows Defender real-time scanning to speed up I/O-heavy operations
       - name: Disable Windows Defender
         if: runner.os == 'Windows'
         continue-on-error: true
         shell: powershell
         run: Set-MpPreference -DisableRealtimeMonitoring $true
-
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
           node-version: ${{ matrix.project.node-version }}
           package-manager-cache: false
-
       - name: Download vite-plus packages
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
           name: vite-plus-packages-${{ matrix.os }}
           path: tmp/tgz
-
       - name: Install Codiff native-keymap dependencies
         if: matrix.project.name == 'codiff'
         run: |
           sudo apt-get update
           sudo apt-get install --yes libx11-dev libxkbfile-dev
-
       - name: Install vp CLI
         run: |
           # Place vp binary where install-global-cli.ts expects it (target/release/)
@@ -472,35 +416,27 @@ jobs:
           # Use USERPROFILE (native Windows path) instead of HOME (Git Bash path /c/Users/...)
           # so cmd.exe and Node.js execSync can resolve binaries in PATH
           echo "${USERPROFILE:-$HOME}/.vite-plus/bin" >> $GITHUB_PATH
-
       - wait: ecosystem-project
-
       - name: Migrate in ${{ matrix.project.name }}
         working-directory: ${{ runner.temp }}/vite-plus-ecosystem-ci/${{ matrix.project.name }}${{ matrix.project.directory && format('/{0}', matrix.project.directory) || '' }}
-        # patch-project.ts starts a local npm registry serving the packed
-        # local build (it stays up for the later steps; the registry env is
-        # exported via GITHUB_ENV), then runs `vp migrate` and the follow-up
-        # `vp install` through it, with pnpm's minimumReleaseAge gate disabled
-        # so freshly published upstream deps install. See its comments.
         run: node $GITHUB_WORKSPACE/ecosystem-ci/patch-project.ts ${{ matrix.project.name }}
-
       - name: Verify local packages installed
         working-directory: ${{ runner.temp }}/vite-plus-ecosystem-ci/${{ matrix.project.name }}${{ matrix.project.directory && format('/{0}', matrix.project.directory) || '' }}
         run: node $GITHUB_WORKSPACE/ecosystem-ci/verify-install.ts
-
       - name: Determine playwright requirement
         id: pw
         run: |
           needs=$(jq -r --arg p '${{ matrix.project.name }}' '.[$p].playwright // false' "$GITHUB_WORKSPACE/ecosystem-ci/repo.json")
           echo "needs=$needs" >> "$GITHUB_OUTPUT"
-
       - name: Install Playwright chromium
         if: steps.pw.outputs.needs == 'true'
         working-directory: ${{ runner.temp }}/vite-plus-ecosystem-ci/${{ matrix.project.name }}${{ matrix.project.directory && format('/{0}', matrix.project.directory) || '' }}
         run: npx playwright install chromium
-
       - name: Run vite-plus commands in ${{ matrix.project.name }}
         working-directory: ${{ runner.temp }}/vite-plus-ecosystem-ci/${{ matrix.project.name }}${{ matrix.project.directory && format('/{0}', matrix.project.directory) || '' }}
         env:
           NODE_OPTIONS: ${{ matrix.project.node-options || '' }}
         run: ${{ matrix.project.command }}
+env:
+  VP_CI_BENCH_CACHE_STATE: ${{ inputs.cache_state }}
+  VP_CI_BENCH_VARIANT: ${{ inputs.variant }}

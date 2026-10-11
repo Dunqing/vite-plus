@@ -28,8 +28,10 @@ jobs:
     uses: ./.github/workflows/benchmark-ci-before.yml
     with:
       cache_state: ${{ inputs.cache_state }}
+      variant: ${{ inputs.variant }}
   after:
     if: inputs.variant == 'after'
     uses: ./.github/workflows/benchmark-ci-after.yml
     with:
       cache_state: ${{ inputs.cache_state }}
+      variant: ${{ inputs.variant }}

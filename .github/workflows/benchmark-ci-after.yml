@@ -7,6 +7,9 @@ permissions:
       cache_state:
         type: string
         required: true
+      variant:
+        type: string
+        required: true
 defaults:
   run:
     shell: bash
@@ -1416,3 +1419,4 @@ jobs:
         if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
 env:
   VP_CI_BENCH_CACHE_STATE: ${{ inputs.cache_state }}
+  VP_CI_BENCH_VARIANT: ${{ inputs.variant }}

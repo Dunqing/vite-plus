@@ -15,6 +15,10 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Select Windows SDK architecture
+      shell: bash
+      run: echo 'XWIN_ARCH=x86_64' >> "$GITHUB_ENV"
+      if: env.VP_CI_BENCH_VARIANT == 'after'
     - uses: ./.github/actions/benchmark-setup-rust
       with:
         save-cache: ${{ inputs.save-cache }}
@@ -28,6 +32,6 @@ runs:
     - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       with:
         path: ~/.cache/cargo-xwin
-        key: vp-ci-scheduling-2986-r1-cargo-xwin-msvc-17
+        key: vp-ci-scheduling-2986-r1-${{ env.VP_CI_BENCH_VARIANT == 'after' && 'cargo-xwin-msvc-17-x86_64' || 'cargo-xwin-msvc-17' }}
         fail-on-cache-miss: ${{ env.VP_CI_BENCH_CACHE_STATE == 'warm' }}
       if: (true) && env.VP_CI_BENCH_CACHE_STATE != 'cold'

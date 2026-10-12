@@ -103,6 +103,16 @@ jobs:
           return Reflect.apply(listen, this, args);
         };
         NODE
+        node --input-type=module <<'NODE'
+        import { readFileSync, writeFileSync } from 'node:fs';
+        const hook = `${process.env.RUNNER_TEMP.replaceAll('\\', '/')}/deny-default-port.cjs`;
+        const options = JSON.stringify(`--require="${hook}"`);
+        for (const fixture of ['test_v5_preview', 'test_v5_screenshots']) {
+          const path = `crates/vp_cli_snapshots/tests/cli_snapshots/fixtures/${fixture}/snapshots.toml`;
+          const source = readFileSync(path, 'utf8');
+          writeFileSync(path, source.replaceAll('PLAYWRIGHT_BROWSERS_PATH = "0"', `PLAYWRIGHT_BROWSERS_PATH = "0", NODE_OPTIONS = ${options}`));
+        }
+        NODE
     - name: Require original fixture to fail with simulated EACCES
       shell: bash
       run: |

@@ -161,7 +161,6 @@ jobs:
         VP_SNAP_PACKAGES_DIR: ${{ runner.temp }}/snapshot-packages
         VP_SNAP_ARTIFACTS_DIR: ${{ runner.temp }}/snapshot-artifacts
         __COMPAT_LAYER: RunAsInvoker
-        NODE_OPTIONS: --require="${{ runner.temp }}/deny-default-port.cjs"
     - name: Run PTY snapshot tests
       shell: bash
       run: |
@@ -194,7 +193,6 @@ jobs:
         VP_SNAP_PACKAGES_DIR: ${{ runner.temp }}/snapshot-packages
         VP_SNAP_ARTIFACTS_DIR: ${{ runner.temp }}/snapshot-artifacts
         __COMPAT_LAYER: RunAsInvoker
-        NODE_OPTIONS: --require="${{ runner.temp }}/deny-default-port.cjs"
     - name: Upload snapshot diagnostics and timings
       if: ${{ !cancelled() }}
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a

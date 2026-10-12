@@ -1044,26 +1044,41 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
 
+      - uses: ./.github/actions/compute-native-cache-input-hash
+        id: native-cache-inputs
+
+      # Reuse the complete producer artifact to skip Rust setup and dependency
+      # installation. The utility tests below still run on every checkout.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: cli-test-cache
+        with:
+          path: ${{ runner.temp }}/cli-test-binaries.tar.gz
+          key: cli-test-binaries-v1-${{ matrix.target }}-${{ steps.native-cache-inputs.outputs.hash }}-${{ hashFiles('.github/workflows/ci.yml', 'crates/vp_cli_snapshots/**') }}
+
       - uses: oxc-project/setup-rust@68c3199c5339f965e6e163924c3c450773eba42b # main (pending v1.0.17 — Swatinem/rust-cache v2.9.1 for node24)
+        if: steps.cli-test-cache.outputs.cache-hit != 'true'
         with:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: cli-snapshot-test-${{ matrix.target }}
 
       - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a # main (Node before pnpm; unreleased)
+        if: steps.cli-test-cache.outputs.cache-hit != 'true'
 
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        if: steps.cli-test-cache.outputs.cache-hit != 'true'
         with:
           name: rolldown-binaries
           path: ./rolldown/packages/rolldown/src
           merge-multiple: true
 
       - name: Build with upstream
+        if: steps.cli-test-cache.outputs.cache-hit != 'true'
         uses: ./.github/actions/build-upstream
         with:
           target: ${{ matrix.target }}
 
       - name: Ensure no unexpected file changes after build
-        if: ${{ matrix.target == 'x86_64-unknown-linux-gnu' }}
+        if: steps.cli-test-cache.outputs.cache-hit != 'true' && matrix.target == 'x86_64-unknown-linux-gnu'
         run: |
           if [[ -n "$(git status --porcelain)" ]]; then
             echo "::error::Unexpected file changes detected after build"
@@ -1073,12 +1088,11 @@ jobs:
           fi
 
       - name: Build snapshot test binaries
+        if: steps.cli-test-cache.outputs.cache-hit != 'true'
         run: cargo test -p vp_cli_snapshots --no-run --message-format=json > "$RUNNER_TEMP/snapshot-test-build.json"
 
-      - name: Test snapshot runner utilities
-        run: cargo test -p vp_cli_snapshots --test redact_unit --test shard_unit --test registry_pack_unit --test report_unit --test schedule_unit
-
       - name: Package CLI test binaries
+        if: steps.cli-test-cache.outputs.cache-hit != 'true'
         run: |
           artifact_dir="$(mktemp -d)"
           trap 'rm -rf "$artifact_dir"' EXIT
@@ -1092,7 +1106,7 @@ jobs:
             | jq '{packages: [.packages[] | {name, version, source}]}' \
             > "$binding_dir/vite-plus.cargo-metadata.json"
           cp "${CARGO_TARGET_DIR:-target}/$BUILD_TARGET/release/vp" "$cli_dir/"
-          for binary in cli_snapshots vpt; do
+          for binary in cli_snapshots vpt redact_unit shard_unit registry_pack_unit report_unit schedule_unit; do
             binary_path="$(jq -er --arg name "$binary" \
               'select(.reason == "compiler-artifact" and .target.name == $name and .executable != null) | .executable' \
               "$RUNNER_TEMP/snapshot-test-build.json")"
@@ -1101,6 +1115,16 @@ jobs:
           tar -czf "$RUNNER_TEMP/cli-test-binaries.tar.gz" -C "$artifact_dir" .
         env:
           BUILD_TARGET: ${{ matrix.target }}
+
+      - name: Test snapshot runner utilities
+        working-directory: crates/vp_cli_snapshots
+        run: |
+          utility_dir="$(mktemp -d)"
+          trap 'rm -rf "$utility_dir"' EXIT
+          tar -xzf "$RUNNER_TEMP/cli-test-binaries.tar.gz" -C "$utility_dir" ./target/snapshot-tests
+          for binary in "$utility_dir"/target/snapshot-tests/*_unit; do
+            "$binary"
+          done
 
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
@@ -1533,10 +1557,30 @@ jobs:
             '
 
   install-e2e-test:
-    name: Local CLI `vp install` E2E test
+    name: Local CLI `vp install` E2E test (${{ matrix.repository }})
     needs:
       - build-cli-test-binaries
     runs-on: namespace-profile-linux-x64-default
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Keep a fixed pnpm 11 workspace for compatibility coverage.
+          - repository: pnpm/pnpm
+            directory: pnpm
+            ref: v11.11.0
+          - repository: vitejs/vite
+            directory: vite
+          # yarn workspace
+          - repository: napi-rs/napi-rs
+            directory: napi-rs
+          - repository: toeverything/AFFiNE
+            directory: AFFiNE
+          # npm workspace
+          - repository: npm/cli
+            directory: npm
+          - repository: redhat-developer/vscode-extension-tester
+            directory: vscode-extension-tester
     # Run if: not a PR, OR PR has 'test: install-e2e' label
     if: >-
       github.event_name != 'pull_request' ||
@@ -1569,43 +1613,27 @@ jobs:
           echo "$HOME/.vite-plus/bin" >> $GITHUB_PATH
 
       - name: Run local CLI `vp install`
+        env:
+          REPO: ${{ matrix.repository }}
+          REPO_DIR: ${{ matrix.directory }}
+          REPO_REF: ${{ matrix.ref }}
         run: |
           export PATH=$PWD/node_modules/.bin:$PATH
           vp -h
-          # Test vp install on various repositories with different package managers
-          # Entry format: "owner/repo:dir" or "owner/repo:dir:ref" (tag or branch to clone)
-          repos=(
-            # pnpm workspace
-            # Keep a fixed pnpm 11 workspace for compatibility coverage.
-            "pnpm/pnpm:pnpm:v11.11.0"
-            "vitejs/vite:vite"
-            # yarn workspace
-            "napi-rs/napi-rs:napi-rs"
-            "toeverything/AFFiNE:AFFiNE"
-            # npm workspace
-            "npm/cli:npm"
-            "redhat-developer/vscode-extension-tester:vscode-extension-tester"
-          )
-
-          for repo_info in "${repos[@]}"; do
-            IFS=':' read -r repo dir_name ref <<< "$repo_info"
-            echo "Testing vp install on $repo${ref:+ ($ref)}…"
-            # remove the directory if it exists
-            if [ -d "$RUNNER_TEMP/$dir_name" ]; then
-              rm -rf "$RUNNER_TEMP/$dir_name"
-            fi
-            clone_args=(--depth 1)
-            if [ -n "$ref" ]; then
-              clone_args+=(--branch "$ref")
-            fi
-            git clone "${clone_args[@]}" "https://github.com/$repo.git" "$RUNNER_TEMP/$dir_name"
-            cd "$RUNNER_TEMP/$dir_name"
-            vp install --no-frozen-lockfile
-            # run again to show install cache increase by time
-            time vp install
-            echo "✓ Successfully installed dependencies for $repo"
-            echo ""
-          done
+          echo "Testing vp install on $REPO${REPO_REF:+ ($REPO_REF)}…"
+          if [ -d "$RUNNER_TEMP/$REPO_DIR" ]; then
+            rm -rf "${RUNNER_TEMP:?}/${REPO_DIR:?}"
+          fi
+          clone_args=(--depth 1)
+          if [ -n "$REPO_REF" ]; then
+            clone_args+=(--branch "$REPO_REF")
+          fi
+          git clone "${clone_args[@]}" "https://github.com/$REPO.git" "$RUNNER_TEMP/$REPO_DIR"
+          cd "$RUNNER_TEMP/$REPO_DIR"
+          vp install --no-frozen-lockfile
+          # Keep the second install in this job so it uses the first install's cache.
+          time vp install
+          echo "✓ Successfully installed dependencies for $REPO"
 
   install-e2e-test-sfw:
     name: Local CLI `vp install` E2E test (Socket Firewall Free)

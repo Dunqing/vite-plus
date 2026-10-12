@@ -250,7 +250,7 @@ jobs:
           save-if: ${{ env.VP_CI_BENCH_CACHE_STATE == 'prime' }}
           workspaces: |
             . -> target
-            crates/vp_trampoline -> target
+            crates/vp_trampoline -> ../../target
           prefix-key: vp-ci-half-r1-after-rust
           lookup-only: ${{ env.VP_CI_BENCH_CACHE_STATE == 'cold' }}
         id: benchmark-cargo-cache

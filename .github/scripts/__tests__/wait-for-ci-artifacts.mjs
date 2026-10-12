@@ -39,7 +39,7 @@ function fixture() {
   return { state, options };
 }
 
-test('waits for both non-expired artifacts from the current run', async () => {
+await test('waits for both non-expired artifacts from the current run', async () => {
   const { state, options } = fixture();
   state.artifacts = [
     { name: 'native', id: 1 },
@@ -55,7 +55,7 @@ test('waits for both non-expired artifacts from the current run', async () => {
   assert.ok(state.calls.some((call) => call.params.headers['if-none-match']));
 });
 
-test('finds artifacts on later pages and reuses available artifacts on a retry', async () => {
+await test('finds artifacts on later pages and reuses available artifacts on a retry', async () => {
   const { state, options } = fixture();
   state.artifacts = Array.from({ length: 100 }, (_, id) => ({ name: `other-${id}`, id }));
   state.artifacts.push({ name: 'snapshots', id: 101 }, { name: 'native', id: 102 });
@@ -66,7 +66,7 @@ test('finds artifacts on later pages and reuses available artifacts on a retry',
 });
 
 for (const conclusion of ['failure', 'cancelled', 'skipped', 'timed_out']) {
-  test(`stops when a producer is ${conclusion}`, async () => {
+  await test(`stops when a producer is ${conclusion}`, async () => {
     const { state, options } = fixture();
     state.jobs = [{ name: 'after / Build native', status: 'completed', conclusion }];
     await assert.rejects(waitForCiArtifacts(options), new RegExp(`finished with ${conclusion}`));
@@ -74,7 +74,7 @@ for (const conclusion of ['failure', 'cancelled', 'skipped', 'timed_out']) {
   });
 }
 
-test('ignores unrelated failed jobs while the selected producers run', async () => {
+await test('ignores unrelated failed jobs while the selected producers run', async () => {
   const { state, options } = fixture();
   state.jobs = [{ name: 'Build something else', status: 'completed', conclusion: 'failure' }];
   state.onSleep = () => {
@@ -86,7 +86,7 @@ test('ignores unrelated failed jobs while the selected producers run', async () 
   assert.deepEqual(await waitForCiArtifacts(options), [1, 2]);
 });
 
-test('bounds the wait when a producer is missing or queued', async () => {
+await test('bounds the wait when a producer is missing or queued', async () => {
   const { state, options } = fixture();
   options.timeoutMs = 25_000;
   state.jobs = [{ name: 'Build native', status: 'queued', conclusion: null }];
@@ -94,7 +94,7 @@ test('bounds the wait when a producer is missing or queued', async () => {
   assert.equal(state.elapsed, 25_000);
 });
 
-test('allows artifact visibility to catch up after successful producers', async () => {
+await test('allows artifact visibility to catch up after successful producers', async () => {
   const { state, options } = fixture();
   state.jobs = options.producerNames.map((name) => ({
     name,
@@ -110,7 +110,7 @@ test('allows artifact visibility to catch up after successful producers', async 
   assert.deepEqual(await waitForCiArtifacts(options), [1, 2]);
 });
 
-test('fails if successful producers did not publish their artifacts', async () => {
+await test('fails if successful producers did not publish their artifacts', async () => {
   const { state, options } = fixture();
   state.jobs = options.producerNames.map((name) => ({
     name,
@@ -121,7 +121,7 @@ test('fails if successful producers did not publish their artifacts', async () =
   assert.equal(state.elapsed, 30_000);
 });
 
-test('propagates API errors instead of silently using stale data', async () => {
+await test('propagates API errors instead of silently using stale data', async () => {
   const { options } = fixture();
   const error = Object.assign(new Error('Forbidden'), { status: 403 });
   options.github.request = async () => {
@@ -130,7 +130,7 @@ test('propagates API errors instead of silently using stale data', async () => {
   await assert.rejects(waitForCiArtifacts(options), error);
 });
 
-test('rejects empty artifact or producer lists', async () => {
+await test('rejects empty artifact or producer lists', async () => {
   for (const key of ['artifactNames', 'producerNames']) {
     const { options } = fixture();
     options[key] = [];

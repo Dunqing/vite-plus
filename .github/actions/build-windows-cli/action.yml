@@ -14,6 +14,10 @@ inputs:
     description: 'Name for the uploaded binaries artifact.'
     required: false
     default: 'windows-cli-binaries'
+  build-together:
+    description: 'Build the binding and CLI together for CI tests. This unifies their Cargo features.'
+    required: false
+    default: 'false'
 
 runs:
   using: 'composite'
@@ -31,7 +35,7 @@ runs:
       id: cache-key
       shell: bash
       run: |
-        echo "key=windows-cli-xwin-v2-${{ steps.native-cache-inputs.outputs.hash }}" >> "$GITHUB_OUTPUT"
+        echo "key=windows-cli-xwin-v3-${{ steps.native-cache-inputs.outputs.hash }}-${{ inputs.build-together == 'true' && 'combined' || 'separate' }}" >> "$GITHUB_OUTPUT"
 
     - name: Define binary paths
       id: binary-paths
@@ -70,8 +74,14 @@ runs:
     - name: Build NAPI binding
       if: steps.binaries-cache.outputs.cache-hit != 'true'
       shell: bash
-      run: pnpm --filter=vite-plus build-native --target x86_64-pc-windows-msvc -x --skip-format
+      run: |
+        build_args=(--target x86_64-pc-windows-msvc -x --skip-format)
+        if [[ "$BUILD_TOGETHER" == 'true' ]]; then
+          build_args+=(-- --package vite-plus-cli --package vp_global_cli --package vp_installer)
+        fi
+        pnpm --filter=vite-plus build-native "${build_args[@]}"
       env:
+        BUILD_TOGETHER: ${{ inputs.build-together }}
         DEBUG: 'napi:*'
         XWIN_ACCEPT_LICENSE: '1'
         # See setup-xwin / build-windows-tests for why this Detours escape
@@ -79,7 +89,7 @@ runs:
         CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
 
     - name: Build Rust CLI binaries
-      if: steps.binaries-cache.outputs.cache-hit != 'true'
+      if: steps.binaries-cache.outputs.cache-hit != 'true' && inputs.build-together != 'true'
       shell: bash
       run: cargo xwin build --release --target x86_64-pc-windows-msvc -p vp_global_cli -p vp_installer
       env:

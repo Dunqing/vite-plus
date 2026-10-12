@@ -154,6 +154,7 @@ async function buildNapiBinding() {
 
   const { task } = await cli.build({
     ...passedInOptions,
+    cargoOptions: buildCommand.cargoOptions,
     packageJsonPath: '../package.json',
     cwd: 'binding',
     platform: true,

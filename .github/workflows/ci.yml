@@ -469,6 +469,7 @@ jobs:
       - uses: ./.github/actions/clone
       - uses: ./.github/actions/build-windows-cli
         with:
+          build-together: true
           save-cache: ${{ github.ref_name == 'main' }}
 
   # Each platform waits only for its own binaries. Anchors keep the steps shared.

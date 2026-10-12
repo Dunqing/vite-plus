@@ -89,6 +89,7 @@ jobs:
       - uses: ./.github/actions/clone
       - uses: ./.github/actions/build-windows-cli
         with:
+          build-together: true
           save-cache: ${{ github.ref_name == 'main' }}
 
   # Each platform starts its tests as soon as its own packages are ready.

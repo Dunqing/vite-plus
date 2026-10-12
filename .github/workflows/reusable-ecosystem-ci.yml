@@ -69,6 +69,7 @@ jobs:
         with:
           target: ${{ inputs.target }}
           skip-native: ${{ contains(inputs.target, 'windows') }}
+          build-unix-together: true
 
       - name: Pack packages into tgz
         env:

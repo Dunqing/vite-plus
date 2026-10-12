@@ -144,19 +144,19 @@ jobs:
       matrix:
         include:
           - group: rest
-            pattern: ^(?!.*assetPrefix end-to-end build (?:(?:deployment ID:|path-prefix:)|(?:absolute URL:|basePath \+ assetPrefix:)|(?:basePath alone:|unset:))).*$
+            pattern: ^(?!.*assetPrefix end-to-end build > (?:(?:deployment ID:|path-prefix:)|(?:absolute URL:|basePath \+ assetPrefix:)|(?:basePath alone:|unset:))).*$
             os: ubuntu-latest
             project: *id001
           - group: builds-1
-            pattern: assetPrefix end-to-end build (?:deployment ID:|path-prefix:)
+            pattern: assetPrefix end-to-end build > (?:deployment ID:|path-prefix:)
             os: ubuntu-latest
             project: *id001
           - group: builds-2
-            pattern: assetPrefix end-to-end build (?:absolute URL:|basePath \+ assetPrefix:)
+            pattern: assetPrefix end-to-end build > (?:absolute URL:|basePath \+ assetPrefix:)
             os: ubuntu-latest
             project: *id001
           - group: builds-3
-            pattern: assetPrefix end-to-end build (?:basePath alone:|unset:)
+            pattern: assetPrefix end-to-end build > (?:basePath alone:|unset:)
             os: ubuntu-latest
             project: *id001
     steps:

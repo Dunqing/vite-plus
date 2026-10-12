@@ -1355,6 +1355,13 @@ jobs:
           fi
           git clone "${clone_args[@]}" "https://github.com/$REPO.git" "$RUNNER_TEMP/$REPO_DIR"
           cd "$RUNNER_TEMP/$REPO_DIR"
+          # BEGIN benchmark repository pin
+          expected_sha=$(jq -er --arg repo "$REPO" '.[$repo]' "$GITHUB_WORKSPACE/.github/benchmark/install-refs.json")
+          git fetch --depth 1 origin "$expected_sha"
+          git checkout --detach "$expected_sha"
+          test "$(git rev-parse HEAD)" = "$expected_sha"
+          echo "INPUT_REPOSITORY $REPO $expected_sha"
+          # END benchmark repository pin
           vp install --no-frozen-lockfile
           # Keep the second install in this job so it uses the first install's cache.
           time vp install

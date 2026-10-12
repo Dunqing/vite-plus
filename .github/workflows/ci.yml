@@ -1,4 +1,4 @@
-name: Windows preload isolation
+name: Windows SDK null-pointer compatibility
 'on':
   workflow_dispatch: {}
 permissions:
@@ -12,13 +12,24 @@ defaults:
   run:
     shell: bash
 jobs:
+  build:
+    name: Build with packaged SDK and clang-cl
+    runs-on: namespace-profile-linux-x64-default
+    env:
+      VP_CI_BENCH_CACHE_STATE: cold
+    steps:
+      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+      - uses: ./.github/actions/clone
+      - uses: ./.github/actions/build-windows-cli
+        with:
+          artifact-name: windows-cli-clang-cl
   test:
-    name: Preload isolation (${{ matrix.compiler }})
+    name: Task spawning (${{ matrix.compiler }})
+    needs: build
     strategy:
       fail-fast: false
       matrix:
         compiler:
-          - baseline
           - clang-cl
     runs-on: namespace-profile-windows-4c-8g
     steps:
@@ -54,9 +65,8 @@ jobs:
       - name: Download prebuilt Windows binaries
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
-          name: ${{ matrix.compiler == 'baseline' && 'windows-cli-binaries' || 'windows-cli-clang-cl' }}
-          run-id: ${{ matrix.compiler == 'baseline' && '38107521943' || '38196472685' }}
-          github-token: ${{ github.token }}
+          name: windows-cli-clang-cl
+        if: matrix.compiler == 'clang-cl'
       - name: Build with upstream
         uses: ./.github/actions/build-upstream
         with:
@@ -70,13 +80,6 @@ jobs:
         run: |
           "$USERPROFILE/.vite-plus/bin/vp.exe" node --version \
             || echo "prewarm failed; cases will download the runtime on demand"
-      - name: Download known-good Windows binaries
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          name: windows-cli-binaries
-          run-id: '38107521943'
-          github-token: ${{ github.token }}
-          path: ${{ runner.temp }}/known-good
       - name: Run PTY snapshot tests
         shell: bash
         run: |
@@ -102,30 +105,18 @@ jobs:
           )
           # --no-fail-fast: on a snapshot suite every diff is diagnostic
           # signal; cancelling on the first failure hides the rest.
-          test_status=0
           cargo-nextest nextest run "${nextest_run_args[@]}" \
-            -E 'test(vite_plus_import_resolves) | test(command_create_template_args)' || test_status=$?
-
-          echo "Initial snapshot exit: $test_status"
-          if [ "$DIAGNOSTIC_COMPILER" = baseline ]; then
-            test "$test_status" = 0
-          else
-            test "$test_status" = 100
-            node .github/benchmark/replace-preload.cjs
-            cargo-nextest nextest run "${nextest_run_args[@]}" \
-              -E 'test(vite_plus_import_resolves) | test(command_create_template_args)'
-          fi
+            -E 'test(vite_plus_import_resolves) | test(command_create_template_args)'
         env:
           RUST_BACKTRACE: '1'
           VP_SNAP_PACKAGES_DIR: ${{ runner.temp }}/snapshot-packages
           VP_SNAP_ARTIFACTS_DIR: ${{ runner.temp }}/snapshot-artifacts
           __COMPAT_LAYER: RunAsInvoker
-          DIAGNOSTIC_COMPILER: ${{ matrix.compiler }}
       - name: Upload snapshot diagnostics and timings
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: preload-isolation-${{ matrix.compiler }}
+          name: task-spawn-diagnostics-${{ matrix.compiler }}
           path: ${{ runner.temp }}/snapshot-artifacts
           if-no-files-found: ignore
           retention-days: 7

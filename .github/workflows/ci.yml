@@ -19,6 +19,7 @@ run-name: Combined ci / ${{ inputs.variant }} / ${{ inputs.cache_state }}
 permissions:
   contents: read
   packages: read
+  actions: read
 concurrency:
   group: vp-ci-scheduling-2986-r1
   cancel-in-progress: false

@@ -1,6 +1,6 @@
 {
   "before": "f7e75e2128208109e4fccba037b42888e84dd1b6",
-  "after": "b363195b2f309a600a9b31addeecda8df01e8a09",
+  "after": "9a784371a8389789aae01a6ba78262436f2f48be",
   "shared_browser_fixtures": "205cfaba2",
   "performance_prs": {
     "p2986": {
@@ -85,7 +85,7 @@
       "isDraft": true
     }
   },
-  "additional_prototype": "Four macOS snapshot shards; Linux and Windows retain six. Combined Windows Cargo build from b3b07b5441f114ffcbc78aa0fcd8b69d2a6f64a8. Snapshot artifact downloads overlap setup from 9e423db5e5a426973d375c48d41ef7baff4cdbc3.",
+  "additional_prototype": "Four macOS snapshot shards; Linux and Windows retain six. Combined Windows Cargo build from b3b07b5441f114ffcbc78aa0fcd8b69d2a6f64a8. Snapshot artifact downloads overlap setup from 9e423db5e5a426973d375c48d41ef7baff4cdbc3. Snapshot runners prepare during compilation with bounded artifact waits from49cadc90cdea3419c491832eb731dc35a577014a.",
   "shared_build_argument_forwarding": "Both variants use the build argument forwarding fix and its regression test. Only the candidate Windows action selects multiple packages.",
   "shared_ecosystem_browser_port": "27280a215e4b38342fb2649284a46b7e016e4ffe",
   "before_overlays": ["crates/vp_migration/src/ast_grep.rs", "justfile"]

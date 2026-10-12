@@ -58,6 +58,9 @@ jobs:
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
       - uses: ./.github/actions/clone
+      - name: Test CI artifact waiting
+        if: runner.os == 'Linux'
+        run: node --test .github/scripts/__tests__/wait-for-ci-artifacts.mjs
       - uses: ./.github/actions/benchmark-after-setup-rust
         with:
           save-cache: ${{ github.ref_name == 'main' }}
@@ -2021,8 +2024,11 @@ jobs:
           retention-days: 7
   cli-snapshot-test-linux:
     name: CLI snapshot test (${{ matrix.target }}, shard ${{ matrix.shard }}/${{ matrix.shards }})
-    needs:
-      - build-cli-test-binaries-linux
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
+    permissions:
+      contents: read
+      actions: read
     strategy:
       fail-fast: false
       matrix:
@@ -2045,6 +2051,7 @@ jobs:
         background: true
         with:
           target: ${{ matrix.target }}
+          wait-for-producer: true
       - uses: ./.github/actions/clone
       - name: Install snapshot shells
         id: snapshot-shells
@@ -2113,8 +2120,11 @@ jobs:
           retention-days: 7
   cli-snapshot-test-macos:
     name: CLI snapshot test (${{ matrix.target }}, shard ${{ matrix.shard }}/${{ matrix.shards }})
-    needs:
-      - build-cli-test-binaries-macos
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
+    permissions:
+      contents: read
+      actions: read
     strategy:
       fail-fast: false
       matrix:
@@ -2135,6 +2145,7 @@ jobs:
         background: true
         with:
           target: ${{ matrix.target }}
+          wait-for-producer: true
       - uses: ./.github/actions/clone
       - name: Install snapshot shells
         id: snapshot-shells
@@ -2203,9 +2214,11 @@ jobs:
           retention-days: 7
   cli-snapshot-test-windows:
     name: CLI snapshot test (Windows, shard ${{ matrix.shard }}/6)
-    needs:
-      - build-windows-cli
-      - build-windows-snapshots
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
+    permissions:
+      contents: read
+      actions: read
     strategy:
       fail-fast: false
       matrix:
@@ -2219,17 +2232,16 @@ jobs:
     runs-on: namespace-profile-windows-4c-8g
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        id: snapshot-test-archive
-        background: true
-        with:
-          name: windows-snapshot-test-archive
-      - name: Download prebuilt Windows binaries
+      - uses: ./.github/actions/download-ci-artifacts
         id: cli-binaries
         background: true
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
-          name: windows-cli-binaries
+          artifact-names: |
+            windows-snapshot-test-archive
+            windows-cli-binaries
+          producer-names: |
+            Build Windows snapshot tests
+            Build Windows CLI binaries
       - uses: ./.github/actions/clone
       - name: Setup Dev Drive
         uses: samypr100/setup-dev-drive@562171fe8df7401fdf582d766cd3b6ab80d5b1a0
@@ -2275,9 +2287,7 @@ jobs:
           $snapshotTemp = Join-Path $volume ('vp-snapshots-' + [guid]::NewGuid().ToString('N'))
           New-Item -ItemType Directory -Path $snapshotTemp | Out-Null
           "directory=$snapshotTemp" >> $env:GITHUB_OUTPUT
-      - wait:
-          - snapshot-test-archive
-          - playwright
+      - wait: playwright
       - name: Run PTY snapshot tests
         shell: bash
         run: |

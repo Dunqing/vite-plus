@@ -42,18 +42,6 @@ jobs:
           target: x86_64-unknown-linux-gnu
       - name: Run vp fmt --check
         run: pnpm vp fmt --check
-  download-previous-rolldown-binaries:
-    needs: detect-changes
-    if: needs.detect-changes.outputs.code-changed == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-    steps:
-      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
-      - uses: ./.github/actions/download-rolldown-binaries
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
   check:
     needs: detect-changes
     if: needs.detect-changes.outputs.code-changed == 'true'
@@ -347,11 +335,6 @@ jobs:
       - uses: ./.github/actions/benchmark-after-setup-node
       - name: Install docs dependencies
         run: pnpm -C docs install --frozen-lockfile
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          name: rolldown-binaries
-          path: ./rolldown/packages/rolldown/src
-          merge-multiple: true
       - name: Download prebuilt Windows binaries
         if: runner.os == 'Windows'
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
@@ -859,11 +842,6 @@ jobs:
       - uses: ./.github/actions/benchmark-after-setup-node
       - name: Install docs dependencies
         run: pnpm -C docs install --frozen-lockfile
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          name: rolldown-binaries
-          path: ./rolldown/packages/rolldown/src
-          merge-multiple: true
       - name: Download prebuilt Windows binaries
         if: runner.os == 'Windows'
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
@@ -1356,7 +1334,6 @@ jobs:
   cli-e2e-test-windows:
     name: CLI E2E test
     needs:
-      - download-previous-rolldown-binaries
       - build-windows-cli
     strategy:
       fail-fast: false
@@ -1372,11 +1349,6 @@ jobs:
       - uses: ./.github/actions/benchmark-after-setup-node
       - name: Install docs dependencies
         run: pnpm -C docs install --frozen-lockfile
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          name: rolldown-binaries
-          path: ./rolldown/packages/rolldown/src
-          merge-multiple: true
       - name: Download prebuilt Windows binaries
         if: runner.os == 'Windows'
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
@@ -1868,8 +1840,8 @@ jobs:
           vp --version
   build-cli-test-binaries-linux:
     name: Build CLI test binaries (${{ matrix.target }})
-    needs:
-      - download-previous-rolldown-binaries
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -1900,12 +1872,6 @@ jobs:
           cache-key: cli-snapshot-test-${{ matrix.target }}
       - uses: ./.github/actions/benchmark-after-setup-node
         if: steps.cli-test-cache.outputs.cache-hit != 'true'
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        if: steps.cli-test-cache.outputs.cache-hit != 'true'
-        with:
-          name: rolldown-binaries
-          path: ./rolldown/packages/rolldown/src
-          merge-multiple: true
       - name: Build with upstream
         if: steps.cli-test-cache.outputs.cache-hit != 'true'
         uses: ./.github/actions/benchmark-after-build-upstream
@@ -1964,8 +1930,8 @@ jobs:
           retention-days: 7
   build-cli-test-binaries-macos:
     name: Build CLI test binaries (${{ matrix.target }})
-    needs:
-      - download-previous-rolldown-binaries
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
     strategy:
       fail-fast: false
       matrix:
@@ -1996,12 +1962,6 @@ jobs:
           cache-key: cli-snapshot-test-${{ matrix.target }}
       - uses: ./.github/actions/benchmark-after-setup-node
         if: steps.cli-test-cache.outputs.cache-hit != 'true'
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        if: steps.cli-test-cache.outputs.cache-hit != 'true'
-        with:
-          name: rolldown-binaries
-          path: ./rolldown/packages/rolldown/src
-          merge-multiple: true
       - name: Build with upstream
         if: steps.cli-test-cache.outputs.cache-hit != 'true'
         uses: ./.github/actions/benchmark-after-build-upstream
@@ -2099,11 +2059,6 @@ jobs:
         with:
           version: '*'
       - uses: ./.github/actions/benchmark-after-setup-node
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          name: rolldown-binaries
-          path: ./rolldown/packages/rolldown/src
-          merge-multiple: true
       - uses: ./.github/actions/download-cli-test-binaries
         with:
           target: ${{ matrix.target }}
@@ -2192,11 +2147,6 @@ jobs:
         with:
           version: '*'
       - uses: ./.github/actions/benchmark-after-setup-node
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          name: rolldown-binaries
-          path: ./rolldown/packages/rolldown/src
-          merge-multiple: true
       - uses: ./.github/actions/download-cli-test-binaries
         with:
           target: ${{ matrix.target }}
@@ -2247,7 +2197,6 @@ jobs:
   cli-snapshot-test-windows:
     name: CLI snapshot test (Windows, shard ${{ matrix.shard }}/6)
     needs:
-      - download-previous-rolldown-binaries
       - build-windows-cli
       - build-windows-snapshots
     strategy:
@@ -2282,11 +2231,6 @@ jobs:
         with:
           tool: cargo-nextest
       - uses: ./.github/actions/benchmark-after-setup-node
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          name: rolldown-binaries
-          path: ./rolldown/packages/rolldown/src
-          merge-multiple: true
       - name: Download prebuilt Windows binaries
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
@@ -2379,8 +2323,8 @@ jobs:
           retention-days: 7
   cli-e2e-test-musl:
     name: CLI E2E test (Linux x64 musl)
-    needs:
-      - download-previous-rolldown-binaries
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
     runs-on: namespace-profile-linux-x64-default
     env:
       CARGO_PROFILE_RELEASE_LTO: 'off'
@@ -2393,11 +2337,6 @@ jobs:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: cli-e2e-test-musl
       - uses: ./.github/actions/benchmark-after-setup-node
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          name: rolldown-binaries
-          path: ./rolldown/packages/rolldown/src
-          merge-multiple: true
       - name: Build with upstream (musl)
         uses: ./.github/actions/benchmark-after-build-upstream
         with:
@@ -2519,11 +2458,6 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
       - uses: ./.github/actions/clone
       - uses: ./.github/actions/benchmark-after-setup-node
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          name: rolldown-binaries
-          path: ./rolldown/packages/rolldown/src
-          merge-multiple: true
       - uses: ./.github/actions/download-cli-test-binaries
         with:
           target: x86_64-unknown-linux-gnu
@@ -2586,11 +2520,6 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
       - uses: ./.github/actions/clone
       - uses: ./.github/actions/benchmark-after-setup-node
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          name: rolldown-binaries
-          path: ./rolldown/packages/rolldown/src
-          merge-multiple: true
       - uses: ./.github/actions/download-cli-test-binaries
         with:
           target: ${{ matrix.target }}
@@ -2667,11 +2596,6 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
       - uses: ./.github/actions/clone
       - uses: ./.github/actions/benchmark-after-setup-node
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          name: rolldown-binaries
-          path: ./rolldown/packages/rolldown/src
-          merge-multiple: true
       - uses: ./.github/actions/download-cli-test-binaries
         with:
           target: ${{ matrix.target }}

@@ -87,21 +87,32 @@ jobs:
     - wait: playwright
     - name: Require default Vitest port to be unavailable
       run: |
-        # The port may already belong to a Windows excluded range.
-        netsh.exe interface ipv6 add excludedportrange protocol=tcp startport=63315 numberofports=1 store=active || true
         node --input-type=module <<'NODE'
         import assert from 'node:assert/strict';
+        import { spawn } from 'node:child_process';
         import { createServer } from 'node:net';
-        const server = createServer();
-        server.once('error', (error) => {
-          assert.equal(error.code, 'EACCES');
-          console.log('Confirmed: listening on [::1]:63315 fails with EACCES');
-        });
-        server.once('listening', () => {
-          server.close();
-          throw new Error('The diagnostic requires Windows to reserve port 63315');
-        });
-        server.listen({ host: '::1', port: 63315 });
+        import { setTimeout } from 'node:timers/promises';
+        async function probe() {
+          const server = createServer();
+          return new Promise((resolve) => {
+            server.once('error', (error) => resolve(error.code));
+            server.once('listening', () => server.close(() => resolve('AVAILABLE')));
+            server.listen({ host: '::1', port: 63315 });
+          });
+        }
+        if (await probe() !== 'EACCES') {
+          const command = '$listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::IPv6Loopback, 63315); $listener.Server.ExclusiveAddressUse = $true; $listener.Start(); Start-Sleep -Seconds 1200';
+          const child = spawn('pwsh', ['-NoProfile', '-NonInteractive', '-Command', command], { detached: true, stdio: 'ignore' });
+          child.unref();
+        }
+        let result;
+        for (let attempt = 0; attempt < 100; attempt++) {
+          result = await probe();
+          if (result === 'EACCES') break;
+          await setTimeout(100);
+        }
+        assert.equal(result, 'EACCES');
+        console.log('Confirmed: listening on [::1]:63315 fails with EACCES');
         NODE
     - name: Run PTY snapshot tests
       shell: bash

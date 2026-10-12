@@ -77,7 +77,7 @@ runs:
         cache-workspace-crates: ${{ inputs.cache-workspace-crates }}
         cache-targets: ${{ inputs.target-dir && 'false' || 'true' }}
         cache-directories: ${{ inputs.target-dir || '' }}
-        prefix-key: vp-ci-half-r1-after-rust
+        prefix-key: v0-rust
         lookup-only: ${{ env.VP_CI_BENCH_CACHE_STATE == 'cold' }}
       id: benchmark-cargo-cache
     - name: Require an exact Cargo cache hit

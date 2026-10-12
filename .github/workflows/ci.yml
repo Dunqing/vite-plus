@@ -1,9 +1,10 @@
-name: Windows SDK backend experiment
+name: Windows SDK compiler-driver check
 'on':
   workflow_dispatch: {}
 permissions:
   contents: read
   packages: read
+  actions: read
 concurrency:
   group: vp-ci-scheduling-2986-r1
   cancel-in-progress: false
@@ -12,73 +13,118 @@ defaults:
     shell: bash
 jobs:
   build:
-    name: Build Windows tests with packaged SDK
+    name: Build with packaged SDK and clang-cl
     runs-on: namespace-profile-linux-x64-default
     env:
-      XWIN_ACCEPT_LICENSE: '1'
-      CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
       VP_CI_BENCH_CACHE_STATE: cold
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
       - uses: ./.github/actions/clone
-      - uses: ./.github/actions/setup-xwin
+      - uses: ./.github/actions/build-windows-cli
         with:
-          save-cache: ${{ github.ref_name == 'main' }}
-          cache-key: windows-cross
-          tools: cargo-nextest
-      - name: Check C++ header compatibility
-        run: |
-          clang --version
-          printf '#include <type_traits>\n#include <memory>\n#include <Windows.h>\nint main() { return 0; }\n' > "$RUNNER_TEMP/sdk-smoke.cpp"
-          eval "$(cargo xwin env --target x86_64-pc-windows-msvc | grep '^export ')"
-          # cargo-xwin emits compiler options as a space-separated string.
-          clang $CXXFLAGS_x86_64_pc_windows_msvc -fsyntax-only "$RUNNER_TEMP/sdk-smoke.cpp"
-          printf '#include <emmintrin.h>\nint main(void) { char data[16] = {0}; __m128i v = _mm_loadu_si128((const __m128i *)data); _mm_storeu_si128((__m128i *)data, v); return _mm_movemask_epi8(_mm_cmpeq_epi8(v, _mm_set1_epi8(0))); }\n' > "$RUNNER_TEMP/sdk-simd.c"
-          clang $CFLAGS_x86_64_pc_windows_msvc -O0 "$RUNNER_TEMP/sdk-simd.c" -o "$RUNNER_TEMP/sdk-simd.exe"
-      - name: Check Windows target
-        run: |
-          eval "$(cargo xwin env --target x86_64-pc-windows-msvc | grep '^export ')"
-          unset RUSTFLAGS
-          # Fail fast if cargo-xwin ever stops folding the repo's cfg-based
-          # Windows rustflags (--cfg tokio_unstable, /STACK:8388608) into the
-          # target env var; a dropped /STACK would be a silent runtime
-          # difference in the shipped test binaries.
-          case "$CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS" in
-            *tokio_unstable*STACK:8388608*) ;;
-            *)
-              echo "::error::cargo-xwin dropped the .cargo/config.toml Windows rustflags: $CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS"
-              exit 1
-              ;;
-          esac
-          export CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS="$CARGO_TARGET_X86_64_PC_WINDOWS_MSVC_RUSTFLAGS -D warnings"
-          cargo check --all-targets --all-features --target x86_64-pc-windows-msvc
-      - name: Build test archive
-        run: |
-          eval "$(cargo xwin env --target x86_64-pc-windows-msvc | grep '^export ')"
-          unset RUSTFLAGS
-          cargo nextest archive $(for d in crates/*/; do n=$(basename $d); [ "$n" = "vp_cli_snapshots" ] || [ "$n" = "vp_trampoline" ] || echo -n "-p $n "; done) -p vite-plus-cli \
-            --target x86_64-pc-windows-msvc --archive-file windows-tests.tar.zst
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: windows-test-archive
-          path: windows-tests.tar.zst
-          retention-days: 7
+          artifact-name: windows-cli-clang-cl
   test:
+    name: Task spawning (${{ matrix.compiler }})
     needs: build
-    name: Test (Windows)
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - clang
+          - clang-cl
     runs-on: namespace-profile-windows-4c-8g
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
       - uses: ./.github/actions/clone
+      - name: Setup Dev Drive
+        uses: samypr100/setup-dev-drive@562171fe8df7401fdf582d766cd3b6ab80d5b1a0
+        with:
+          drive-size: 12GB
+          drive-format: ReFS
+          env-mapping: |
+            TEMP,{{ DEV_DRIVE }}/Temp
+            TMP,{{ DEV_DRIVE }}/Temp
+      - name: Create TEMP/TMP on Dev Drive
+        shell: bash
+        run: mkdir -p "$TEMP" "$TMP"
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
         with:
-          name: windows-test-archive
+          name: windows-snapshot-test-archive
+          run-id: '38194925713'
+          github-token: ${{ github.token }}
       - uses: taiki-e/install-action@83ac0ad63c0167e6f06796fab0fce28db1bf3db0
         with:
           tool: cargo-nextest
-      - name: Run tests
-        run: cargo-nextest nextest run -E 'platform(target)' --archive-file windows-tests.tar.zst --workspace-remap . --test-threads 1
+      - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: rolldown-binaries
+          path: ./rolldown/packages/rolldown/src
+          merge-multiple: true
+          run-id: '38194925713'
+          github-token: ${{ github.token }}
+      - name: Download prebuilt Windows binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: windows-cli-binaries
+          run-id: '38194925713'
+          github-token: ${{ github.token }}
+        if: matrix.compiler == 'clang'
+      - name: Download prebuilt Windows binaries
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: windows-cli-clang-cl
+        if: matrix.compiler == 'clang-cl'
+      - name: Build with upstream
+        uses: ./.github/actions/build-upstream
+        with:
+          target: x86_64-pc-windows-msvc
+          skip-native: true
+      - name: Install Global CLI vp
+        shell: bash
+        run: pnpm bootstrap-cli:ci
+      - name: Prewarm managed runtime
+        shell: bash
+        run: |
+          "$USERPROFILE/.vite-plus/bin/vp.exe" node --version \
+            || echo "prewarm failed; cases will download the runtime on demand"
+      - name: Run PTY snapshot tests
+        shell: bash
+        run: |
+          # current/bin, not bin: on Windows bin\vp.exe is the trampoline,
+          # which re-execs %VP_HOME%\current\bin\vp.exe; the runner gives
+          # each case an isolated VP_HOME with no install inside, so the
+          # trampoline would fail. current\bin\vp.exe is the real CLI.
+          export VP_SNAP_GLOBAL_VP="$USERPROFILE/.vite-plus/current/bin/vp.exe"
+          export VP_SNAP_JS_RUNTIME_DIR="$USERPROFILE/.vite-plus/js_runtime"
+          export VP_SNAP_CMD_BIN="$(cygpath -w "$(command -v cmd.exe)")"
+          # Keep pwsh at its canonical installation path; copying pwsh.exe
+          # alone can break its adjacent runtime dependencies.
+          export VP_SNAP_PWSH_BIN="$(cygpath -w "$(command -v pwsh.exe)")"
+          # Reserve all nextest workers for cases that need the execution gate.
+          # Generate the overrides from the fixtures, including automatic Ctrl-C
+          # isolation, so this configuration cannot drift from the runner.
+          VP_SNAP_NEXTEST_CONFIG="$RUNNER_TEMP/snapshot-nextest.toml" \
+            cargo-nextest nextest list --archive-file windows-snapshot-tests.tar.zst --workspace-remap . \
+            > "$RUNNER_TEMP/snapshot-test-list.txt"
+          nextest_run_args=(
+            --test-threads 8 --config-file "$RUNNER_TEMP/snapshot-nextest.toml"
+            --archive-file windows-snapshot-tests.tar.zst --workspace-remap . --no-fail-fast
+          )
+          # --no-fail-fast: on a snapshot suite every diff is diagnostic
+          # signal; cancelling on the first failure hides the rest.
+          cargo-nextest nextest run "${nextest_run_args[@]}" \
+            -E 'test(vite_plus_import_resolves) | test(command_create_template_args)'
         env:
-          RUST_MIN_STACK: '8388608'
+          RUST_BACKTRACE: '1'
+          VP_SNAP_PACKAGES_DIR: ${{ runner.temp }}/snapshot-packages
+          VP_SNAP_ARTIFACTS_DIR: ${{ runner.temp }}/snapshot-artifacts
           __COMPAT_LAYER: RunAsInvoker
-          INSTA_WORKSPACE_ROOT: ${{ github.workspace }}
+      - name: Upload snapshot diagnostics and timings
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: task-spawn-diagnostics-${{ matrix.compiler }}
+          path: ${{ runner.temp }}/snapshot-artifacts
+          if-no-files-found: ignore
+          retention-days: 7

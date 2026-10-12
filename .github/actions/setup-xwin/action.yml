@@ -48,7 +48,7 @@ runs:
       id: sysroot-cache
       with:
         path: ~/.cache/cargo-xwin/windows-msvc-sysroot
-        key: vp-windows-sysroot-r5-cargo-xwin-sysroot-2026-09-15-v1
+        key: vp-windows-sysroot-r5-cargo-xwin-sysroot-2026-09-15-v2
       if: env.VP_CI_BENCH_CACHE_STATE != 'cold'
     - name: Download pinned Windows SDK
       if: steps.sysroot-cache.outputs.cache-hit != 'true'
@@ -64,6 +64,13 @@ runs:
         ln -s msvcstl "$sysroot/include/c++/stl"
         # SQLite uses the Windows spelling on this case-sensitive filesystem.
         ln -s windows.h "$sysroot/include/Windows.h"
+        # Clang must use its own intrinsic definitions, not MSVC declarations.
+        clang_headers="$(clang -print-resource-dir)/include"
+        for header in "$sysroot/include/__msvc_vcruntime_intrinsics/"*; do
+          if [ -f "$clang_headers/$(basename "$header")" ]; then
+            rm "$header"
+          fi
+        done
         # cargo-xwin recognizes this marker and reuses the verified sysroot.
         echo "$SYSROOT_URL" > "$sysroot/DONE"
         rm "$archive"

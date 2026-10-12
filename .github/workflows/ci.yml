@@ -381,7 +381,7 @@ jobs:
           save-if: ${{ github.ref_name == 'main' }}
           workspaces: |
             . -> target
-            crates/vp_trampoline -> target
+            crates/vp_trampoline -> ../../target
 
       # Skip separate cargo check — cargo test already compiles everything.
       - run: just test

@@ -73,7 +73,7 @@ runs:
       if: ${{ inputs.restore-cache == 'true' }}
       with:
         shared-key: ${{ inputs.cache-key }}
-        save-if: ${{ env.VP_CI_BENCH_CACHE_STATE == 'prime' }}
+        save-if: ${{ env.VP_CI_BENCH_CACHE_STATE == 'prime' && env.VP_CI_BENCH_SAVE_CARGO_CACHE != 'false' }}
         cache-workspace-crates: ${{ inputs.cache-workspace-crates }}
         cache-targets: ${{ inputs.target-dir && 'false' || 'true' }}
         cache-directories: ${{ inputs.target-dir || '' }}

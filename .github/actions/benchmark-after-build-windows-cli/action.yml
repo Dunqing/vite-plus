@@ -38,7 +38,7 @@ runs:
       uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       with:
         path: ${{ steps.binary-paths.outputs.paths }}
-        key: vp-ci-half-r2-after-${{ steps.cache-key.outputs.key }}
+        key: vp-ci-half-r3-after-${{ steps.cache-key.outputs.key }}
         fail-on-cache-miss: ${{ env.VP_CI_BENCH_CACHE_STATE == 'warm' }}
       if: (true) && env.VP_CI_BENCH_CACHE_STATE != 'cold'
     - uses: ./.github/actions/benchmark-after-setup-xwin
@@ -86,4 +86,4 @@ runs:
       if: (steps.binaries-cache.outputs.cache-hit != 'true') && env.VP_CI_BENCH_CACHE_STATE == 'prime'
       with:
         path: ${{ steps.binary-paths.outputs.paths }}
-        key: vp-ci-half-r2-after-${{ steps.cache-key.outputs.key }}
+        key: vp-ci-half-r3-after-${{ steps.cache-key.outputs.key }}

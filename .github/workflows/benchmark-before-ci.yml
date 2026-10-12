@@ -243,6 +243,8 @@ jobs:
       - uses: ./.github/actions/benchmark-before-build-windows-cli
         with:
           save-cache: ${{ github.ref_name == 'main' }}
+    env:
+      VP_CI_BENCH_SAVE_CARGO_CACHE: 'false'
   cli-e2e-test:
     name: CLI E2E test
     needs:

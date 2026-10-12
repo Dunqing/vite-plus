@@ -139,6 +139,7 @@ jobs:
     env:
       XWIN_ACCEPT_LICENSE: '1'
       CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
+      VP_CI_BENCH_SAVE_CARGO_CACHE: 'false'
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
       - uses: ./.github/actions/clone
@@ -148,7 +149,7 @@ jobs:
         id: test-archive-cache
         with:
           path: windows-tests.tar.zst
-          key: vp-ci-half-r2-after-windows-test-archive-v1-${{ steps.native-cache-inputs.outputs.hash }}-${{ hashFiles('.github/workflows/benchmark-after-ci.yml', 'crates/vp_cli_snapshots/**', 'packages/cli/rules/vite-tools.yml') }}
+          key: vp-ci-half-r3-after-windows-test-archive-v1-${{ steps.native-cache-inputs.outputs.hash }}-${{ hashFiles('.github/workflows/benchmark-after-ci.yml', 'crates/vp_cli_snapshots/**', 'packages/cli/rules/vite-tools.yml') }}
           fail-on-cache-miss: ${{ env.VP_CI_BENCH_CACHE_STATE == 'warm' }}
         if: (true) && env.VP_CI_BENCH_CACHE_STATE != 'cold'
       - uses: ./.github/actions/benchmark-after-setup-xwin
@@ -177,6 +178,7 @@ jobs:
     env:
       XWIN_ACCEPT_LICENSE: '1'
       CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
+      VP_CI_BENCH_SAVE_CARGO_CACHE: 'false'
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
       - uses: ./.github/actions/clone
@@ -186,7 +188,7 @@ jobs:
         id: test-archive-cache
         with:
           path: windows-snapshot-tests.tar.zst
-          key: vp-ci-half-r2-after-windows-snapshot-test-archive-v1-${{ steps.native-cache-inputs.outputs.hash }}-${{ hashFiles('.github/workflows/benchmark-after-ci.yml', 'crates/vp_cli_snapshots/**', 'packages/cli/rules/vite-tools.yml') }}
+          key: vp-ci-half-r3-after-windows-snapshot-test-archive-v1-${{ steps.native-cache-inputs.outputs.hash }}-${{ hashFiles('.github/workflows/benchmark-after-ci.yml', 'crates/vp_cli_snapshots/**', 'packages/cli/rules/vite-tools.yml') }}
           fail-on-cache-miss: ${{ env.VP_CI_BENCH_CACHE_STATE == 'warm' }}
         if: (true) && env.VP_CI_BENCH_CACHE_STATE != 'cold'
       - uses: ./.github/actions/benchmark-after-setup-xwin
@@ -247,7 +249,7 @@ jobs:
     steps:
       - name: Install Alpine dependencies
         shell: sh {0}
-        run: apk add --no-cache bash curl git just musl-dev gcc g++ python3 cmake make
+        run: apk add --no-cache bash curl git just musl-dev gcc g++ python3 cmake make tar zstd
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
       - name: Record Alpine Node.js runtime
         run: node -p "'ALPINE_NODE=' + process.execPath" >> "$GITHUB_ENV"
@@ -266,14 +268,11 @@ jobs:
           echo "/root/.cargo/bin" >> "$GITHUB_PATH"
       - name: Install Rust toolchain
         run: rustup show
-      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6
         with:
+          prefix-key: v1-rust
           shared-key: test-musl
-          save-if: ${{ env.VP_CI_BENCH_CACHE_STATE == 'prime' }}
-          workspaces: |
-            . -> target
-            crates/vp_trampoline -> ../../target
-          prefix-key: v0-rust
+          save-if: ${{ env.VP_CI_BENCH_CACHE_STATE == 'prime' && env.VP_CI_BENCH_SAVE_CARGO_CACHE != 'false' }}
           lookup-only: ${{ env.VP_CI_BENCH_CACHE_STATE == 'cold' }}
         id: benchmark-cargo-cache
       - name: Require an exact Cargo cache hit
@@ -323,6 +322,7 @@ jobs:
     env:
       CARGO_PROFILE_RELEASE_LTO: 'off'
       CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
+      VP_CI_BENCH_SAVE_CARGO_CACHE: 'false'
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
       - uses: ./.github/actions/clone
@@ -865,25 +865,39 @@ jobs:
     env:
       CARGO_PROFILE_RELEASE_LTO: 'off'
       CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
+      VP_CI_BENCH_SAVE_CARGO_CACHE: 'false'
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
       - uses: ./.github/actions/clone
+      - uses: ./.github/actions/benchmark-after-compute-native-cache-input-hash
+        id: native-cache-inputs
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        id: cli-test-cache
+        with:
+          path: ${{ runner.temp }}/cli-test-binaries.tar.gz
+          key: vp-ci-half-r3-after-cli-test-binaries-v1-${{ matrix.target }}-${{ steps.native-cache-inputs.outputs.hash }}-${{ hashFiles('.github/workflows/benchmark-after-ci.yml', 'crates/vp_cli_snapshots/**') }}
+          fail-on-cache-miss: ${{ env.VP_CI_BENCH_CACHE_STATE == 'warm' }}
+        if: (true) && env.VP_CI_BENCH_CACHE_STATE != 'cold'
       - uses: ./.github/actions/benchmark-after-setup-rust
+        if: steps.cli-test-cache.outputs.cache-hit != 'true'
         with:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: cli-snapshot-test-${{ matrix.target }}
       - uses: ./.github/actions/benchmark-after-setup-node
+        if: steps.cli-test-cache.outputs.cache-hit != 'true'
       - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        if: steps.cli-test-cache.outputs.cache-hit != 'true'
         with:
           name: rolldown-binaries
           path: ./rolldown/packages/rolldown/src
           merge-multiple: true
       - name: Build with upstream
+        if: steps.cli-test-cache.outputs.cache-hit != 'true'
         uses: ./.github/actions/benchmark-after-build-upstream
         with:
           target: ${{ matrix.target }}
       - name: Ensure no unexpected file changes after build
-        if: ${{ matrix.target == 'x86_64-unknown-linux-gnu' }}
+        if: steps.cli-test-cache.outputs.cache-hit != 'true' && matrix.target == 'x86_64-unknown-linux-gnu'
         run: |
           if [[ -n "$(git status --porcelain)" ]]; then
             echo "::error::Unexpected file changes detected after build"
@@ -892,10 +906,10 @@ jobs:
             exit 1
           fi
       - name: Build snapshot test binaries
+        if: steps.cli-test-cache.outputs.cache-hit != 'true'
         run: cargo test -p vp_cli_snapshots --no-run --message-format=json > "$RUNNER_TEMP/snapshot-test-build.json"
-      - name: Test snapshot runner utilities
-        run: cargo test -p vp_cli_snapshots --test redact_unit --test shard_unit --test registry_pack_unit --test report_unit --test schedule_unit
       - name: Package CLI test binaries
+        if: steps.cli-test-cache.outputs.cache-hit != 'true'
         run: |
           artifact_dir="$(mktemp -d)"
           trap 'rm -rf "$artifact_dir"' EXIT
@@ -909,7 +923,7 @@ jobs:
             | jq '{packages: [.packages[] | {name, version, source}]}' \
             > "$binding_dir/vite-plus.cargo-metadata.json"
           cp "${CARGO_TARGET_DIR:-target}/$BUILD_TARGET/release/vp" "$cli_dir/"
-          for binary in cli_snapshots vpt; do
+          for binary in cli_snapshots vpt redact_unit shard_unit registry_pack_unit report_unit schedule_unit; do
             binary_path="$(jq -er --arg name "$binary" \
               'select(.reason == "compiler-artifact" and .target.name == $name and .executable != null) | .executable' \
               "$RUNNER_TEMP/snapshot-test-build.json")"
@@ -918,6 +932,15 @@ jobs:
           tar -czf "$RUNNER_TEMP/cli-test-binaries.tar.gz" -C "$artifact_dir" .
         env:
           BUILD_TARGET: ${{ matrix.target }}
+      - name: Test snapshot runner utilities
+        working-directory: crates/vp_cli_snapshots
+        run: |
+          utility_dir="$(mktemp -d)"
+          trap 'rm -rf "$utility_dir"' EXIT
+          tar -xzf "$RUNNER_TEMP/cli-test-binaries.tar.gz" -C "$utility_dir" ./target/snapshot-tests
+          for binary in "$utility_dir"/target/snapshot-tests/*_unit; do
+            "$binary"
+          done
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: cli-test-binaries-${{ matrix.target }}
@@ -1271,10 +1294,27 @@ jobs:
               node -e "const versions = require(\"/tmp/vp-versions.json\"); if (!versions.node?.length) process.exit(1)"
             '
   install-e2e-test:
-    name: Local CLI `vp install` E2E test
+    name: Local CLI `vp install` E2E test (${{ matrix.repository }})
     needs:
       - build-cli-test-binaries
     runs-on: namespace-profile-linux-x64-default
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - repository: pnpm/pnpm
+            directory: pnpm
+            ref: v11.11.0
+          - repository: vitejs/vite
+            directory: vite
+          - repository: napi-rs/napi-rs
+            directory: napi-rs
+          - repository: toeverything/AFFiNE
+            directory: AFFiNE
+          - repository: npm/cli
+            directory: npm
+          - repository: redhat-developer/vscode-extension-tester
+            directory: vscode-extension-tester
     if: "github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'test: install-e2e')"
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
@@ -1298,45 +1338,27 @@ jobs:
           pnpm bootstrap-cli:ci
           echo "$HOME/.vite-plus/bin" >> $GITHUB_PATH
       - name: Run local CLI `vp install`
+        env:
+          REPO: ${{ matrix.repository }}
+          REPO_DIR: ${{ matrix.directory }}
+          REPO_REF: ${{ matrix.ref }}
         run: |
           export PATH=$PWD/node_modules/.bin:$PATH
           vp -h
-          # Test vp install on various repositories with different package managers
-          # Entry format: "owner/repo:dir" or "owner/repo:dir:ref" (tag or branch to clone)
-          repos=(
-            # pnpm workspace
-            # Pinned to the latest stable tag: pnpm main pins pnpm v12 alphas,
-            # whose @pnpm/exe ships a placeholder bin that breaks pnpm's
-            # version self-switch (pnpm/pnpm#12811)
-            "pnpm/pnpm:pnpm:v11.11.0"
-            "vitejs/vite:vite"
-            # yarn workspace
-            "napi-rs/napi-rs:napi-rs"
-            "toeverything/AFFiNE:AFFiNE"
-            # npm workspace
-            "npm/cli:npm"
-            "redhat-developer/vscode-extension-tester:vscode-extension-tester"
-          )
-
-          for repo_info in "${repos[@]}"; do
-            IFS=':' read -r repo dir_name ref <<< "$repo_info"
-            echo "Testing vp install on $repo${ref:+ ($ref)}…"
-            # remove the directory if it exists
-            if [ -d "$RUNNER_TEMP/$dir_name" ]; then
-              rm -rf "$RUNNER_TEMP/$dir_name"
-            fi
-            clone_args=(--depth 1)
-            if [ -n "$ref" ]; then
-              clone_args+=(--branch "$ref")
-            fi
-            git clone "${clone_args[@]}" "https://github.com/$repo.git" "$RUNNER_TEMP/$dir_name"
-            cd "$RUNNER_TEMP/$dir_name"
-            vp install --no-frozen-lockfile
-            # run again to show install cache increase by time
-            time vp install
-            echo "✓ Successfully installed dependencies for $repo"
-            echo ""
-          done
+          echo "Testing vp install on $REPO${REPO_REF:+ ($REPO_REF)}…"
+          if [ -d "$RUNNER_TEMP/$REPO_DIR" ]; then
+            rm -rf "${RUNNER_TEMP:?}/${REPO_DIR:?}"
+          fi
+          clone_args=(--depth 1)
+          if [ -n "$REPO_REF" ]; then
+            clone_args+=(--branch "$REPO_REF")
+          fi
+          git clone "${clone_args[@]}" "https://github.com/$REPO.git" "$RUNNER_TEMP/$REPO_DIR"
+          cd "$RUNNER_TEMP/$REPO_DIR"
+          vp install --no-frozen-lockfile
+          # Keep the second install in this job so it uses the first install's cache.
+          time vp install
+          echo "✓ Successfully installed dependencies for $REPO"
   install-e2e-test-sfw:
     name: Local CLI `vp install` E2E test (Socket Firewall Free)
     env:

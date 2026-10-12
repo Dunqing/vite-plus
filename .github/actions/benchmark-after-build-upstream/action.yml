@@ -50,7 +50,7 @@ runs:
           ${{ steps.rust-target.outputs.dir }}/${{ inputs.target }}/release/vp.exe
           ${{ steps.rust-target.outputs.dir }}/${{ inputs.target }}/release/vp-shim.exe
           ${{ steps.rust-target.outputs.dir }}/${{ inputs.target }}/release/vp-setup.exe
-        key: vp-ci-half-r2-after-${{ steps.cache-key.outputs.key }}
+        key: vp-ci-half-r3-after-${{ steps.cache-key.outputs.key }}
         fail-on-cache-miss: ${{ env.VP_CI_BENCH_CACHE_STATE == 'warm' }}
     - name: Decide native build
       id: native
@@ -166,7 +166,7 @@ runs:
           ${{ steps.rust-target.outputs.dir }}/${{ inputs.target }}/release/vp.exe
           ${{ steps.rust-target.outputs.dir }}/${{ inputs.target }}/release/vp-shim.exe
           ${{ steps.rust-target.outputs.dir }}/${{ inputs.target }}/release/vp-setup.exe
-        key: vp-ci-half-r2-after-${{ steps.cache-key.outputs.key }}
+        key: vp-ci-half-r3-after-${{ steps.cache-key.outputs.key }}
     - name: Build vite-plus TypeScript packages
       shell: bash
       run: |

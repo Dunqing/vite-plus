@@ -69,15 +69,15 @@ runs:
       env:
         INPUTS_TARGET_DIR: ${{ inputs.target-dir }}
     - name: Cache on ${{ github.ref_name }}
-      uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4
+      uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6
       if: ${{ inputs.restore-cache == 'true' }}
       with:
         shared-key: ${{ inputs.cache-key }}
-        save-if: ${{ env.VP_CI_BENCH_CACHE_STATE == 'prime' }}
+        save-if: ${{ env.VP_CI_BENCH_CACHE_STATE == 'prime' && env.VP_CI_BENCH_SAVE_CARGO_CACHE != 'false' }}
         cache-workspace-crates: ${{ inputs.cache-workspace-crates }}
         cache-targets: ${{ inputs.target-dir && 'false' || 'true' }}
         cache-directories: ${{ inputs.target-dir || '' }}
-        prefix-key: v0-rust
+        prefix-key: v1-rust
         lookup-only: ${{ env.VP_CI_BENCH_CACHE_STATE == 'cold' }}
       id: benchmark-cargo-cache
     - name: Require an exact Cargo cache hit

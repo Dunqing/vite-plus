@@ -46,6 +46,8 @@ jobs:
       - uses: ./.github/actions/benchmark-before-build-windows-cli
         with:
           save-cache: ${{ github.ref_name == 'main' }}
+    env:
+      VP_CI_BENCH_SAVE_CARGO_CACHE: 'false'
   linux:
     name: Linux ecosystem
     needs: download-previous-rolldown-binaries

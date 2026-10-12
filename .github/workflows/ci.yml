@@ -80,7 +80,7 @@ jobs:
           save-cache: false
           cache-key: cli-snapshot-test-x86_64-unknown-linux-gnu
 
-      - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a # main (Node before pnpm; unreleased)
+      - uses: ./.github/actions/setup-ci-node
 
       # Format-check with the oxfmt of this commit instead of the released one.
       # A release carries the oxfmt it shipped with, which trails the catalog
@@ -412,7 +412,7 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
 
-      - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a # main (Node before pnpm; unreleased)
+      - uses: ./.github/actions/setup-ci-node
 
       - uses: ./.github/actions/setup-rust
         with:
@@ -488,7 +488,7 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
 
-      - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a # main (Node before pnpm; unreleased)
+      - uses: ./.github/actions/setup-ci-node
 
       - name: Install docs dependencies
         run: pnpm -C docs install --frozen-lockfile
@@ -1076,7 +1076,7 @@ jobs:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: cli-snapshot-test-${{ matrix.target }}
 
-      - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a # main (Node before pnpm; unreleased)
+      - uses: ./.github/actions/setup-ci-node
         if: steps.cli-test-cache.outputs.cache-hit != 'true'
 
       - name: Build with upstream
@@ -1197,7 +1197,7 @@ jobs:
         with:
           version: '*'
 
-      - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a # main (Node before pnpm; unreleased)
+      - uses: ./.github/actions/setup-ci-node
 
       - uses: ./.github/actions/download-cli-test-binaries
         with:
@@ -1324,7 +1324,7 @@ jobs:
         with:
           tool: cargo-nextest
 
-      - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a # main (Node before pnpm; unreleased)
+      - uses: ./.github/actions/setup-ci-node
 
       # See the cli-e2e-test job for details on the prebuilt binaries.
       - name: Download prebuilt Windows binaries
@@ -1456,7 +1456,7 @@ jobs:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: cli-e2e-test-musl
 
-      - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a # main (Node before pnpm; unreleased)
+      - uses: ./.github/actions/setup-ci-node
 
       # Cross-compile for musl on the glibc host
       - name: Build with upstream (musl)
@@ -1607,7 +1607,7 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
 
-      - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a # main (Node before pnpm; unreleased)
+      - uses: ./.github/actions/setup-ci-node
 
       - uses: ./.github/actions/download-cli-test-binaries
         with:
@@ -1679,7 +1679,7 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
 
-      - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a # main (Node before pnpm; unreleased)
+      - uses: ./.github/actions/setup-ci-node
 
       - uses: ./.github/actions/download-cli-test-binaries
         with:

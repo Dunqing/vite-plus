@@ -1,35 +1,186 @@
-name: Combined CI benchmark (ci)
-run-name: Combined ci / ${{ inputs.variant }} / ${{ inputs.cache_state }}
+name: Windows dev snapshot shutdown diagnostic
 'on':
-  workflow_dispatch:
-    inputs:
-      variant:
-        type: choice
-        required: true
-        options:
-          - before
-          - after
-      cache_state:
-        type: choice
-        required: true
-        options:
-          - prime
-          - cold
-          - warm
+  workflow_dispatch: {}
 permissions:
   contents: read
   packages: read
+  actions: read
+defaults:
+  run:
+    shell: bash
 concurrency:
-  group: vp-ci-scheduling-2986-r1
+  group: vp-dev-shutdown-diagnostic
   cancel-in-progress: false
 jobs:
-  before:
-    if: inputs.variant == 'before'
-    uses: ./.github/workflows/benchmark-before-ci.yml
-    with:
-      cache_state: ${{ inputs.cache_state }}
-  after:
-    if: inputs.variant == 'after'
-    uses: ./.github/workflows/benchmark-after-ci.yml
-    with:
-      cache_state: ${{ inputs.cache_state }}
+  test:
+    name: Trace Windows dev snapshot input and shutdown
+    runs-on: namespace-profile-windows-4c-8g
+    steps:
+    - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+    - uses: ./.github/actions/clone
+    - name: Setup Dev Drive
+      uses: samypr100/setup-dev-drive@562171fe8df7401fdf582d766cd3b6ab80d5b1a0
+      with:
+        drive-size: 12GB
+        drive-format: ReFS
+        env-mapping: |
+          TEMP,{{ DEV_DRIVE }}/Temp
+          TMP,{{ DEV_DRIVE }}/Temp
+    - name: Create TEMP/TMP on Dev Drive
+      shell: bash
+      run: mkdir -p "$TEMP" "$TMP"
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      with:
+        name: windows-snapshot-test-archive
+        run-id: 38227225997
+        github-token: ${{ github.token }}
+    - uses: taiki-e/install-action@83ac0ad63c0167e6f06796fab0fce28db1bf3db0
+      with:
+        tool: cargo-nextest
+    - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      with:
+        name: rolldown-binaries
+        path: ./rolldown/packages/rolldown/src
+        merge-multiple: true
+        run-id: 38227225997
+        github-token: ${{ github.token }}
+    - name: Download prebuilt Windows binaries
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      with:
+        name: windows-cli-binaries
+        run-id: 38227225997
+        github-token: ${{ github.token }}
+    - name: Install Playwright Chromium
+      id: playwright
+      background: true
+      run: pnpm exec playwright install chromium
+      env:
+        PLAYWRIGHT_BROWSERS_PATH: '0'
+    - name: Build with upstream
+      uses: ./.github/actions/build-upstream
+      with:
+        target: x86_64-pc-windows-msvc
+        skip-native: true
+    - name: Install Global CLI vp
+      shell: bash
+      run: pnpm bootstrap-cli:ci
+    - name: Prewarm managed runtime
+      shell: bash
+      run: |
+        "$USERPROFILE/.vite-plus/bin/vp.exe" node --version \
+          || echo "prewarm failed; cases will download the runtime on demand"
+    - name: Create NTFS temp directory for case-sensitive shim snapshots
+      id: snapshot-temp
+      shell: pwsh
+      run: |
+        $volume = [System.IO.Path]::GetPathRoot($env:RUNNER_TEMP)
+        $snapshotTemp = Join-Path $volume ('vp-snapshots-' + [guid]::NewGuid().ToString('N'))
+        New-Item -ItemType Directory -Path $snapshotTemp | Out-Null
+        "directory=$snapshotTemp" >> $env:GITHUB_OUTPUT
+    - wait: playwright
+    - name: Record Node input and shutdown events without changing snapshots
+      run: |
+        node --input-type=module <<'NODE'
+        import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+        const temp = process.env.RUNNER_TEMP.replaceAll('\\', '/');
+        const traceDir = `${temp}/dev-shutdown-traces`;
+        mkdirSync(traceDir, { recursive: true });
+        const hook = `${temp}/trace-dev-shutdown.cjs`;
+        writeFileSync(hook, `
+        const { appendFileSync } = require('node:fs');
+        const { join } = require('node:path');
+        const readline = require('node:readline');
+        const net = require('node:net');
+        const output = join(${JSON.stringify(traceDir)}, process.pid + '.jsonl');
+        function record(event, data) {
+          appendFileSync(output, JSON.stringify({ time: new Date().toISOString(), event, data }) + '\\n');
+        }
+        record('start', { argv: process.argv, cwd: process.cwd(), ppid: process.ppid });
+        const stdin = process.stdin;
+        const emit = stdin.emit;
+        stdin.emit = function (event, ...args) {
+          if (['data', 'end', 'close', 'error', 'resume', 'pause'].includes(event)) {
+            record('stdin:' + event, args.map(value => String(value)));
+          }
+          return Reflect.apply(emit, this, [event, ...args]);
+        };
+        const createInterface = readline.createInterface;
+        readline.createInterface = function (...args) {
+          record('readline:create', { isTTY: stdin.isTTY });
+          const rl = Reflect.apply(createInterface, this, args);
+          const emit = rl.emit;
+          rl.emit = function (event, ...args) {
+            if (['line', 'close', 'pause', 'resume'].includes(event)) record('readline:' + event, args);
+            return Reflect.apply(emit, this, [event, ...args]);
+          };
+          return rl;
+        };
+        require('node:module').syncBuiltinESMExports();
+        const close = net.Server.prototype.close;
+        net.Server.prototype.close = function (...args) {
+          record('server:close-called', { listening: this.listening, address: this.address() });
+          this.once('close', () => record('server:closed'));
+          return Reflect.apply(close, this, args);
+        };
+        const write = process.stdout.write;
+        process.stdout.write = function (chunk, ...args) {
+          const text = String(chunk);
+          if (text.includes('pty-terminal-test:')) record('milestone', text);
+          return Reflect.apply(write, this, [chunk, ...args]);
+        };
+        process.on('exit', code => record('exit', code));
+        setInterval(() => record('active-resources', process.getActiveResourcesInfo()), 5000).unref();
+        `);
+        const file = 'crates/vp_cli_snapshots/tests/cli_snapshots/fixtures/app_root_vite_signals/snapshots.toml';
+        const source = readFileSync(file, 'utf8');
+        const options = JSON.stringify(`--require="${hook}"`);
+        writeFileSync(file, source.replaceAll('{ argv = ["vp", "dev"], interactions', `{ argv = ["vp", "dev"], env = { NODE_OPTIONS = ${options} }, interactions`));
+        NODE
+    - name: Run PTY snapshot tests
+      shell: bash
+      run: |
+        # current/bin, not bin: on Windows bin\vp.exe is the trampoline,
+        # which re-execs %VP_HOME%\current\bin\vp.exe; the runner gives
+        # each case an isolated VP_HOME with no install inside, so the
+        # trampoline would fail. current\bin\vp.exe is the real CLI.
+        export VP_SNAP_GLOBAL_VP="$USERPROFILE/.vite-plus/current/bin/vp.exe"
+        export VP_SNAP_JS_RUNTIME_DIR="$USERPROFILE/.vite-plus/js_runtime"
+        export VP_SNAP_CMD_BIN="$(cygpath -w "$(command -v cmd.exe)")"
+        # Keep pwsh at its canonical installation path; copying pwsh.exe
+        # alone can break its adjacent runtime dependencies.
+        export VP_SNAP_PWSH_BIN="$(cygpath -w "$(command -v pwsh.exe)")"
+        # Reserve all nextest workers for cases that need the execution gate.
+        # Generate the overrides from the fixtures, including automatic Ctrl-C
+        # isolation, so this configuration cannot drift from the runner.
+        VP_SNAP_NEXTEST_CONFIG="$RUNNER_TEMP/snapshot-nextest.toml" \
+          cargo-nextest nextest list --archive-file windows-snapshot-tests.tar.zst --workspace-remap . \
+          > "$RUNNER_TEMP/snapshot-test-list.txt"
+        nextest_run_args=(
+          --test-threads 8 --config-file "$RUNNER_TEMP/snapshot-nextest.toml"
+          --archive-file windows-snapshot-tests.tar.zst --workspace-remap . --no-fail-fast
+        )
+        # --no-fail-fast: on a snapshot suite every diff is diagnostic
+        # signal; cancelling on the first failure hides the rest.
+        # A fixed diagnostic sample, not a retry-until-green policy.
+        for sample in {1..20}; do
+          echo "DIAGNOSTIC_SAMPLE $sample"
+          cargo-nextest nextest run "${nextest_run_args[@]}" \
+            -E 'test(/^app_root_vite_signals::dev_/)'
+        done
+      env:
+        RUST_BACKTRACE: '1'
+        VP_SNAP_PACKAGES_DIR: ${{ runner.temp }}/snapshot-packages
+        VP_SNAP_ARTIFACTS_DIR: ${{ runner.temp }}/snapshot-artifacts
+        __COMPAT_LAYER: RunAsInvoker
+    - name: Upload snapshot diagnostics and timings
+      if: ${{ !cancelled() }}
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      with:
+        name: dev-shutdown-diagnostics
+        path: |-
+          ${{ runner.temp }}/snapshot-artifacts
+          ${{ runner.temp }}/dev-shutdown-traces
+        if-no-files-found: ignore
+        retention-days: 7
+    timeout-minutes: 20

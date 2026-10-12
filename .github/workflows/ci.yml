@@ -73,7 +73,7 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
 
-      - uses: oxc-project/setup-rust@68c3199c5339f965e6e163924c3c450773eba42b # main (pending v1.0.17 — Swatinem/rust-cache v2.9.1 for node24)
+      - uses: ./.github/actions/setup-rust
         with:
           # Shares the Cargo cache with the Linux CLI test build job, which
           # builds the same target. Only that job saves it.
@@ -125,7 +125,7 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
 
-      - uses: oxc-project/setup-rust@68c3199c5339f965e6e163924c3c450773eba42b # main (pending v1.0.17 — Swatinem/rust-cache v2.9.1 for node24)
+      - uses: ./.github/actions/setup-rust
         with:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: check
@@ -151,7 +151,7 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
 
-      - uses: oxc-project/setup-rust@68c3199c5339f965e6e163924c3c450773eba42b # main (pending v1.0.17 — Swatinem/rust-cache v2.9.1 for node24)
+      - uses: ./.github/actions/setup-rust
         with:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: test
@@ -406,8 +406,9 @@ jobs:
 
       # The trampoline shares target/. A second workspace entry would
       # clean the same directory again with a different dependency list.
-      - uses: Swatinem/rust-cache@c19371144df3bb44fab255c43d04cbc2ab54d1c4 # v2.9.1
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
         with:
+          prefix-key: v1-rust
           shared-key: test-musl
           save-if: ${{ github.ref_name == 'main' }}
 
@@ -425,7 +426,7 @@ jobs:
 
       - uses: oxc-project/setup-node@1f1a5b4450c8905bd1830c3a908d22b960c4559a # main (Node before pnpm; unreleased)
 
-      - uses: oxc-project/setup-rust@68c3199c5339f965e6e163924c3c450773eba42b # main (pending v1.0.17 — Swatinem/rust-cache v2.9.1 for node24)
+      - uses: ./.github/actions/setup-rust
         with:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: lint
@@ -1067,7 +1068,7 @@ jobs:
           path: ${{ runner.temp }}/cli-test-binaries.tar.gz
           key: cli-test-binaries-v1-${{ matrix.target }}-${{ steps.native-cache-inputs.outputs.hash }}-${{ hashFiles('.github/workflows/ci.yml', 'crates/vp_cli_snapshots/**') }}
 
-      - uses: oxc-project/setup-rust@68c3199c5339f965e6e163924c3c450773eba42b # main (pending v1.0.17 — Swatinem/rust-cache v2.9.1 for node24)
+      - uses: ./.github/actions/setup-rust
         if: steps.cli-test-cache.outputs.cache-hit != 'true'
         with:
           save-cache: ${{ github.ref_name == 'main' }}
@@ -1443,7 +1444,7 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
 
-      - uses: oxc-project/setup-rust@68c3199c5339f965e6e163924c3c450773eba42b # main (pending v1.0.17 — Swatinem/rust-cache v2.9.1 for node24)
+      - uses: ./.github/actions/setup-rust
         with:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: cli-e2e-test-musl
@@ -1526,7 +1527,7 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
 
-      - uses: oxc-project/setup-rust@68c3199c5339f965e6e163924c3c450773eba42b # main (pending v1.0.17 — Swatinem/rust-cache v2.9.1 for node24)
+      - uses: ./.github/actions/setup-rust
         with:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: certless-image-test

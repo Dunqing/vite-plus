@@ -1,7 +1,7 @@
 {
   "before": "bd0b43fa9688859e9c8882e9ffc748cc517a29d3",
-  "after": "0cde1699183c18fc36df546a2d8bfeea86a57afc",
+  "after": "6eb591459ef1d6c7a9c61a74c9b70814296ea4f5",
   "shared_browser_fixtures": "035f081546d02a52115ea805685030760fbc8be6",
-  "shared_ecosystem_browser_port": "347b82fcd58039f50b2173b08d4284ec8a1ba661",
+  "shared_ecosystem_browser_port": "27280a215e4b38342fb2649284a46b7e016e4ffe",
   "before_overlays": ["crates/vp_migration/src/ast_grep.rs", "justfile"]
 }

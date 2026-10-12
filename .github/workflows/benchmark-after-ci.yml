@@ -2040,6 +2040,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+      - uses: ./.github/actions/download-cli-test-binaries
+        id: cli-test-binaries
+        background: true
+        with:
+          target: ${{ matrix.target }}
       - uses: ./.github/actions/clone
       - name: Install snapshot shells
         id: snapshot-shells
@@ -2061,15 +2066,13 @@ jobs:
         with:
           version: '*'
       - uses: ./.github/actions/benchmark-after-setup-ci-node
-      - uses: ./.github/actions/download-cli-test-binaries
-        with:
-          target: ${{ matrix.target }}
       - name: Install Playwright Chromium
         id: playwright
         background: true
         run: pnpm exec playwright install chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: '0'
+      - wait: cli-test-binaries
       - name: Build with upstream
         uses: ./.github/actions/benchmark-after-build-upstream
         with:
@@ -2127,6 +2130,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+      - uses: ./.github/actions/download-cli-test-binaries
+        id: cli-test-binaries
+        background: true
+        with:
+          target: ${{ matrix.target }}
       - uses: ./.github/actions/clone
       - name: Install snapshot shells
         id: snapshot-shells
@@ -2148,15 +2156,13 @@ jobs:
         with:
           version: '*'
       - uses: ./.github/actions/benchmark-after-setup-ci-node
-      - uses: ./.github/actions/download-cli-test-binaries
-        with:
-          target: ${{ matrix.target }}
       - name: Install Playwright Chromium
         id: playwright
         background: true
         run: pnpm exec playwright install chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: '0'
+      - wait: cli-test-binaries
       - name: Build with upstream
         uses: ./.github/actions/benchmark-after-build-upstream
         with:
@@ -2213,6 +2219,17 @@ jobs:
     runs-on: namespace-profile-windows-4c-8g
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        id: snapshot-test-archive
+        background: true
+        with:
+          name: windows-snapshot-test-archive
+      - name: Download prebuilt Windows binaries
+        id: cli-binaries
+        background: true
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: windows-cli-binaries
       - uses: ./.github/actions/clone
       - name: Setup Dev Drive
         uses: samypr100/setup-dev-drive@562171fe8df7401fdf582d766cd3b6ab80d5b1a0
@@ -2225,23 +2242,17 @@ jobs:
       - name: Create TEMP/TMP on Dev Drive
         shell: bash
         run: mkdir -p "$TEMP" "$TMP"
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          name: windows-snapshot-test-archive
       - uses: taiki-e/install-action@83ac0ad63c0167e6f06796fab0fce28db1bf3db0
         with:
           tool: cargo-nextest
       - uses: ./.github/actions/benchmark-after-setup-ci-node
-      - name: Download prebuilt Windows binaries
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
-        with:
-          name: windows-cli-binaries
       - name: Install Playwright Chromium
         id: playwright
         background: true
         run: pnpm exec playwright install chromium
         env:
           PLAYWRIGHT_BROWSERS_PATH: '0'
+      - wait: cli-binaries
       - name: Build with upstream
         uses: ./.github/actions/benchmark-after-build-upstream
         with:
@@ -2264,7 +2275,9 @@ jobs:
           $snapshotTemp = Join-Path $volume ('vp-snapshots-' + [guid]::NewGuid().ToString('N'))
           New-Item -ItemType Directory -Path $snapshotTemp | Out-Null
           "directory=$snapshotTemp" >> $env:GITHUB_OUTPUT
-      - wait: playwright
+      - wait:
+          - snapshot-test-archive
+          - playwright
       - name: Run PTY snapshot tests
         shell: bash
         run: |

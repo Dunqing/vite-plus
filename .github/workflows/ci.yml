@@ -29,7 +29,7 @@ jobs:
       - name: Check C++ header compatibility
         run: |
           clang --version
-          printf '#include <type_traits>\n#include <memory>\nint main() { return 0; }\n' > "$RUNNER_TEMP/sdk-smoke.cpp"
+          printf '#include <type_traits>\n#include <memory>\n#include <Windows.h>\nint main() { return 0; }\n' > "$RUNNER_TEMP/sdk-smoke.cpp"
           eval "$(cargo xwin env --target x86_64-pc-windows-msvc | grep '^export ')"
           # cargo-xwin emits compiler options as a space-separated string.
           clang $CXXFLAGS_x86_64_pc_windows_msvc -fsyntax-only "$RUNNER_TEMP/sdk-smoke.cpp"

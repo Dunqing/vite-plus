@@ -111,7 +111,7 @@ jobs:
           vp run build
           vp check --fix
           vp run check
-          vp test run --project unit --shard=1/3 --testNamePattern="$TEST_PATTERN" --reporter=default --reporter=json --outputFile="$RUNNER_TEMP/vinext-report.json"
+          vp test run --project unit --shard=1/3 --reporter=default --reporter=json --outputFile="$RUNNER_TEMP/vinext-report.json"
       - name: Record tested inputs
         if: always()
         run: |

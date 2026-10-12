@@ -139,14 +139,7 @@ jobs:
         )
         # --no-fail-fast: on a snapshot suite every diff is diagnostic
         # signal; cancelling on the first failure hides the rest.
-        node --input-type=module <<'NODE'
-        import assert from 'node:assert/strict';
-        import { readFileSync, writeFileSync } from 'node:fs';
-        const path = 'crates/vp_cli_snapshots/tests/cli_snapshots/fixtures/test_v5_preview/verify.mjs';
-        const source = readFileSync(path, 'utf8');
-        assert.equal(source.split('api: { port: 0 }, ').length, 2);
-        writeFileSync(path, source.replace('api: { port: 0 }, ', ''));
-        NODE
+        cp .github/benchmark/preview-before.mjs crates/vp_cli_snapshots/tests/cli_snapshots/fixtures/test_v5_preview/verify.mjs
         if cargo-nextest nextest run "${nextest_run_args[@]}" \
           -E 'test(/^test_v5_preview::preview_runtime$/)' > "$RUNNER_TEMP/browser-port-before.log" 2>&1; then
           cat "$RUNNER_TEMP/browser-port-before.log"

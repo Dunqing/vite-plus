@@ -135,7 +135,7 @@ jobs:
         const file = 'crates/vp_cli_snapshots/tests/cli_snapshots/fixtures/app_root_vite_signals/snapshots.toml';
         const source = readFileSync(file, 'utf8');
         const options = JSON.stringify(`--require="${hook}"`);
-        writeFileSync(file, source.replaceAll('{ argv = ["vp", "dev"], interactions', `{ argv = ["vp", "dev"], env = { NODE_OPTIONS = ${options} }, interactions`));
+        writeFileSync(file, source.replace(/name = "dev_[^"]+"\n/g, name => `${name}env = { NODE_OPTIONS = ${options} }\n`));
         NODE
     - name: Run PTY snapshot tests
       shell: bash

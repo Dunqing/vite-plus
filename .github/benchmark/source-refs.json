@@ -1,0 +1,92 @@
+{
+  "before": "f7e75e2128208109e4fccba037b42888e84dd1b6",
+  "after": "47b3764eeb79caa66a1a5bbcab6a1247d5005d69",
+  "shared_browser_fixtures": "205cfaba2",
+  "performance_prs": {
+    "p2986": {
+      "number": 2986,
+      "title": "perf(ci): reuse test archives and parallelize CI checks",
+      "state": "OPEN",
+      "headRefName": "perf/ci-test-scheduling",
+      "headRefOid": "429f1c66dc8de85ce49992b16389d87d46ab9f13",
+      "baseRefName": "main",
+      "isDraft": true
+    },
+    "p2987": {
+      "number": 2987,
+      "title": "perf(migrate): reuse syntax trees between unchanged rules",
+      "state": "OPEN",
+      "headRefName": "perf/migrate-reuse-syntax-trees",
+      "headRefOid": "989e9c4ff9a2069e4b441dadfbf503c224afb34a",
+      "baseRefName": "main",
+      "isDraft": true
+    },
+    "p2988": {
+      "number": 2988,
+      "title": "perf(ci): skip LTO when building native test binaries",
+      "state": "OPEN",
+      "headRefName": "perf/ci-native-test-profile",
+      "headRefOid": "a17374d327b22fd146bbe816b16d11bd7ee58aac",
+      "baseRefName": "main",
+      "isDraft": true
+    },
+    "p2995": {
+      "number": 2995,
+      "title": "perf(ci): use a pinned prepacked Windows SDK",
+      "state": "OPEN",
+      "headRefName": "perf/ci-windows-sysroot",
+      "headRefOid": "8333c60a7c7f9b8c3743c2082ced5cd690c04617",
+      "baseRefName": "main",
+      "isDraft": true
+    },
+    "p3000": {
+      "number": 3000,
+      "title": "fix(ci): preserve dependencies in Cargo V2 caches",
+      "state": "OPEN",
+      "headRefName": "perf/ci-rust-cache-layout",
+      "headRefOid": "9fcc6e9948b32bcc0b1c21d966f84431bbfc349a",
+      "baseRefName": "perf/ci-test-scheduling",
+      "isDraft": true
+    },
+    "p3008": {
+      "number": 3008,
+      "title": "perf(ci): release platform tests without unrelated builds",
+      "state": "OPEN",
+      "headRefName": "perf/ci-platform-dependencies",
+      "headRefOid": "a5a27be6d1ce552092f5e20e7e922973a8d60c71",
+      "baseRefName": "perf/ci-rust-cache-layout",
+      "isDraft": true
+    },
+    "p3009": {
+      "number": 3009,
+      "title": "perf(test): reuse precompiled std for portable trampoline tests",
+      "state": "OPEN",
+      "headRefName": "perf/ci-trampoline-tests",
+      "headRefOid": "c7540d781122f1fc878c59c4b49a36038b47eea7",
+      "baseRefName": "main",
+      "isDraft": true
+    },
+    "p3010": {
+      "number": 3010,
+      "title": "perf(ci): install prebuilt cargo-zigbuild binaries",
+      "state": "OPEN",
+      "headRefName": "perf/ci-prebuilt-zigbuild",
+      "headRefOid": "def0c6019e27f71684a109c6185324f59908f8b8",
+      "baseRefName": "main",
+      "isDraft": true
+    },
+    "p3015": {
+      "number": 3015,
+      "title": "perf(ci): skip slow pnpm cache restores on macOS and Windows",
+      "state": "OPEN",
+      "headRefName": "perf/ci-pnpm-cache-overhead",
+      "headRefOid": "1c3d66a8e9265c120acab2ef14587fc4422aa2ce",
+      "baseRefName": "main",
+      "isDraft": true
+    }
+  },
+  "additional_prototype": "Four macOS snapshot shards; Linux and Windows retain six. Combined Windows Cargo build from b3b07b5441f114ffcbc78aa0fcd8b69d2a6f64a8.",
+  "shared_build_argument_forwarding": "Both variants use the build argument forwarding fix and its regression test. Only the candidate Windows action selects multiple packages.",
+  "shared_ecosystem_browser_port": "27280a215e4b38342fb2649284a46b7e016e4ffe",
+  "before_overlays": ["crates/vp_migration/src/ast_grep.rs", "justfile"]
+}

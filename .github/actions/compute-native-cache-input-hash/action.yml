@@ -13,7 +13,8 @@ runs:
       id: compute
       shell: bash
       run: |
-        echo "hash=$NATIVE_CACHE_INPUT_HASH" >> "$GITHUB_OUTPUT"
+        # Test builds and published builds must never share native binaries.
+        echo "hash=${NATIVE_CACHE_INPUT_HASH}-${CARGO_PROFILE_RELEASE_LTO:-manifest}-${CARGO_PROFILE_RELEASE_CODEGEN_UNITS:-manifest}" >> "$GITHUB_OUTPUT"
       env:
         # crates/vp_cli_snapshots is excluded: the snapshot suite (runner,
         # vpt, fixtures, recorded .md baselines) never feeds the native

@@ -65,6 +65,10 @@ jobs:
     permissions:
       contents: read
       packages: read
+    # Test native code without whole-program optimization.
+    env:
+      CARGO_PROFILE_RELEASE_LTO: 'off'
+      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
@@ -456,6 +460,10 @@ jobs:
     if: needs.detect-changes.outputs.code-changed == 'true'
     name: Build Windows CLI binaries
     runs-on: namespace-profile-linux-x64-default
+    # Test native code without whole-program optimization.
+    env:
+      CARGO_PROFILE_RELEASE_LTO: 'off'
+      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
@@ -1043,6 +1051,10 @@ jobs:
           - os: namespace-profile-linux-x64-default
             target: x86_64-unknown-linux-gnu
     runs-on: ${{ matrix.os }}
+    # Test native code without whole-program optimization.
+    env: &cli-test-build-env
+      CARGO_PROFILE_RELEASE_LTO: 'off'
+      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
     steps: &build-cli-test-binaries-steps
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
@@ -1140,6 +1152,7 @@ jobs:
           - os: namespace-profile-mac-default
             target: aarch64-apple-darwin
     runs-on: ${{ matrix.os }}
+    env: *cli-test-build-env
     steps: *build-cli-test-binaries-steps
 
   # Each shard reuses the native CLI and test binaries from the platform's
@@ -1430,6 +1443,10 @@ jobs:
     needs: detect-changes
     if: needs.detect-changes.outputs.code-changed == 'true'
     runs-on: namespace-profile-linux-x64-default
+    # Test native code without whole-program optimization.
+    env:
+      CARGO_PROFILE_RELEASE_LTO: 'off'
+      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone

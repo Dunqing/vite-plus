@@ -109,6 +109,10 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
 
+      - name: Test CI artifact waiting
+        if: runner.os == 'Linux'
+        run: node --test .github/scripts/__tests__/wait-for-ci-artifacts.mjs
+
       - uses: ./.github/actions/setup-rust
         with:
           save-cache: ${{ github.ref_name == 'main' }}
@@ -1147,8 +1151,11 @@ jobs:
   # cases. Windows uses its cross-compiled artifacts in the separate job.
   cli-snapshot-test-linux:
     name: CLI snapshot test (${{ matrix.target }}, shard ${{ matrix.shard }}/6)
-    needs:
-      - build-cli-test-binaries-linux
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
+    permissions:
+      contents: read
+      actions: read
     strategy:
       fail-fast: false
       matrix:
@@ -1165,6 +1172,7 @@ jobs:
         background: true
         with:
           target: ${{ matrix.target }}
+          wait-for-producer: true
 
       - uses: ./.github/actions/clone
 
@@ -1252,8 +1260,11 @@ jobs:
 
   cli-snapshot-test-macos:
     name: CLI snapshot test (${{ matrix.target }}, shard ${{ matrix.shard }}/6)
-    needs:
-      - build-cli-test-binaries-macos
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
+    permissions:
+      contents: read
+      actions: read
     strategy:
       fail-fast: false
       matrix:
@@ -1271,9 +1282,11 @@ jobs:
   # and the JS CLI is built here (skip-native) for the local flavor.
   cli-snapshot-test-windows:
     name: CLI snapshot test (Windows, shard ${{ matrix.shard }}/6)
-    needs:
-      - build-windows-cli
-      - build-windows-snapshots
+    needs: detect-changes
+    if: needs.detect-changes.outputs.code-changed == 'true'
+    permissions:
+      contents: read
+      actions: read
     strategy:
       fail-fast: false
       matrix:
@@ -1287,19 +1300,17 @@ jobs:
     runs-on: namespace-profile-windows-4c-8g
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
-      # Download independent archives while the runner prepares dependencies.
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
-        id: snapshot-test-archive
-        background: true
-        with:
-          name: windows-snapshot-test-archive
-
-      - name: Download prebuilt Windows binaries
+      # Prepare the runner while both Linux cross-compilation jobs run.
+      - uses: ./.github/actions/download-ci-artifacts
         id: cli-binaries
         background: true
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: windows-cli-binaries
+          artifact-names: |
+            windows-snapshot-test-archive
+            windows-cli-binaries
+          producer-names: |
+            Build Windows snapshot tests
+            Build Windows CLI binaries
 
       - uses: ./.github/actions/clone
 
@@ -1369,7 +1380,7 @@ jobs:
           New-Item -ItemType Directory -Path $snapshotTemp | Out-Null
           "directory=$snapshotTemp" >> $env:GITHUB_OUTPUT
 
-      - wait: [snapshot-test-archive, playwright]
+      - wait: playwright
 
       # `cargo-nextest` is invoked directly so the job never depends on the
       # runner's Rust toolchain. --workspace-remap makes nextest rewrite

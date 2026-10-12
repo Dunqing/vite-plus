@@ -1,17 +1,11 @@
-name: Native compilation profile benchmark
-run-name: Native profile / ${{ inputs.profile }}
+name: Native optimization level benchmark
 on:
   workflow_dispatch:
-    inputs:
-      profile:
-        type: choice
-        required: true
-        options: [release, fast]
 permissions:
   contents: read
   packages: read
 concurrency:
-  group: vp-ci-scheduling-2986-r1
+  group: vp-native-opt-level-r1
   cancel-in-progress: false
 defaults:
   run:
@@ -20,15 +14,20 @@ env:
   VP_CI_BENCH_CACHE_STATE: cold
 jobs:
   build:
+    name: Native optimization level ${{ matrix.opt-level }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        opt-level: [3, 2, 1]
+    env:
+      CARGO_PROFILE_RELEASE_LTO: 'off'
+      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
+      CARGO_PROFILE_RELEASE_OPT_LEVEL: ${{ matrix.opt-level }}
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
-      - name: Select faster compilation settings
-        if: inputs.profile == 'fast'
-        run: |
-          echo 'CARGO_PROFILE_RELEASE_LTO=off' >> "$GITHUB_ENV"
-          echo 'CARGO_PROFILE_RELEASE_CODEGEN_UNITS=16' >> "$GITHUB_ENV"
       - uses: ./.github/actions/benchmark-setup-rust
         with:
           cache-key: native-profile

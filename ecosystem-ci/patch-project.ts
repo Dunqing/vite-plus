@@ -8,6 +8,7 @@ import vitePlusCorePkg from '../packages/core/package.json' with { type: 'json' 
 import { patchNpmxVitestConfig } from './npmx.ts';
 import { ecosystemCiDir, tgzDir, vitePlusTgzVersion } from './paths.ts';
 import repos from './repo.json' with { type: 'json' };
+import { patchVibeDashboardConfig } from './vibe-dashboard.ts';
 import { prepareWebdriverioProject } from './webdriverio.ts';
 
 const projects = Object.keys(repos);
@@ -368,6 +369,13 @@ if (project === 'npmx.dev') {
   const viteConfigPath = join(repoRoot, 'vite.config.ts');
   const viteConfig = await readFile(viteConfigPath, 'utf-8');
   await writeFile(viteConfigPath, patchNpmxVitestConfig(viteConfig), 'utf-8');
+}
+
+if (project === 'vibe-dashboard') {
+  // The root CLI API port does not set this child browser project's port.
+  const viteConfigPath = join(repoRoot, 'apps', 'dashboard', 'vite.config.ts');
+  const viteConfig = await readFile(viteConfigPath, 'utf-8');
+  await writeFile(viteConfigPath, patchVibeDashboardConfig(viteConfig), 'utf-8');
 }
 
 if (project === 'bun-vite-template') {

@@ -13,7 +13,7 @@ defaults:
     shell: bash
 jobs:
   test:
-    name: Windows browser snapshots with reserved default port
+    name: Windows browser snapshots with simulated default-port EACCES
     strategy:
       fail-fast: false
       matrix:
@@ -85,35 +85,73 @@ jobs:
         New-Item -ItemType Directory -Path $snapshotTemp | Out-Null
         "directory=$snapshotTemp" >> $env:GITHUB_OUTPUT
     - wait: playwright
-    - name: Require default Vitest port to be unavailable
+    - name: Inject bind denial for the default API port
       run: |
+        cat > "$RUNNER_TEMP/deny-default-port.cjs" <<'NODE'
+        const { Server } = require('node:net');
+        const listen = Server.prototype.listen;
+        Server.prototype.listen = function (...args) {
+          const options = args[0];
+          const port = typeof options === 'object' ? options?.port : options;
+          if (Number(port) === 63315) {
+            const error = Object.assign(new Error('SIMULATED_DEFAULT_PORT_EACCES: listen ::1:63315'), {
+              code: 'EACCES', errno: -4092, syscall: 'listen', address: '::1', port: 63315,
+            });
+            process.nextTick(() => this.emit('error', error));
+            return this;
+          }
+          return Reflect.apply(listen, this, args);
+        };
+        NODE
+    - name: Require original fixture to fail with simulated EACCES
+      shell: bash
+      run: |
+        # current/bin, not bin: on Windows bin\vp.exe is the trampoline,
+        # which re-execs %VP_HOME%\current\bin\vp.exe; the runner gives
+        # each case an isolated VP_HOME with no install inside, so the
+        # trampoline would fail. current\bin\vp.exe is the real CLI.
+        export VP_SNAP_GLOBAL_VP="$USERPROFILE/.vite-plus/current/bin/vp.exe"
+        export VP_SNAP_JS_RUNTIME_DIR="$USERPROFILE/.vite-plus/js_runtime"
+        export VP_SNAP_CMD_BIN="$(cygpath -w "$(command -v cmd.exe)")"
+        # Keep pwsh at its canonical installation path; copying pwsh.exe
+        # alone can break its adjacent runtime dependencies.
+        export VP_SNAP_PWSH_BIN="$(cygpath -w "$(command -v pwsh.exe)")"
+        # Reserve all nextest workers for cases that need the execution gate.
+        # Generate the overrides from the fixtures, including automatic Ctrl-C
+        # isolation, so this configuration cannot drift from the runner.
+        VP_SNAP_NEXTEST_CONFIG="$RUNNER_TEMP/snapshot-nextest.toml" \
+          cargo-nextest nextest list --archive-file windows-snapshot-tests.tar.zst --workspace-remap . \
+          > "$RUNNER_TEMP/snapshot-test-list.txt"
+        nextest_run_args=(
+          --test-threads 8 --config-file "$RUNNER_TEMP/snapshot-nextest.toml"
+          --archive-file windows-snapshot-tests.tar.zst --workspace-remap . --no-fail-fast
+        )
+        # --no-fail-fast: on a snapshot suite every diff is diagnostic
+        # signal; cancelling on the first failure hides the rest.
         node --input-type=module <<'NODE'
         import assert from 'node:assert/strict';
-        import { spawn } from 'node:child_process';
-        import { createServer } from 'node:net';
-        import { setTimeout } from 'node:timers/promises';
-        async function probe() {
-          const server = createServer();
-          return new Promise((resolve) => {
-            server.once('error', (error) => resolve(error.code));
-            server.once('listening', () => server.close(() => resolve('AVAILABLE')));
-            server.listen({ host: '::1', port: 63315 });
-          });
-        }
-        if (await probe() !== 'EACCES') {
-          const command = '$listener = [System.Net.Sockets.TcpListener]::new([System.Net.IPAddress]::IPv6Loopback, 63315); $listener.Server.ExclusiveAddressUse = $true; $listener.Start(); Start-Sleep -Seconds 1200';
-          const child = spawn('pwsh', ['-NoProfile', '-NonInteractive', '-Command', command], { detached: true, stdio: 'ignore' });
-          child.unref();
-        }
-        let result;
-        for (let attempt = 0; attempt < 100; attempt++) {
-          result = await probe();
-          if (result === 'EACCES') break;
-          await setTimeout(100);
-        }
-        assert.equal(result, 'EACCES');
-        console.log('Confirmed: listening on [::1]:63315 fails with EACCES');
+        import { readFileSync, writeFileSync } from 'node:fs';
+        const path = 'crates/vp_cli_snapshots/tests/cli_snapshots/fixtures/test_v5_preview/verify.mjs';
+        const source = readFileSync(path, 'utf8');
+        assert.equal(source.split('api: { port: 0 }, ').length, 2);
+        writeFileSync(path, source.replace('api: { port: 0 }, ', ''));
         NODE
+        if cargo-nextest nextest run "${nextest_run_args[@]}" \
+          -E 'test(/^test_v5_preview::preview_runtime$/)' > "$RUNNER_TEMP/browser-port-before.log" 2>&1; then
+          cat "$RUNNER_TEMP/browser-port-before.log"
+          echo 'The original fixture unexpectedly passed with port 63315 denied'
+          exit 1
+        fi
+        cat "$RUNNER_TEMP/browser-port-before.log"
+        grep -F 'SIMULATED_DEFAULT_PORT_EACCES' "$RUNNER_TEMP/browser-port-before.log"
+        git restore crates/vp_cli_snapshots/tests/cli_snapshots/fixtures/test_v5_preview/verify.mjs
+        echo 'Confirmed: the original fixture fails when the default API port is denied'
+      env:
+        RUST_BACKTRACE: '1'
+        VP_SNAP_PACKAGES_DIR: ${{ runner.temp }}/snapshot-packages
+        VP_SNAP_ARTIFACTS_DIR: ${{ runner.temp }}/snapshot-artifacts
+        __COMPAT_LAYER: RunAsInvoker
+        NODE_OPTIONS: --require="${{ runner.temp }}/deny-default-port.cjs"
     - name: Run PTY snapshot tests
       shell: bash
       run: |
@@ -146,6 +184,7 @@ jobs:
         VP_SNAP_PACKAGES_DIR: ${{ runner.temp }}/snapshot-packages
         VP_SNAP_ARTIFACTS_DIR: ${{ runner.temp }}/snapshot-artifacts
         __COMPAT_LAYER: RunAsInvoker
+        NODE_OPTIONS: --require="${{ runner.temp }}/deny-default-port.cjs"
     - name: Upload snapshot diagnostics and timings
       if: ${{ !cancelled() }}
       uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a

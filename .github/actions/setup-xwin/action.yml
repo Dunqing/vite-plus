@@ -69,10 +69,12 @@ runs:
     - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       id: sysroot-cache
       with:
+        # This action only builds x64. Other architecture libraries are unused.
         path: |
-          ~/.cache/cargo-xwin/windows-msvc-sysroot
+          ~/.cache/cargo-xwin/windows-msvc-sysroot/include
+          ~/.cache/cargo-xwin/windows-msvc-sysroot/lib/x86_64-unknown-windows-msvc
           ~/.cache/cargo-xwin/xwin
-        key: cargo-xwin-sysroot-2026-09-15-clang-cl-22-v1
+        key: cargo-xwin-sysroot-2026-09-15-clang-cl-22-x64-v1
 
     - name: Download pinned Windows SDK
       if: steps.sysroot-cache.outputs.cache-hit != 'true'

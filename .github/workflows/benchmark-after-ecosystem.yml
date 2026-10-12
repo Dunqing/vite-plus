@@ -1,0 +1,430 @@
+name: Reusable Ecosystem CI
+'on':
+  workflow_call:
+    inputs:
+      cache_state:
+        type: string
+        required: true
+      runner:
+        description: Runner for the package build and ecosystem tests.
+        type: string
+        required: true
+      target:
+        description: Rust target for the package build.
+        type: string
+        required: true
+permissions: {}
+defaults:
+  run:
+    shell: bash
+jobs:
+  build:
+    name: Build vite-plus packages (${{ inputs.runner }})
+    runs-on: ${{ inputs.runner }}
+    permissions:
+      contents: read
+      packages: read
+    env:
+      CARGO_PROFILE_RELEASE_LTO: 'off'
+      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
+    steps:
+      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+      - uses: ./.github/actions/clone
+      - name: Disable Windows Defender
+        if: runner.os == 'Windows'
+        continue-on-error: true
+        shell: powershell
+        run: Set-MpPreference -DisableRealtimeMonitoring $true
+      - uses: ./.github/actions/benchmark-after-setup-rust
+        if: ${{ !contains(inputs.target, 'windows') }}
+        with:
+          save-cache: ${{ github.ref_name == 'main' }}
+          cache-key: e2e-build-${{ inputs.runner }}
+      - uses: ./.github/actions/benchmark-after-setup-node
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: rolldown-binaries
+          path: ./rolldown/packages/rolldown/src
+          merge-multiple: true
+      - name: Download prebuilt Windows binaries
+        if: contains(inputs.target, 'windows')
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: windows-cli-binaries
+      - name: Build with upstream
+        uses: ./.github/actions/benchmark-after-build-upstream
+        with:
+          target: ${{ inputs.target }}
+          skip-native: ${{ contains(inputs.target, 'windows') }}
+      - name: Pack packages into tgz
+        env:
+          BUILD_TARGET: ${{ inputs.target }}
+        run: |
+          mkdir -p tmp/tgz
+          # patch-project.ts serves these tgz through a local npm registry
+          # (packages/tools/src/local-npm-registry.ts), so `vp migrate` pins
+          # and installs them like a real release, with every package manager
+          # (including bun) resolving the standard
+          # `vite -> npm:@voidzero-dev/vite-plus-core@<version>` alias. Pin
+          # both packages to 0.0.0 so a correctly installed local build is
+          # always distinguishable from any published version
+          # (verify-install.ts asserts it), even on a release commit that
+          # leaves packages/{core,cli} at a published version.
+          (cd packages/core && npm pkg set version=0.0.0)
+          (cd packages/cli && npm pkg set version=0.0.0)
+          cd packages/core && pnpm pack --pack-destination ../../tmp/tgz && cd ../..
+          cd packages/cli && pnpm pack --pack-destination ../../tmp/tgz && cd ../..
+          # Copy vp binary for e2e-test job (findVpBinary expects it in target/)
+          cp "target/$BUILD_TARGET/release/vp" tmp/tgz/vp 2>/dev/null || cp "target/$BUILD_TARGET/release/vp.exe" tmp/tgz/vp.exe 2>/dev/null || true
+          cp "target/$BUILD_TARGET/release/vp-shim.exe" tmp/tgz/vp-shim.exe 2>/dev/null || true
+          ls -la tmp/tgz
+      - name: Upload tgz artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: vite-plus-packages-${{ inputs.runner }}
+          path: tmp/tgz/
+          retention-days: 1
+  e2e-test:
+    name: ${{ matrix.project.name }} E2E test (${{ matrix.os }})
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      contents: read
+      packages: read
+    needs:
+      - build
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: ${{ matrix.project.timeout || 10 }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ${{ inputs.runner }}
+        project:
+          - name: vibe-dashboard
+            node-version: 24
+            command: |
+              # FIXME: Failed to load JS plugin: ./plugins/debugger.js
+              # vp run ready
+              vp fmt
+              # Avoid Windows dynamic port reservations around Vitest's default 63315.
+              vp test --api.port=3000
+              vp run build
+          - name: rollipop
+            node-version: 22
+            command: |
+              vp run -r build
+              # FIXME: typescript-eslint(no-redundant-type-constituents): 'rolldownExperimental.DevEngine' is an 'error' type that acts as 'any' and overrides all other types in this union type.
+              vp run lint || true
+              # FIXME: src/bundler-pool.ts(8,8): error TS2307: Cannot find module '@rollipop/core' or its corresponding type declarations.
+              vp run -r typecheck || true
+              vp run format
+              vp run @rollipop/common#test
+              vp run @rollipop/core#test
+              vp run @rollipop/dev-server#test
+          - name: frm-stack
+            node-version: 24
+            command: |
+              vp run lint:check
+              vp run format:check
+              vp run typecheck
+              vp run @yourcompany/api#test
+              vp run @yourcompany/backend-core#test
+          - name: vue-mini
+            node-version: 24
+            command: |
+              # FIXME: skip format for now, will re-enable after prettier migration support
+              # vp run format
+              # FIXME: oxlint 1.59.0 no-useless-assignment has false positives on module-level
+              # state variables and closure-captured variables (oxc-project/oxc#3022).
+              # The migration sets the rule as "error" in vite.config.ts, so --allow can't override it.
+              vp run lint || true
+              vp run type
+              vp run test -- --coverage
+          - name: vitepress
+            node-version: 24
+            command: |
+              vp run format
+              vp run build
+              vp test run -r __tests__/unit
+              vp run tests-e2e#test
+              VITE_TEST_BUILD=1 vp run tests-e2e#test
+              vp run tests-init#test
+          - name: tanstack-start-helloworld
+            node-version: 24
+            command: |
+              vp run test
+              vp run build
+          - name: oxlint-plugin-complexity
+            node-version: 22
+            command: |
+              vp run format
+              vp run format:check
+              vp run build
+              vp run lint
+              vp run test:run
+              npx tsc --noEmit
+          - name: decoders
+            node-version: 24
+            command: |
+              vp pack
+              vp test
+          - name: vite-vue-vercel
+            node-version: 24
+            command: |
+              vp run test
+              vp run build
+          - name: dify
+            node-version: 24
+            directory: web
+            timeout: 20
+            command: |
+              vp run type-check
+              vp run build
+              vp run test real-browser-flicker.test.tsx workflow-onboarding-integration.test.tsx
+          - name: viteplus-ws-repro
+            node-version: 24
+            command: |
+              vp test run
+          - name: vp-config
+            node-version: 22
+            command: |
+              vp check
+              vp pack
+              vp test
+          - name: vinext
+            node-version: 24
+            timeout: 20
+            command: |
+              # vp migrate's auto-install passes --ignore-scripts on pnpm v11
+              # (vinext pins pnpm 11), which skips vinext's approved
+              # better-sqlite3 build, and the follow-up `vp install` never
+              # re-runs it. Rebuild it so the better-auth fixture works.
+              vp rebuild -- -r better-sqlite3
+              vp run build
+              vp check --fix
+              vp run check
+              vp test run --project unit --shard=1/3
+          - name: videojs-v10
+            node-version: 24
+            command: |
+              node $GITHUB_WORKSPACE/ecosystem-ci/verify-videojs-v10.ts
+              # The upstream preset keeps existing diagnostics at warning level.
+              vp lint --quiet
+              vp test run tools/oxlint/anti-slop/rules/tests
+          - name: reactive-resume
+            node-version: 24
+            command: |
+              vp fmt
+              vp lint --type-aware
+              vp build
+              vp test
+          - name: yaak
+            node-version: 24
+            command: |
+              vp fmt
+              # FIXME: type-aware lint fails with "Invalid tsconfig" without full Rust/wasm bootstrap
+              vp lint || true
+              vp test
+          - name: npmx.dev
+            node-version: 24
+            command: |
+              vp fmt
+              vp run lint
+              vp run test:types
+              vp test --project nuxt
+              vp test --project unit
+          - name: codiff
+            node-version: 24
+            timeout: 20
+            command: |
+              # Codiff uses pnpm's default 24-hour release age. Allow newly
+              # published toolchain packages in this ecosystem run.
+              export pnpm_config_minimum_release_age=0
+              export PNPM_CONFIG_MINIMUM_RELEASE_AGE=0
+              # Migration skips install scripts. node-pty has no Linux prebuild,
+              # so build its approved native addon before running the tests.
+              vp pm rebuild node-pty
+              vp run build
+              # The separate Workers integration suite still requires Vitest 4.
+              vp test run
+          - name: vite-plus-jest-dom-repro
+            node-version: 24
+            command: |
+              vp test run
+          - name: bun-vite-template
+            node-version: 24
+            command: |
+              # FIXME: mantine uses postcss-simple-vars (e.g. `@media (max-width:
+              # $mantine-breakpoint-md)` in src/components/Welcome/Welcome.module.css),
+              # which oxfmt's CSS parser does not support yet (regressed in oxfmt 0.57.0
+              # after the switch to oxc-css-parser). Tracking issue:
+              # https://github.com/oxc-project/oxc/issues/23969. Drop the `|| true`
+              # once postcss-simple-vars syntax is supported.
+              vp fmt || true
+              vp run validate
+          - name: vite-plus-vitest-global-type-minimal-repro
+            node-version: 24
+            command: |
+              vp test
+              vp check --fix
+          - name: vitest-playwright-repro
+            node-version: 24
+            command: |
+              vp test
+          - name: vite-plus-vitest-type-aug
+            node-version: 24
+            command: |
+              vp check --fix
+          - name: vite-plus-monorepo-overrides
+            node-version: 24
+            command: |
+              vp check --fix
+              vp run verify
+          - name: varlet
+            node-version: 22
+            command: |
+              node scripts/bootstrap.mjs
+              # Report-only: oxlint 1.68.0 surfaces ts1038 ("A 'declare' modifier
+              # cannot be used in an already ambient context.") on varlet's
+              # packages/varlet-cli/src/module.d.ts, which carries a redundant
+              # `declare` inside an ambient `declare module 'jest'` block. varlet can
+              # only drop the redundant modifier upstream once a vite-plus release
+              # ships oxlint 1.68.0, so don't fail the matrix on it yet. Follow-up:
+              # submit a fix PR to varletjs/varlet after the next vite-plus release.
+              vp run lint || true
+              vp run test:coverage
+          - name: nuxt-devtools
+            node-version: 24
+            node-options: --max-old-space-size=4096
+            command: |
+              vp run build
+              vp run typecheck
+              vp run test:unit
+          - name: tiptap
+            node-version: 24
+            command: |
+              vp run build && vp run build:demos
+              vp run lint
+              vp run test:unit
+          - name: 10ten-ja-reader
+            node-version: 24.15.0
+            command: |
+              vp test run --project browser --browser.name=chrome
+          - name: sqlocal
+            node-version: 24
+            command: |
+              # OPFS setup can exceed the upstream 1-second hook timeout on CI.
+              vp test run --browser.name=chrome --hookTimeout=5000
+          - name: brazilian-utils
+            node-version: 24
+            command: |
+              vp test run --browser.enabled --browser.name=chrome --browser.headless
+          - name: solid-vite-plugin
+            node-version: 24
+            directory: examples/vite-8
+            command: |
+              # Build the workspace plugin before vp run loads the example configs.
+              (cd ../.. && vp exec rollup -c)
+              vp run build
+              vp run test
+        exclude:
+          - os: namespace-profile-windows-4c-8g
+            project:
+              name: frm-stack
+          - os: namespace-profile-windows-4c-8g
+            project:
+              name: dify
+          - os: namespace-profile-windows-4c-8g
+            project:
+              name: vinext
+          - os: namespace-profile-windows-4c-8g
+            project:
+              name: yaak
+          - os: namespace-profile-windows-4c-8g
+            project:
+              name: npmx.dev
+          - os: namespace-profile-windows-4c-8g
+            project:
+              name: varlet
+          - os: namespace-profile-windows-4c-8g
+            project:
+              name: codiff
+          - os: namespace-profile-windows-4c-8g
+            project:
+              name: tiptap
+          - os: namespace-profile-windows-4c-8g
+            project:
+              name: 10ten-ja-reader
+          - os: namespace-profile-windows-4c-8g
+            project:
+              name: sqlocal
+          - os: namespace-profile-windows-4c-8g
+            project:
+              name: brazilian-utils
+    steps:
+      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+      - uses: ./.github/actions/clone
+      - name: Clone ecosystem project
+        id: ecosystem-project
+        background: true
+        run: |
+          git config --global core.autocrlf false
+          node ecosystem-ci/clone.ts "$ECOSYSTEM_PROJECT"
+        env:
+          ECOSYSTEM_PROJECT: ${{ matrix.project.name }}
+      - name: Disable Windows Defender
+        if: runner.os == 'Windows'
+        continue-on-error: true
+        shell: powershell
+        run: Set-MpPreference -DisableRealtimeMonitoring $true
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: ${{ matrix.project.node-version }}
+          package-manager-cache: false
+      - name: Download vite-plus packages
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+        with:
+          name: vite-plus-packages-${{ matrix.os }}
+          path: tmp/tgz
+      - name: Install Codiff native-keymap dependencies
+        if: matrix.project.name == 'codiff'
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes libx11-dev libxkbfile-dev
+      - name: Install vp CLI
+        run: |
+          # Place vp binary where install-global-cli.ts expects it (target/release/)
+          mkdir -p target/release
+          cp tmp/tgz/vp target/release/vp 2>/dev/null || cp tmp/tgz/vp.exe target/release/vp.exe 2>/dev/null || true
+          cp tmp/tgz/vp-shim.exe target/release/vp-shim.exe 2>/dev/null || true
+          chmod +x target/release/vp 2>/dev/null || true
+          VP_TGZ=$(ls "$GITHUB_WORKSPACE"/tmp/tgz/vite-plus-[0-9]*.tgz | head -n1)
+          node "$GITHUB_WORKSPACE"/packages/tools/src/install-global-cli.ts --tgz "$VP_TGZ"
+          # Use USERPROFILE (native Windows path) instead of HOME (Git Bash path /c/Users/...)
+          # so cmd.exe and Node.js execSync can resolve binaries in PATH
+          echo "${USERPROFILE:-$HOME}/.vite-plus/bin" >> $GITHUB_PATH
+      - wait: ecosystem-project
+      - name: Migrate in ${{ matrix.project.name }}
+        working-directory: ${{ runner.temp }}/vite-plus-ecosystem-ci/${{ matrix.project.name }}${{ matrix.project.directory && format('/{0}', matrix.project.directory) || '' }}
+        run: node $GITHUB_WORKSPACE/ecosystem-ci/patch-project.ts ${{ matrix.project.name }}
+      - name: Verify local packages installed
+        working-directory: ${{ runner.temp }}/vite-plus-ecosystem-ci/${{ matrix.project.name }}${{ matrix.project.directory && format('/{0}', matrix.project.directory) || '' }}
+        run: node $GITHUB_WORKSPACE/ecosystem-ci/verify-install.ts
+      - name: Determine playwright requirement
+        id: pw
+        run: |
+          needs=$(jq -r --arg p '${{ matrix.project.name }}' '.[$p].playwright // false' "$GITHUB_WORKSPACE/ecosystem-ci/repo.json")
+          echo "needs=$needs" >> "$GITHUB_OUTPUT"
+      - name: Install Playwright chromium
+        if: steps.pw.outputs.needs == 'true'
+        working-directory: ${{ runner.temp }}/vite-plus-ecosystem-ci/${{ matrix.project.name }}${{ matrix.project.directory && format('/{0}', matrix.project.directory) || '' }}
+        run: npx playwright install chromium
+      - name: Run vite-plus commands in ${{ matrix.project.name }}
+        working-directory: ${{ runner.temp }}/vite-plus-ecosystem-ci/${{ matrix.project.name }}${{ matrix.project.directory && format('/{0}', matrix.project.directory) || '' }}
+        env:
+          NODE_OPTIONS: ${{ matrix.project.node-options || '' }}
+        run: ${{ matrix.project.command }}
+env:
+  VP_CI_BENCH_CACHE_STATE: ${{ inputs.cache_state }}
+  VP_CI_BENCH_VARIANT: after

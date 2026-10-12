@@ -56,8 +56,9 @@ cases). Prerequisites: both flavors need `cargo build -p vp_global_cli`
 older than `src`, so a forgotten rebuild never silently tests stale
 local-CLI code.
 
-CI runs six shards per platform. Linux and macOS use `VP_SNAP_SHARD=1/6`
-through `6/6` to distribute the ordered trials round-robin. Sharding happens
+CI runs six shards on Linux and Windows, and four on macOS. Linux uses
+`VP_SNAP_SHARD=1/6` through `6/6`; macOS uses `1/4` through `4/4`.
+The Unix runner distributes the ordered trials round-robin. Sharding happens
 before name filtering, so filtered runs keep the same assignment.
 Leave the variable unset to run the whole suite. Windows uses the existing
 nextest runner with `--partition hash:1/6` through `hash:6/6`.

@@ -1159,7 +1159,7 @@ jobs:
   # build job. Only the TypeScript packages are built here for local-flavor
   # cases. Windows uses its cross-compiled artifacts in the separate job.
   cli-snapshot-test-linux:
-    name: CLI snapshot test (${{ matrix.target }}, shard ${{ matrix.shard }}/6)
+    name: CLI snapshot test (${{ matrix.target }}, shard ${{ matrix.shard }}/${{ matrix.shards }})
     needs:
       - build-cli-test-binaries-linux
     strategy:
@@ -1169,6 +1169,7 @@ jobs:
         include:
           - os: namespace-profile-linux-x64-default
             target: x86_64-unknown-linux-gnu
+            shards: 6
     runs-on: ${{ matrix.os }}
     steps: &cli-snapshot-steps
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
@@ -1246,7 +1247,7 @@ jobs:
           # process and VP_SNAP_SHARD partitioning as cargo test.
           CARGO_MANIFEST_DIR: ${{ github.workspace }}/crates/vp_cli_snapshots
           CARGO_BIN_EXE_vpt: ${{ github.workspace }}/target/snapshot-tests/vpt
-          VP_SNAP_SHARD: ${{ matrix.shard }}/6
+          VP_SNAP_SHARD: ${{ matrix.shard }}/${{ matrix.shards }}
           VP_SNAP_ARTIFACTS_DIR: ${{ runner.temp }}/snapshot-artifacts
 
       - name: Upload snapshot diagnostics and timings
@@ -1259,16 +1260,17 @@ jobs:
           retention-days: 7
 
   cli-snapshot-test-macos:
-    name: CLI snapshot test (${{ matrix.target }}, shard ${{ matrix.shard }}/6)
+    name: CLI snapshot test (${{ matrix.target }}, shard ${{ matrix.shard }}/${{ matrix.shards }})
     needs:
       - build-cli-test-binaries-macos
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5, 6]
+        shard: [1, 2, 3, 4]
         include:
           - os: namespace-profile-mac-default
             target: aarch64-apple-darwin
+            shards: 4
     runs-on: ${{ matrix.os }}
     steps: *cli-snapshot-steps
 

@@ -1,0 +1,8 @@
+{
+  "pnpm/pnpm": "8e1e4c0aaece387dfda16377b2ba31f7a1a2602c",
+  "vitejs/vite": "7e4dfe0bf57011239134fa80b5332b4823ecaab6",
+  "napi-rs/napi-rs": "806d9e865c628b2277b977c287e3468f4bee4969",
+  "toeverything/AFFiNE": "0b69a6da21e8fd35beb85667bb8496d9b3852238",
+  "npm/cli": "83ea1a1c19648a6b4f5e52a498d8a6aaaf60e52b",
+  "redhat-developer/vscode-extension-tester": "35f17caa70bcbf9bd8e303455a0096c4b13b884b"
+}

@@ -119,7 +119,7 @@ jobs:
 
       - uses: ./.github/actions/clone
 
-      - uses: ./.github/actions/setup-rust
+      - uses: oxc-project/setup-rust@68c3199c5339f965e6e163924c3c450773eba42b # main (pending v1.0.17 - Swatinem/rust-cache v2.9.1 for node24)
         if: matrix.settings.builder == 'upstream'
         with:
           save-cache: false

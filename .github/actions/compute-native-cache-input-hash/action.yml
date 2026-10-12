@@ -35,6 +35,7 @@ runs:
               'packages/cli/binding/Cargo.toml',
               'packages/cli/binding/index.*',
               'packages/cli/src/vite-config-entry-basenames.json',
+              'packages/cli/src/vitest-v5-entry-points.json',
               'package.json',
               'pnpm-lock.yaml',
               'pnpm-workspace.yaml',

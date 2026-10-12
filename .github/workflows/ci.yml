@@ -222,7 +222,19 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
 
+      - uses: ./.github/actions/compute-native-cache-input-hash
+        id: native-cache-inputs
+
+      # Reuse the compiled archive when its source and build settings match.
+      # Test jobs still run the full archive against the current checkout.
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: test-archive-cache
+        with:
+          path: windows-tests.tar.zst
+          key: windows-test-archive-v1-${{ steps.native-cache-inputs.outputs.hash }}-${{ hashFiles('.github/workflows/ci.yml', 'crates/vp_cli_snapshots/**', 'packages/cli/rules/vite-tools.yml') }}
+
       - uses: ./.github/actions/setup-xwin
+        if: steps.test-archive-cache.outputs.cache-hit != 'true'
         with:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: windows-cross
@@ -235,6 +247,7 @@ jobs:
       # Run its portable parser and layout tests on Unix.
       # The Windows CLI snapshot suite tests Windows shim behavior.
       - name: Build test archive
+        if: steps.test-archive-cache.outputs.cache-hit != 'true'
         run: |
           eval "$(cargo xwin env --target x86_64-pc-windows-msvc | grep '^export ')"
           unset RUSTFLAGS
@@ -260,7 +273,17 @@ jobs:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b # v1.4.2
       - uses: ./.github/actions/clone
 
+      - uses: ./.github/actions/compute-native-cache-input-hash
+        id: native-cache-inputs
+
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: test-archive-cache
+        with:
+          path: windows-snapshot-tests.tar.zst
+          key: windows-snapshot-test-archive-v1-${{ steps.native-cache-inputs.outputs.hash }}-${{ hashFiles('.github/workflows/ci.yml', 'crates/vp_cli_snapshots/**', 'packages/cli/rules/vite-tools.yml') }}
+
       - uses: ./.github/actions/setup-xwin
+        if: steps.test-archive-cache.outputs.cache-hit != 'true'
         with:
           save-cache: ${{ github.ref_name == 'main' }}
           cache-key: windows-snapshot-tests
@@ -273,6 +296,7 @@ jobs:
       # vpt helper; nextest rewrites CARGO_MANIFEST_DIR/CARGO_BIN_EXE_vpt at
       # run time so the relocated binaries find fixtures and helpers.
       - name: Build snapshot test archive
+        if: steps.test-archive-cache.outputs.cache-hit != 'true'
         run: |
           eval "$(cargo xwin env --target x86_64-pc-windows-msvc | grep '^export ')"
           unset RUSTFLAGS

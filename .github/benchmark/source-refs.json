@@ -1,0 +1,13 @@
+{
+  "baseline": "e4438774914283f3860ff0fb534a44c5d944c067",
+  "candidate": "c206ebe4ce6dea088d132ae73d62e7421e17e95f",
+  "performance_pr": 3026,
+  "variants": {
+    "main": "fat/1/3 from the manifest",
+    "thin": "thin/256/2"
+  },
+  "source": "All variants use identical product source from the baseline.",
+  "scope": "Native-producing CI jobs, plus the vp create cache consumer.",
+  "shared_build_configuration": "Both variants contain the ci profile definition and the profile-aware NAPI wrapper. Main uses its original release commands; the PR selects ci. No product source is changed.",
+  "cache_control": "Cold runs restore no workflow caches and populate isolated caches. Warm runs require exact hits and do not save caches. Cold job times include cache writes. Each variant and platform runs sequentially, followed by deletion of its temporary caches."
+}

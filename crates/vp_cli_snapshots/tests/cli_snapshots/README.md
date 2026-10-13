@@ -56,11 +56,11 @@ cases). Prerequisites: both flavors need `cargo build -p vp_global_cli`
 older than `src`, so a forgotten rebuild never silently tests stale
 local-CLI code.
 
-CI runs six shards per platform. Linux and macOS use `VP_SNAP_SHARD=1/6`
-through `6/6` to distribute the ordered trials round-robin. Sharding happens
-before name filtering, so filtered runs keep the same assignment.
+CI runs three shards per platform. Linux and macOS use `VP_SNAP_SHARD=1/3`
+(then `2/3` and `3/3`) to distribute the ordered trials round-robin. Sharding
+happens before name filtering, so filtered runs keep the same assignment.
 Leave the variable unset to run the whole suite. Windows uses the existing
-nextest runner with `--partition hash:1/6` through `hash:6/6`.
+nextest runner with `--partition hash:1/3` (then `2/3` and `3/3`).
 Each CI shard uses eight workers so process and network waits can overlap.
 Local runs retain libtest's default worker count; override it with
 `--test-threads <count>`.

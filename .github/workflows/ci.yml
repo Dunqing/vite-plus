@@ -1141,14 +1141,14 @@ jobs:
   # build job. Only the TypeScript packages are built here for local-flavor
   # cases. Windows uses its cross-compiled artifacts in the separate job.
   cli-snapshot-test:
-    name: CLI snapshot test (${{ matrix.target }}, shard ${{ matrix.shard }}/6)
+    name: CLI snapshot test (${{ matrix.target }}, shard ${{ matrix.shard }}/3)
     needs:
       - build-cli-test-binaries
     strategy:
       fail-fast: false
       matrix:
         os: [namespace-profile-linux-x64-default, namespace-profile-mac-default]
-        shard: [1, 2, 3, 4, 5, 6]
+        shard: [1, 2, 3]
         include:
           - os: namespace-profile-linux-x64-default
             target: x86_64-unknown-linux-gnu
@@ -1235,7 +1235,7 @@ jobs:
           # process and VP_SNAP_SHARD partitioning as cargo test.
           CARGO_MANIFEST_DIR: ${{ github.workspace }}/crates/vp_cli_snapshots
           CARGO_BIN_EXE_vpt: ${{ github.workspace }}/target/snapshot-tests/vpt
-          VP_SNAP_SHARD: ${{ matrix.shard }}/6
+          VP_SNAP_SHARD: ${{ matrix.shard }}/3
           VP_SNAP_ARTIFACTS_DIR: ${{ runner.temp }}/snapshot-artifacts
 
       - name: Upload snapshot diagnostics and timings
@@ -1253,7 +1253,7 @@ jobs:
   # build-windows-snapshots, the global vp comes prebuilt from build-windows-cli,
   # and the JS CLI is built here (skip-native) for the local flavor.
   cli-snapshot-test-windows:
-    name: CLI snapshot test (Windows, shard ${{ matrix.shard }}/6)
+    name: CLI snapshot test (Windows, shard ${{ matrix.shard }}/3)
     needs:
       - download-previous-rolldown-binaries
       - build-windows-cli
@@ -1261,7 +1261,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5, 6]
+        shard: [1, 2, 3]
     # Runs on the Namespace Windows runner. This is a PTY snapshot suite that
     # opens a pseudo-console (ConPTY) and spawns vp into it. It previously stayed
     # on GitHub-hosted windows-latest because Namespace's Windows runners ran
@@ -1385,7 +1385,7 @@ jobs:
           test_exit=0
           # This fixture requires case-sensitive directory support, which the
           # default temp directory on these runners does not provide.
-          cargo-nextest nextest run "${nextest_run_args[@]}" --partition hash:${{ matrix.shard }}/6 \
+          cargo-nextest nextest run "${nextest_run_args[@]}" --partition hash:${{ matrix.shard }}/3 \
             -E 'not test(windows_case_sensitive_shims)' || test_exit=$?
 
           if [[ '${{ matrix.shard }}' == '1' ]]; then

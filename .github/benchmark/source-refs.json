@@ -1,0 +1,10 @@
+{
+  "before": "ce51dbdd57a6ee2f3ec325b5ab393fa3c04d4e22",
+  "after": "95f2d2cd8c211feaecbb457de39abba4f2aeeab0",
+  "performance_prs": [
+    2988
+  ],
+  "scope": "The four native-producing CI paths changed by PR 2988; not whole-workflow elapsed time.",
+  "source": "Identical product source. Before/after actions and job environments come from the recorded refs.",
+  "cache_control": "Cold bypasses cache restore and save. Warm requires exact hits. Prime runs are excluded. Cargo preparation and warm measurements run one target at a time; candidate Cargo caches are then removed."
+}

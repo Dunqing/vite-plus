@@ -1,0 +1,187 @@
+name: PR 2988 native CI after
+permissions:
+  contents: read
+'on':
+  workflow_call:
+    inputs:
+      cache_state:
+        type: string
+        required: true
+      target:
+        type: string
+        required: true
+defaults:
+  run:
+    shell: bash
+jobs:
+  download-previous-rolldown-binaries:
+    if: inputs.target != 'windows'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+    - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+    - uses: ./.github/actions/download-rolldown-binaries
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+  build-windows-cli:
+    if: inputs.target == 'all' || inputs.target == 'windows'
+    name: Build Windows CLI binaries
+    runs-on: namespace-profile-linux-x64-default
+    env:
+      CARGO_PROFILE_RELEASE_LTO: 'off'
+      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
+    steps:
+    - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+    - uses: ./.github/actions/clone
+    - uses: ./.github/actions/benchmark-after-build-windows-cli
+      with:
+        save-cache: ${{ github.ref_name == 'main' }}
+  build-cli-test-binaries:
+    name: Build CLI test binaries (${{ matrix.target }})
+    needs:
+    - download-previous-rolldown-binaries
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(inputs.target == 'linux' && '[{"os":"namespace-profile-linux-x64-default","target":"x86_64-unknown-linux-gnu"}]' || inputs.target == 'macos' && '[{"os":"namespace-profile-mac-default","target":"aarch64-apple-darwin"}]' || '[{"os":"namespace-profile-linux-x64-default","target":"x86_64-unknown-linux-gnu"},{"os":"namespace-profile-mac-default","target":"aarch64-apple-darwin"}]') }}
+    runs-on: ${{ matrix.os }}
+    env:
+      CARGO_PROFILE_RELEASE_LTO: 'off'
+      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
+    steps:
+    - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+    - uses: ./.github/actions/clone
+    - uses: ./.github/actions/benchmark-after-setup-rust
+      with:
+        save-cache: ${{ github.ref_name == 'main' }}
+        cache-key: cli-snapshot-test-${{ matrix.target }}
+    - uses: ./.github/actions/benchmark-after-setup-ci-node
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      with:
+        name: rolldown-binaries
+        path: ./rolldown/packages/rolldown/src
+        merge-multiple: true
+    - name: Build with upstream
+      uses: ./.github/actions/benchmark-after-build-upstream
+      with:
+        target: ${{ matrix.target }}
+    - name: Ensure no unexpected file changes after build
+      if: ${{ matrix.target == 'x86_64-unknown-linux-gnu' }}
+      run: |
+        if [[ -n "$(git status --porcelain)" ]]; then
+          echo "::error::Unexpected file changes detected after build"
+          git status
+          git diff
+          exit 1
+        fi
+    - name: Build snapshot test binaries
+      run: cargo test -p vp_cli_snapshots --no-run --message-format=json > "$RUNNER_TEMP/snapshot-test-build.json"
+    - name: Test snapshot runner utilities
+      run: cargo test -p vp_cli_snapshots --test redact_unit --test shard_unit --test registry_pack_unit --test report_unit --test schedule_unit
+    - name: Package CLI test binaries
+      run: |
+        artifact_dir="$(mktemp -d)"
+        trap 'rm -rf "$artifact_dir"' EXIT
+        binding_dir="$artifact_dir/packages/cli/binding"
+        cli_dir="$artifact_dir/target/$BUILD_TARGET/release"
+        snapshot_dir="$artifact_dir/target/snapshot-tests"
+        mkdir -p "$binding_dir" "$cli_dir" "$snapshot_dir"
+
+        cp packages/cli/binding/*.node packages/cli/binding/vite-plus.build-time "$binding_dir/"
+        cargo metadata --locked --format-version 1 \
+          | jq '{packages: [.packages[] | {name, version, source}]}' \
+          > "$binding_dir/vite-plus.cargo-metadata.json"
+        cp "${CARGO_TARGET_DIR:-target}/$BUILD_TARGET/release/vp" "$cli_dir/"
+        for binary in cli_snapshots vpt; do
+          binary_path="$(jq -er --arg name "$binary" \
+            'select(.reason == "compiler-artifact" and .target.name == $name and .executable != null) | .executable' \
+            "$RUNNER_TEMP/snapshot-test-build.json")"
+          cp "$binary_path" "$snapshot_dir/$binary"
+        done
+        tar -czf "$RUNNER_TEMP/cli-test-binaries.tar.gz" -C "$artifact_dir" .
+      env:
+        BUILD_TARGET: ${{ matrix.target }}
+    - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      with:
+        name: cli-test-binaries-${{ matrix.target }}
+        path: ${{ runner.temp }}/cli-test-binaries.tar.gz
+        if-no-files-found: error
+        retention-days: 7
+    if: inputs.target == 'all' || inputs.target == 'linux' || inputs.target == 'macos'
+  cli-e2e-test-musl:
+    name: CLI E2E test (Linux x64 musl)
+    needs:
+    - download-previous-rolldown-binaries
+    runs-on: namespace-profile-linux-x64-default
+    env:
+      CARGO_PROFILE_RELEASE_LTO: 'off'
+      CARGO_PROFILE_RELEASE_CODEGEN_UNITS: '16'
+    steps:
+    - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+    - uses: ./.github/actions/clone
+    - uses: ./.github/actions/benchmark-after-setup-rust
+      with:
+        save-cache: ${{ github.ref_name == 'main' }}
+        cache-key: cli-e2e-test-musl
+    - uses: ./.github/actions/benchmark-after-setup-ci-node
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      with:
+        name: rolldown-binaries
+        path: ./rolldown/packages/rolldown/src
+        merge-multiple: true
+    - name: Build with upstream (musl)
+      uses: ./.github/actions/benchmark-after-build-upstream
+      with:
+        target: x86_64-unknown-linux-musl
+    - name: Run E2E in Alpine container
+      run: |
+        docker run --rm \
+          -e CI=true \
+          -e GITHUB_ACTIONS=true \
+          -v "${{ github.workspace }}:/workspace" \
+          -w /workspace \
+          node:22-alpine3.21 sh -ec "
+            apk add --no-cache bash curl ca-certificates git
+
+            # Install pnpm and re-resolve optional dependencies for musl.
+            # The host node_modules has glibc bindings; pnpm store holds both
+            # but we need to re-link the musl variants.
+            # The image's Corepack expects pnpm's removed JavaScript entry point.
+            npm install --global \"\$(node -p \"require('./package.json').packageManager\")\"
+            pnpm install --frozen-lockfile --force
+
+            # Download musl rolldown binding (host downloaded glibc variant)
+            ROLLDOWN_VERSION=\$(node -p \"require('./rolldown/packages/rolldown/package.json').version\")
+            npm pack \"@rolldown/binding-linux-x64-musl@\${ROLLDOWN_VERSION}\"
+            tar -xzf \"rolldown-binding-linux-x64-musl-\${ROLLDOWN_VERSION}.tgz\"
+            cp ./package/rolldown-binding.linux-x64-musl.node ./packages/core/dist/rolldown/shared/
+            cp ./package/rolldown-binding.linux-x64-musl.node ./rolldown/packages/rolldown/dist/shared/
+            rm -rf package *.tgz
+
+            pnpm bootstrap-cli:ci
+            . \"\$HOME/.vite-plus/env\"
+
+            vp --version
+            vp -h
+            vp env doctor
+
+            # Verify shims work
+            which node
+            which npm
+            node --version
+
+            # Test global package install
+            vp install -g typescript
+            tsc --version
+            vp uninstall -g typescript
+
+            git config --global --add safe.directory /workspace
+            RUST_BACKTRACE=1 pnpm test:unit
+          "
+    if: inputs.target == 'all' || inputs.target == 'musl'
+env:
+  VP_CI_BENCH_CACHE_STATE: ${{ inputs.cache_state }}
+  VP_CI_BENCH_TARGET: ${{ inputs.target }}
+  VP_CI_BENCH_VARIANT: after

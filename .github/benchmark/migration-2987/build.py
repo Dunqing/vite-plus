@@ -35,7 +35,7 @@ def instrument(source):
     source = source.replace('rule.language.ast_grep(&current)',
                             '{ BENCH_PARSES.fetch_add(1, Ordering::Relaxed); BENCH_PARSED_BYTES.fetch_add(current.len() as u64, Ordering::Relaxed); rule.language.ast_grep(&current) }')
     source = source.replace('        // Replace from back to front to maintain correct positions',
-                            '        BENCH_EDIT_RULES.fetch_add(1, Ordering::Relaxed);\n        BENCH_REPLACEMENTS.fetch_add(replacements.len() as u64, Ordering::Relaxed);\n        // Replace from back to front to maintain correct positions')
+                            '        if !replacements.is_empty() { BENCH_EDIT_RULES.fetch_add(1, Ordering::Relaxed); }\n        BENCH_REPLACEMENTS.fetch_add(replacements.len() as u64, Ordering::Relaxed);\n        // Replace from back to front to maintain correct positions')
     return header + source
 
 try:

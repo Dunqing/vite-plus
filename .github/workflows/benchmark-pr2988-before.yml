@@ -172,6 +172,57 @@ jobs:
             RUST_BACKTRACE=1 pnpm test:unit
           "
     if: inputs.target == 'all' || inputs.target == 'musl'
+  create-cache-consumer:
+    name: Build vp create packages (shared CLI cache)
+    runs-on: namespace-profile-linux-x64-default
+    permissions:
+      contents: read
+      packages: read
+    needs:
+    - download-previous-rolldown-binaries
+    steps:
+    - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+    - uses: ./.github/actions/clone
+    - uses: ./.github/actions/benchmark-before-setup-rust
+      with:
+        save-cache: false
+        cache-key: cli-snapshot-test-x86_64-unknown-linux-gnu
+    - uses: ./.github/actions/benchmark-before-setup-node
+    - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      with:
+        name: rolldown-binaries
+        path: ./rolldown/packages/rolldown/src
+        merge-multiple: true
+    - name: Build with upstream
+      uses: ./.github/actions/benchmark-before-build-upstream
+      with:
+        target: x86_64-unknown-linux-gnu
+    - name: Pack packages into tgz
+      run: |
+        mkdir -p tmp/tgz
+        # The test jobs serve these tgz through a local npm registry
+        # (packages/tools/src/local-npm-registry.ts), so `vp create` pins
+        # and installs them like a real release, with every package manager
+        # (including bun) resolving the standard
+        # `vite -> npm:@voidzero-dev/vite-plus-core@<version>` alias. Pin
+        # both packages to 0.0.0 so a correctly installed local build is
+        # always distinguishable from any published version, even on a
+        # release commit that leaves packages/{core,cli} at a published
+        # version.
+        (cd packages/core && npm pkg set version=0.0.0)
+        (cd packages/cli && npm pkg set version=0.0.0)
+        cd packages/core && pnpm pack --pack-destination ../../tmp/tgz && cd ../..
+        cd packages/cli && pnpm pack --pack-destination ../../tmp/tgz && cd ../..
+        # Copy vp binary for test jobs
+        cp target/x86_64-unknown-linux-gnu/release/vp tmp/tgz/vp
+        ls -la tmp/tgz
+    - name: Upload tgz artifacts
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+      with:
+        name: vite-plus-packages
+        path: tmp/tgz/
+        retention-days: 1
+    if: inputs.target == 'linux' && inputs.cache_state == 'warm'
 env:
   VP_CI_BENCH_CACHE_STATE: ${{ inputs.cache_state }}
   VP_CI_BENCH_TARGET: ${{ inputs.target }}

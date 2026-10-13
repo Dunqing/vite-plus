@@ -47,7 +47,14 @@ provider.providerFactory = (project) => {
   };
   return instance;
 };
-const runner = await createVitest({ config: false, watch: false, reporters: [] }, defineConfig({ test: {
+const runner = await createVitest({ config: false, watch: false, reporters: [] }, defineConfig({ plugins: [{
+  name: 'benchmark-browser-server-port',
+  enforce: 'post',
+  config: {
+    order: 'post',
+    handler(config) { config.test.api.port = 0; },
+  },
+}], test: {
   include: ['browser.test.js'],
   browser: {
     enabled: true, headless: true, provider, instances: [{ browser: 'chrome' }],

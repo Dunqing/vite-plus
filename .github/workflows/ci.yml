@@ -7,15 +7,15 @@ run-name: PR 2986 three-shard CI / ${{ inputs.variant }} / ${{ inputs.cache_stat
         type: choice
         required: true
         options:
-        - before
-        - after
+          - before
+          - after
       cache_state:
         type: choice
         required: true
         options:
-        - prime
-        - cold
-        - warm
+          - prime
+          - cold
+          - warm
 permissions:
   contents: read
   packages: read

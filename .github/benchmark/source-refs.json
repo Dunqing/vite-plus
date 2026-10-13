@@ -4,7 +4,10 @@
   "shared_source": "df571946ce4d29eb5f2c6e79d0131ab575b0238d",
   "shared_browser_fixtures": "205cfaba234639c8cfd98218907450e02f158fd7",
   "before_overlays": [],
-  "performance_prs": [
-    2986
-  ]
+  "performance_prs": [2986],
+  "shared_benchmark_fixtures": [
+    "vitest_browser_mode/vitest.config.ts",
+    "test_v5_webdriverio/verify.mjs"
+  ],
+  "shared_benchmark_fixture_reason": "Select an available browser API port after Vitest resolves defaults; Windows can reserve port 63315. Both variants run identical fixture code."
 }

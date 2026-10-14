@@ -1,0 +1,1090 @@
+{
+  "base": "2970c91d161082860dae13adbdfe4ac08bfbdc6e",
+  "head": "3f9faf33db6dcef51607dd34674fd1e82f7f4386",
+  "equivalent_measured_head": "68f149cb19035ad2dcb44fcc8cef9d71d2d5dc80",
+  "comparison": "The measured and final PR heads have identical Git trees. Only cache-action selection differs from main.",
+  "summary": [
+    {
+      "cache_state": "cold",
+      "metric": "rust_seconds",
+      "before": 418.362791358,
+      "after": 350.86583387300004,
+      "delta": -67.49695748499994,
+      "percent": -16.133594784064265
+    },
+    {
+      "cache_state": "cold",
+      "metric": "cargo_build_seconds",
+      "before": 288.265,
+      "after": 184.845,
+      "delta": -103.41999999999999,
+      "percent": -35.87671066553345
+    },
+    {
+      "cache_state": "cold",
+      "metric": "job_seconds",
+      "before": 456.0,
+      "after": 377.0,
+      "delta": -79.0,
+      "percent": -17.324561403508774
+    },
+    {
+      "cache_state": "cold",
+      "metric": "compiling",
+      "before": 919.0,
+      "after": 919.0,
+      "delta": 0.0,
+      "percent": 0.0
+    },
+    {
+      "cache_state": "cold",
+      "metric": "checking",
+      "before": 563.0,
+      "after": 563.0,
+      "delta": 0.0,
+      "percent": 0.0
+    },
+    {
+      "cache_state": "cold",
+      "metric": "restored_rlibs",
+      "before": 0.0,
+      "after": 0.0,
+      "delta": 0.0,
+      "percent": null
+    },
+    {
+      "cache_state": "cold",
+      "metric": "cache_bytes",
+      "before": 818714134.0,
+      "after": 909719484.0,
+      "delta": 91005350.0,
+      "percent": 11.115644181611263
+    },
+    {
+      "cache_state": "warm",
+      "metric": "rust_seconds",
+      "before": 252.118070662,
+      "after": 145.80547770249999,
+      "delta": -106.31259295950002,
+      "percent": -42.16777983440429
+    },
+    {
+      "cache_state": "warm",
+      "metric": "cargo_build_seconds",
+      "before": 169.57999999999998,
+      "after": 44.045,
+      "delta": -125.53499999999998,
+      "percent": -74.02700790187522
+    },
+    {
+      "cache_state": "warm",
+      "metric": "job_seconds",
+      "before": 279.5,
+      "after": 173.0,
+      "delta": -106.5,
+      "percent": -38.10375670840788
+    },
+    {
+      "cache_state": "warm",
+      "metric": "compiling",
+      "before": 655.0,
+      "after": 39.0,
+      "delta": -616.0,
+      "percent": -94.04580152671755
+    },
+    {
+      "cache_state": "warm",
+      "metric": "checking",
+      "before": 439.0,
+      "after": 60.0,
+      "delta": -379.0,
+      "percent": -86.33257403189066
+    },
+    {
+      "cache_state": "warm",
+      "metric": "restored_rlibs",
+      "before": 788.0,
+      "after": 980.0,
+      "delta": 192.0,
+      "percent": 24.365482233502544
+    },
+    {
+      "cache_state": "warm",
+      "metric": "cache_bytes",
+      "before": 818714134.0,
+      "after": 909719484.0,
+      "delta": 91005350.0,
+      "percent": 11.115644181611263
+    }
+  ],
+  "samples": [
+    {
+      "variant": "before",
+      "cache_state": "cold",
+      "pair": "20261014-a",
+      "databaseId": 38577883490,
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38577883490",
+      "headSha": "75c8ab96fb8c0e42b61c16127e789fd9d1ff46ad",
+      "phases": {
+        "start": {
+          "base": "2970c91d161082860dae13adbdfe4ac08bfbdc6e",
+          "head": "68f149cb19035ad2dcb44fcc8cef9d71d2d5dc80",
+          "job": "ci.yml / test / Linux x64",
+          "runner": "namespace-profile-linux-x64-default",
+          "samples_per_variant_and_state": 2,
+          "rust_cache_before": "c19371144df3bb44fab255c43d04cbc2ab54d1c4",
+          "rust_cache_after": "6323deb102c322ba6fcbdcafc7e3dddab59af2b6",
+          "cache_policy": "Each cold run saves one isolated cache; its warm run requires an exact hit and does not save. Delete each benchmark cache after its warm run.",
+          "measured_commands": [
+            "RUSTFLAGS=\"-D warnings --cfg tokio_unstable\" cargo check --all-targets --all-features",
+            "just test"
+          ],
+          "variant": "before",
+          "cache_state": "cold",
+          "pair": "20261014-a",
+          "machine": {
+            "system": "Linux",
+            "node": "7u32kkikqq0ce",
+            "release": "7.1.4",
+            "version": "#1 SMP PREEMPT_DYNAMIC Tue Aug 18 07:42:21 UTC 2026",
+            "machine": "x86_64",
+            "processor": "x86_64"
+          },
+          "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC\nCPU family:                              26\nModel:                                   68\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                0\nBogoMIPS:                                8583.83\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx_vnni avx512_bf16 clzero xsaveerptr wbnoinvd arat npt lbrv nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold vgif vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid movdiri movdir64b fsrm avx512_vp2intersect flush_l1d\nVirtualization:                          AMD-V\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                2 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Mitigation; Safe RET\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+          "inputs": {
+            "Cargo.toml": "66e75f177c30d4e0bdaaa5999668a78e0317c32d660f38b56990b0a3f2c03337",
+            "Cargo.lock": "79e1f81fef2321ec1321aac2d509b2261bad529916f552bbfb3884b18a2f8f39",
+            "rust-toolchain.toml": "2cd828a945377d5177f035d816934d21ade4f6f67a91e38b9c8081ee90bee742",
+            ".cargo/config.toml": "ccf7338c7175fbbd3c5f47acdde85d6a049a3916a51948d0d9dbfafe4da8cf4f",
+            "justfile": "802a028f1875450981cff992735bc72fb8a527697e00c93de20b26a129642b6c"
+          }
+        },
+        "restored": {
+          "cache_hit": "false",
+          "rlibs": 0,
+          "rmeta": 0,
+          "fingerprint_files": 0,
+          "target_bytes": 0,
+          "rustc": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n"
+        },
+        "check": {
+          "seconds": 213.96283098000004,
+          "returncode": 0,
+          "compiling": 237,
+          "checking": 563,
+          "test_results": [],
+          "finished": [
+            "    Finished `dev` profile [unoptimized] target(s) in 3m 33s"
+          ],
+          "rlibs": 365,
+          "rmeta": 1136,
+          "fingerprint_files": 0,
+          "target_bytes": 1676840765
+        },
+        "test": {
+          "seconds": 317.333222857,
+          "returncode": 0,
+          "compiling": 682,
+          "checking": 0,
+          "test_results": [
+            "test result: ok. 69 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s",
+            "test result: ok. 502 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 38.84s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 133 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 42.42s",
+            "test result: ok. 397 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.15s",
+            "test result: ok. 923 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 52.18s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s",
+            "test result: ok. 134 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s",
+            "test result: ok. 64 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+          ],
+          "finished": [
+            "    Finished `test` profile [unoptimized] target(s) in 2m 26s",
+            "    Finished `test` profile [optimized + debuginfo] target(s) in 32.56s"
+          ],
+          "rlibs": 1016,
+          "rmeta": 1786,
+          "fingerprint_files": 0,
+          "target_bytes": 4041308429
+        }
+      },
+      "job_seconds": 575.0,
+      "cargo_build_seconds": 391.56,
+      "job": {
+        "startedAt": "2026-10-14T14:08:39Z",
+        "completedAt": "2026-10-14T14:18:14Z",
+        "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38577883490/job/115899698466"
+      },
+      "cache": {
+        "id": 8942595687,
+        "ref": "refs/heads/bench/cache-3000-standalone-r1",
+        "key": "v0-rust-bench-pr3000-r1-before-20261014-a-Linux-x64-e2f94ece-6e53ec72",
+        "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+        "size_in_bytes": 818455559
+      },
+      "rust_seconds": 531.296053837,
+      "compiling": 919,
+      "checking": 563,
+      "cache_bytes": 818455559,
+      "restored_rlibs": 0,
+      "passed": 2339,
+      "ignored": 7
+    },
+    {
+      "variant": "before",
+      "cache_state": "warm",
+      "pair": "20261014-a",
+      "databaseId": 38579407817,
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38579407817",
+      "headSha": "75c8ab96fb8c0e42b61c16127e789fd9d1ff46ad",
+      "phases": {
+        "start": {
+          "base": "2970c91d161082860dae13adbdfe4ac08bfbdc6e",
+          "head": "68f149cb19035ad2dcb44fcc8cef9d71d2d5dc80",
+          "job": "ci.yml / test / Linux x64",
+          "runner": "namespace-profile-linux-x64-default",
+          "samples_per_variant_and_state": 2,
+          "rust_cache_before": "c19371144df3bb44fab255c43d04cbc2ab54d1c4",
+          "rust_cache_after": "6323deb102c322ba6fcbdcafc7e3dddab59af2b6",
+          "cache_policy": "Each cold run saves one isolated cache; its warm run requires an exact hit and does not save. Delete each benchmark cache after its warm run.",
+          "measured_commands": [
+            "RUSTFLAGS=\"-D warnings --cfg tokio_unstable\" cargo check --all-targets --all-features",
+            "just test"
+          ],
+          "variant": "before",
+          "cache_state": "warm",
+          "pair": "20261014-a",
+          "machine": {
+            "system": "Linux",
+            "node": "2phqcd543vrqg",
+            "release": "7.1.4",
+            "version": "#1 SMP PREEMPT_DYNAMIC Tue Aug 18 07:42:21 UTC 2026",
+            "machine": "x86_64",
+            "processor": "x86_64"
+          },
+          "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC\nCPU family:                              26\nModel:                                   68\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                0\nBogoMIPS:                                8583.84\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx_vnni avx512_bf16 clzero xsaveerptr wbnoinvd arat npt lbrv nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold vgif vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid movdiri movdir64b fsrm avx512_vp2intersect flush_l1d\nVirtualization:                          AMD-V\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                2 MiB (2 instances)\nL3 cache:                                96 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Mitigation; IBPB on VMEXIT only\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+          "inputs": {
+            "Cargo.toml": "66e75f177c30d4e0bdaaa5999668a78e0317c32d660f38b56990b0a3f2c03337",
+            "Cargo.lock": "79e1f81fef2321ec1321aac2d509b2261bad529916f552bbfb3884b18a2f8f39",
+            "rust-toolchain.toml": "2cd828a945377d5177f035d816934d21ade4f6f67a91e38b9c8081ee90bee742",
+            ".cargo/config.toml": "ccf7338c7175fbbd3c5f47acdde85d6a049a3916a51948d0d9dbfafe4da8cf4f",
+            "justfile": "802a028f1875450981cff992735bc72fb8a527697e00c93de20b26a129642b6c"
+          }
+        },
+        "restored": {
+          "cache_hit": "true",
+          "rlibs": 788,
+          "rmeta": 1264,
+          "fingerprint_files": 0,
+          "target_bytes": 2944556308,
+          "rustc": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n"
+        },
+        "check": {
+          "seconds": 65.959820665,
+          "returncode": 0,
+          "compiling": 153,
+          "checking": 439,
+          "test_results": [],
+          "finished": [
+            "    Finished `dev` profile [unoptimized] target(s) in 1m 05s"
+          ],
+          "rlibs": 858,
+          "rmeta": 1628,
+          "fingerprint_files": 0,
+          "target_bytes": 3189695974
+        },
+        "test": {
+          "seconds": 150.66408019300002,
+          "returncode": 0,
+          "compiling": 502,
+          "checking": 0,
+          "test_results": [
+            "test result: ok. 69 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s",
+            "test result: ok. 502 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 11.39s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 133 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 30.05s",
+            "test result: ok. 397 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.38s",
+            "test result: ok. 923 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 32.95s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s",
+            "test result: ok. 134 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.00s",
+            "test result: ok. 64 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ],
+          "finished": [
+            "    Finished `test` profile [unoptimized] target(s) in 56.40s",
+            "    Finished `test` profile [optimized + debuginfo] target(s) in 16.43s"
+          ],
+          "rlibs": 1016,
+          "rmeta": 1786,
+          "fingerprint_files": 0,
+          "target_bytes": 4041308427
+        }
+      },
+      "job_seconds": 241.0,
+      "cargo_build_seconds": 137.83,
+      "job": {
+        "startedAt": "2026-10-14T14:19:04Z",
+        "completedAt": "2026-10-14T14:23:05Z",
+        "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38579407817/job/115904997299"
+      },
+      "cache": {
+        "id": 8942595687,
+        "ref": "refs/heads/bench/cache-3000-standalone-r1",
+        "key": "v0-rust-bench-pr3000-r1-before-20261014-a-Linux-x64-e2f94ece-6e53ec72",
+        "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+        "size_in_bytes": 818455559
+      },
+      "rust_seconds": 216.623900858,
+      "compiling": 655,
+      "checking": 439,
+      "cache_bytes": 818455559,
+      "restored_rlibs": 788,
+      "passed": 2339,
+      "ignored": 7
+    },
+    {
+      "variant": "after",
+      "cache_state": "cold",
+      "pair": "20261014-a",
+      "databaseId": 38580079427,
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38580079427",
+      "headSha": "75c8ab96fb8c0e42b61c16127e789fd9d1ff46ad",
+      "phases": {
+        "start": {
+          "base": "2970c91d161082860dae13adbdfe4ac08bfbdc6e",
+          "head": "68f149cb19035ad2dcb44fcc8cef9d71d2d5dc80",
+          "job": "ci.yml / test / Linux x64",
+          "runner": "namespace-profile-linux-x64-default",
+          "samples_per_variant_and_state": 2,
+          "rust_cache_before": "c19371144df3bb44fab255c43d04cbc2ab54d1c4",
+          "rust_cache_after": "6323deb102c322ba6fcbdcafc7e3dddab59af2b6",
+          "cache_policy": "Each cold run saves one isolated cache; its warm run requires an exact hit and does not save. Delete each benchmark cache after its warm run.",
+          "measured_commands": [
+            "RUSTFLAGS=\"-D warnings --cfg tokio_unstable\" cargo check --all-targets --all-features",
+            "just test"
+          ],
+          "variant": "after",
+          "cache_state": "cold",
+          "pair": "20261014-a",
+          "machine": {
+            "system": "Linux",
+            "node": "tjv4framdqihs",
+            "release": "7.1.4",
+            "version": "#1 SMP PREEMPT_DYNAMIC Tue Aug 18 07:42:21 UTC 2026",
+            "machine": "x86_64",
+            "processor": "x86_64"
+          },
+          "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC\nCPU family:                              26\nModel:                                   68\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                0\nBogoMIPS:                                8583.83\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx_vnni avx512_bf16 clzero xsaveerptr wbnoinvd arat npt lbrv nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold vgif vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid movdiri movdir64b fsrm avx512_vp2intersect flush_l1d\nVirtualization:                          AMD-V\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                2 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Mitigation; IBPB on VMEXIT only\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+          "inputs": {
+            "Cargo.toml": "66e75f177c30d4e0bdaaa5999668a78e0317c32d660f38b56990b0a3f2c03337",
+            "Cargo.lock": "79e1f81fef2321ec1321aac2d509b2261bad529916f552bbfb3884b18a2f8f39",
+            "rust-toolchain.toml": "2cd828a945377d5177f035d816934d21ade4f6f67a91e38b9c8081ee90bee742",
+            ".cargo/config.toml": "ccf7338c7175fbbd3c5f47acdde85d6a049a3916a51948d0d9dbfafe4da8cf4f",
+            "justfile": "802a028f1875450981cff992735bc72fb8a527697e00c93de20b26a129642b6c"
+          }
+        },
+        "restored": {
+          "cache_hit": "false",
+          "rlibs": 0,
+          "rmeta": 0,
+          "fingerprint_files": 0,
+          "target_bytes": 0,
+          "rustc": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n"
+        },
+        "check": {
+          "seconds": 111.540108143,
+          "returncode": 0,
+          "compiling": 237,
+          "checking": 563,
+          "test_results": [],
+          "finished": [
+            "    Finished `dev` profile [unoptimized] target(s) in 1m 51s"
+          ],
+          "rlibs": 365,
+          "rmeta": 1136,
+          "fingerprint_files": 0,
+          "target_bytes": 1676840767
+        },
+        "test": {
+          "seconds": 223.81360661000002,
+          "returncode": 0,
+          "compiling": 682,
+          "checking": 0,
+          "test_results": [
+            "test result: ok. 69 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s",
+            "test result: ok. 502 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.39s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 133 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 33.96s",
+            "test result: ok. 397 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.54s",
+            "test result: ok. 923 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 69.43s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s",
+            "test result: ok. 134 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s",
+            "test result: ok. 64 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ],
+          "finished": [
+            "    Finished `test` profile [unoptimized] target(s) in 1m 27s",
+            "    Finished `test` profile [optimized + debuginfo] target(s) in 17.23s"
+          ],
+          "rlibs": 1016,
+          "rmeta": 1786,
+          "fingerprint_files": 0,
+          "target_bytes": 4041308431
+        }
+      },
+      "job_seconds": 362.0,
+      "cargo_build_seconds": 215.23,
+      "job": {
+        "startedAt": "2026-10-14T14:23:30Z",
+        "completedAt": "2026-10-14T14:29:32Z",
+        "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38580079427/job/115907355582"
+      },
+      "cache": {
+        "id": 8943195215,
+        "ref": "refs/heads/bench/cache-3000-standalone-r1",
+        "key": "v1-rust-bench-pr3000-r1-after-20261014-a-Linux-x64-0cde8d0c-6e53ec72",
+        "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+        "size_in_bytes": 909611583
+      },
+      "rust_seconds": 335.353714753,
+      "compiling": 919,
+      "checking": 563,
+      "cache_bytes": 909611583,
+      "restored_rlibs": 0,
+      "passed": 2339,
+      "ignored": 7
+    },
+    {
+      "variant": "after",
+      "cache_state": "warm",
+      "pair": "20261014-a",
+      "databaseId": 38581053434,
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38581053434",
+      "headSha": "75c8ab96fb8c0e42b61c16127e789fd9d1ff46ad",
+      "phases": {
+        "start": {
+          "base": "2970c91d161082860dae13adbdfe4ac08bfbdc6e",
+          "head": "68f149cb19035ad2dcb44fcc8cef9d71d2d5dc80",
+          "job": "ci.yml / test / Linux x64",
+          "runner": "namespace-profile-linux-x64-default",
+          "samples_per_variant_and_state": 2,
+          "rust_cache_before": "c19371144df3bb44fab255c43d04cbc2ab54d1c4",
+          "rust_cache_after": "6323deb102c322ba6fcbdcafc7e3dddab59af2b6",
+          "cache_policy": "Each cold run saves one isolated cache; its warm run requires an exact hit and does not save. Delete each benchmark cache after its warm run.",
+          "measured_commands": [
+            "RUSTFLAGS=\"-D warnings --cfg tokio_unstable\" cargo check --all-targets --all-features",
+            "just test"
+          ],
+          "variant": "after",
+          "cache_state": "warm",
+          "pair": "20261014-a",
+          "machine": {
+            "system": "Linux",
+            "node": "emkoh48ades32",
+            "release": "7.1.4",
+            "version": "#1 SMP PREEMPT_DYNAMIC Tue Aug 18 07:42:21 UTC 2026",
+            "machine": "x86_64",
+            "processor": "x86_64"
+          },
+          "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC\nCPU family:                              26\nModel:                                   68\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                0\nBogoMIPS:                                8583.84\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx_vnni avx512_bf16 clzero xsaveerptr wbnoinvd arat npt lbrv nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold vgif vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid movdiri movdir64b fsrm avx512_vp2intersect flush_l1d\nVirtualization:                          AMD-V\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                2 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Mitigation; IBPB on VMEXIT only\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+          "inputs": {
+            "Cargo.toml": "66e75f177c30d4e0bdaaa5999668a78e0317c32d660f38b56990b0a3f2c03337",
+            "Cargo.lock": "79e1f81fef2321ec1321aac2d509b2261bad529916f552bbfb3884b18a2f8f39",
+            "rust-toolchain.toml": "2cd828a945377d5177f035d816934d21ade4f6f67a91e38b9c8081ee90bee742",
+            ".cargo/config.toml": "ccf7338c7175fbbd3c5f47acdde85d6a049a3916a51948d0d9dbfafe4da8cf4f",
+            "justfile": "802a028f1875450981cff992735bc72fb8a527697e00c93de20b26a129642b6c"
+          }
+        },
+        "restored": {
+          "cache_hit": "true",
+          "rlibs": 980,
+          "rmeta": 1594,
+          "fingerprint_files": 0,
+          "target_bytes": 3342582684,
+          "rustc": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n"
+        },
+        "check": {
+          "seconds": 15.032437926,
+          "returncode": 0,
+          "compiling": 5,
+          "checking": 60,
+          "test_results": [],
+          "finished": [
+            "    Finished `dev` profile [unoptimized] target(s) in 14.91s"
+          ],
+          "rlibs": 990,
+          "rmeta": 1760,
+          "fingerprint_files": 0,
+          "target_bytes": 3412273844
+        },
+        "test": {
+          "seconds": 141.253901403,
+          "returncode": 0,
+          "compiling": 34,
+          "checking": 0,
+          "test_results": [
+            "test result: ok. 69 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s",
+            "test result: ok. 502 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 11.57s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 133 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 31.10s",
+            "test result: ok. 397 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.28s",
+            "test result: ok. 923 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 70.68s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s",
+            "test result: ok. 134 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 64 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ],
+          "finished": [
+            "    Finished `test` profile [unoptimized] target(s) in 10.11s",
+            "    Finished `test` profile [optimized + debuginfo] target(s) in 15.72s"
+          ],
+          "rlibs": 1016,
+          "rmeta": 1786,
+          "fingerprint_files": 0,
+          "target_bytes": 4041308431
+        }
+      },
+      "job_seconds": 181.0,
+      "cargo_build_seconds": 40.74,
+      "job": {
+        "startedAt": "2026-10-14T14:30:11Z",
+        "completedAt": "2026-10-14T14:33:12Z",
+        "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38581053434/job/115910752962"
+      },
+      "cache": {
+        "id": 8943195215,
+        "ref": "refs/heads/bench/cache-3000-standalone-r1",
+        "key": "v1-rust-bench-pr3000-r1-after-20261014-a-Linux-x64-0cde8d0c-6e53ec72",
+        "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+        "size_in_bytes": 909611583
+      },
+      "rust_seconds": 156.286339329,
+      "compiling": 39,
+      "checking": 60,
+      "cache_bytes": 909611583,
+      "restored_rlibs": 980,
+      "passed": 2339,
+      "ignored": 7
+    },
+    {
+      "variant": "after",
+      "cache_state": "cold",
+      "pair": "20261014-b",
+      "databaseId": 38581576466,
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38581576466",
+      "headSha": "75c8ab96fb8c0e42b61c16127e789fd9d1ff46ad",
+      "phases": {
+        "start": {
+          "base": "2970c91d161082860dae13adbdfe4ac08bfbdc6e",
+          "head": "68f149cb19035ad2dcb44fcc8cef9d71d2d5dc80",
+          "job": "ci.yml / test / Linux x64",
+          "runner": "namespace-profile-linux-x64-default",
+          "samples_per_variant_and_state": 2,
+          "rust_cache_before": "c19371144df3bb44fab255c43d04cbc2ab54d1c4",
+          "rust_cache_after": "6323deb102c322ba6fcbdcafc7e3dddab59af2b6",
+          "cache_policy": "Each cold run saves one isolated cache; its warm run requires an exact hit and does not save. Delete each benchmark cache after its warm run.",
+          "measured_commands": [
+            "RUSTFLAGS=\"-D warnings --cfg tokio_unstable\" cargo check --all-targets --all-features",
+            "just test"
+          ],
+          "variant": "after",
+          "cache_state": "cold",
+          "pair": "20261014-b",
+          "machine": {
+            "system": "Linux",
+            "node": "mod08dbma5n0a",
+            "release": "7.1.4",
+            "version": "#1 SMP PREEMPT_DYNAMIC Tue Aug 18 07:42:21 UTC 2026",
+            "machine": "x86_64",
+            "processor": "x86_64"
+          },
+          "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC\nCPU family:                              26\nModel:                                   68\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                0\nBogoMIPS:                                8583.84\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx_vnni avx512_bf16 clzero xsaveerptr wbnoinvd arat npt lbrv nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold vgif vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid movdiri movdir64b fsrm avx512_vp2intersect flush_l1d\nVirtualization:                          AMD-V\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                2 MiB (2 instances)\nL3 cache:                                96 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Mitigation; IBPB on VMEXIT only\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+          "inputs": {
+            "Cargo.toml": "66e75f177c30d4e0bdaaa5999668a78e0317c32d660f38b56990b0a3f2c03337",
+            "Cargo.lock": "79e1f81fef2321ec1321aac2d509b2261bad529916f552bbfb3884b18a2f8f39",
+            "rust-toolchain.toml": "2cd828a945377d5177f035d816934d21ade4f6f67a91e38b9c8081ee90bee742",
+            ".cargo/config.toml": "ccf7338c7175fbbd3c5f47acdde85d6a049a3916a51948d0d9dbfafe4da8cf4f",
+            "justfile": "802a028f1875450981cff992735bc72fb8a527697e00c93de20b26a129642b6c"
+          }
+        },
+        "restored": {
+          "cache_hit": "false",
+          "rlibs": 0,
+          "rmeta": 0,
+          "fingerprint_files": 0,
+          "target_bytes": 0,
+          "rustc": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n"
+        },
+        "check": {
+          "seconds": 78.11528220400001,
+          "returncode": 0,
+          "compiling": 237,
+          "checking": 563,
+          "test_results": [],
+          "finished": [
+            "    Finished `dev` profile [unoptimized] target(s) in 1m 17s"
+          ],
+          "rlibs": 365,
+          "rmeta": 1136,
+          "fingerprint_files": 0,
+          "target_bytes": 1676840765
+        },
+        "test": {
+          "seconds": 288.26267078899997,
+          "returncode": 0,
+          "compiling": 682,
+          "checking": 0,
+          "test_results": [
+            "test result: ok. 69 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s",
+            "test result: ok. 502 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 118.43s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 133 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 32.20s",
+            "test result: ok. 397 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.30s",
+            "test result: ok. 923 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 57.39s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s",
+            "test result: ok. 134 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s",
+            "test result: ok. 64 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s"
+          ],
+          "finished": [
+            "    Finished `test` profile [unoptimized] target(s) in 1m 00s",
+            "    Finished `test` profile [optimized + debuginfo] target(s) in 17.46s"
+          ],
+          "rlibs": 1016,
+          "rmeta": 1786,
+          "fingerprint_files": 0,
+          "target_bytes": 4041308429
+        }
+      },
+      "job_seconds": 392.0,
+      "cargo_build_seconds": 154.46,
+      "job": {
+        "startedAt": "2026-10-14T14:33:32Z",
+        "completedAt": "2026-10-14T14:40:04Z",
+        "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38581576466/job/115912554934"
+      },
+      "cache": {
+        "id": 8943747041,
+        "ref": "refs/heads/bench/cache-3000-standalone-r1",
+        "key": "v1-rust-bench-pr3000-r1-after-20261014-b-Linux-x64-0cde8d0c-6e53ec72",
+        "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+        "size_in_bytes": 909827385
+      },
+      "rust_seconds": 366.377952993,
+      "compiling": 919,
+      "checking": 563,
+      "cache_bytes": 909827385,
+      "restored_rlibs": 0,
+      "passed": 2339,
+      "ignored": 7
+    },
+    {
+      "variant": "after",
+      "cache_state": "warm",
+      "pair": "20261014-b",
+      "databaseId": 38582641060,
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38582641060",
+      "headSha": "75c8ab96fb8c0e42b61c16127e789fd9d1ff46ad",
+      "phases": {
+        "start": {
+          "base": "2970c91d161082860dae13adbdfe4ac08bfbdc6e",
+          "head": "68f149cb19035ad2dcb44fcc8cef9d71d2d5dc80",
+          "job": "ci.yml / test / Linux x64",
+          "runner": "namespace-profile-linux-x64-default",
+          "samples_per_variant_and_state": 2,
+          "rust_cache_before": "c19371144df3bb44fab255c43d04cbc2ab54d1c4",
+          "rust_cache_after": "6323deb102c322ba6fcbdcafc7e3dddab59af2b6",
+          "cache_policy": "Each cold run saves one isolated cache; its warm run requires an exact hit and does not save. Delete each benchmark cache after its warm run.",
+          "measured_commands": [
+            "RUSTFLAGS=\"-D warnings --cfg tokio_unstable\" cargo check --all-targets --all-features",
+            "just test"
+          ],
+          "variant": "after",
+          "cache_state": "warm",
+          "pair": "20261014-b",
+          "machine": {
+            "system": "Linux",
+            "node": "0rgl1fr7imuis",
+            "release": "7.1.4",
+            "version": "#1 SMP PREEMPT_DYNAMIC Tue Aug 18 07:42:21 UTC 2026",
+            "machine": "x86_64",
+            "processor": "x86_64"
+          },
+          "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC\nCPU family:                              26\nModel:                                   68\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                0\nBogoMIPS:                                8583.83\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx_vnni avx512_bf16 clzero xsaveerptr wbnoinvd arat npt lbrv nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold vgif vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid movdiri movdir64b fsrm avx512_vp2intersect flush_l1d\nVirtualization:                          AMD-V\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                2 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Mitigation; Safe RET\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+          "inputs": {
+            "Cargo.toml": "66e75f177c30d4e0bdaaa5999668a78e0317c32d660f38b56990b0a3f2c03337",
+            "Cargo.lock": "79e1f81fef2321ec1321aac2d509b2261bad529916f552bbfb3884b18a2f8f39",
+            "rust-toolchain.toml": "2cd828a945377d5177f035d816934d21ade4f6f67a91e38b9c8081ee90bee742",
+            ".cargo/config.toml": "ccf7338c7175fbbd3c5f47acdde85d6a049a3916a51948d0d9dbfafe4da8cf4f",
+            "justfile": "802a028f1875450981cff992735bc72fb8a527697e00c93de20b26a129642b6c"
+          }
+        },
+        "restored": {
+          "cache_hit": "true",
+          "rlibs": 980,
+          "rmeta": 1594,
+          "fingerprint_files": 0,
+          "target_bytes": 3342582684,
+          "rustc": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n"
+        },
+        "check": {
+          "seconds": 16.375460304,
+          "returncode": 0,
+          "compiling": 5,
+          "checking": 60,
+          "test_results": [],
+          "finished": [
+            "    Finished `dev` profile [unoptimized] target(s) in 16.24s"
+          ],
+          "rlibs": 990,
+          "rmeta": 1760,
+          "fingerprint_files": 0,
+          "target_bytes": 3412273848
+        },
+        "test": {
+          "seconds": 118.94915577199998,
+          "returncode": 0,
+          "compiling": 34,
+          "checking": 0,
+          "test_results": [
+            "test result: ok. 69 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s",
+            "test result: ok. 502 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 14.16s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 133 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 36.71s",
+            "test result: ok. 397 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.62s",
+            "test result: ok. 923 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 33.92s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s",
+            "test result: ok. 134 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s",
+            "test result: ok. 64 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+          ],
+          "finished": [
+            "    Finished `test` profile [unoptimized] target(s) in 12.60s",
+            "    Finished `test` profile [optimized + debuginfo] target(s) in 18.51s"
+          ],
+          "rlibs": 1016,
+          "rmeta": 1786,
+          "fingerprint_files": 0,
+          "target_bytes": 4041308435
+        }
+      },
+      "job_seconds": 165.0,
+      "cargo_build_seconds": 47.349999999999994,
+      "job": {
+        "startedAt": "2026-10-14T14:40:39Z",
+        "completedAt": "2026-10-14T14:43:24Z",
+        "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38582641060/job/115916260246"
+      },
+      "cache": {
+        "id": 8943747041,
+        "ref": "refs/heads/bench/cache-3000-standalone-r1",
+        "key": "v1-rust-bench-pr3000-r1-after-20261014-b-Linux-x64-0cde8d0c-6e53ec72",
+        "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+        "size_in_bytes": 909827385
+      },
+      "rust_seconds": 135.32461607599998,
+      "compiling": 39,
+      "checking": 60,
+      "cache_bytes": 909827385,
+      "restored_rlibs": 980,
+      "passed": 2339,
+      "ignored": 7
+    },
+    {
+      "variant": "before",
+      "cache_state": "cold",
+      "pair": "20261014-b",
+      "databaseId": 38583155313,
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38583155313",
+      "headSha": "75c8ab96fb8c0e42b61c16127e789fd9d1ff46ad",
+      "phases": {
+        "start": {
+          "base": "2970c91d161082860dae13adbdfe4ac08bfbdc6e",
+          "head": "68f149cb19035ad2dcb44fcc8cef9d71d2d5dc80",
+          "job": "ci.yml / test / Linux x64",
+          "runner": "namespace-profile-linux-x64-default",
+          "samples_per_variant_and_state": 2,
+          "rust_cache_before": "c19371144df3bb44fab255c43d04cbc2ab54d1c4",
+          "rust_cache_after": "6323deb102c322ba6fcbdcafc7e3dddab59af2b6",
+          "cache_policy": "Each cold run saves one isolated cache; its warm run requires an exact hit and does not save. Delete each benchmark cache after its warm run.",
+          "measured_commands": [
+            "RUSTFLAGS=\"-D warnings --cfg tokio_unstable\" cargo check --all-targets --all-features",
+            "just test"
+          ],
+          "variant": "before",
+          "cache_state": "cold",
+          "pair": "20261014-b",
+          "machine": {
+            "system": "Linux",
+            "node": "ofc461rrtcg6k",
+            "release": "7.1.4",
+            "version": "#1 SMP PREEMPT_DYNAMIC Tue Aug 18 07:42:21 UTC 2026",
+            "machine": "x86_64",
+            "processor": "x86_64"
+          },
+          "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC\nCPU family:                              26\nModel:                                   68\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                0\nBogoMIPS:                                8583.83\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx_vnni avx512_bf16 clzero xsaveerptr wbnoinvd arat npt lbrv nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold vgif vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid movdiri movdir64b fsrm avx512_vp2intersect flush_l1d\nVirtualization:                          AMD-V\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                2 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Mitigation; Safe RET\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+          "inputs": {
+            "Cargo.toml": "66e75f177c30d4e0bdaaa5999668a78e0317c32d660f38b56990b0a3f2c03337",
+            "Cargo.lock": "79e1f81fef2321ec1321aac2d509b2261bad529916f552bbfb3884b18a2f8f39",
+            "rust-toolchain.toml": "2cd828a945377d5177f035d816934d21ade4f6f67a91e38b9c8081ee90bee742",
+            ".cargo/config.toml": "ccf7338c7175fbbd3c5f47acdde85d6a049a3916a51948d0d9dbfafe4da8cf4f",
+            "justfile": "802a028f1875450981cff992735bc72fb8a527697e00c93de20b26a129642b6c"
+          }
+        },
+        "restored": {
+          "cache_hit": "false",
+          "rlibs": 0,
+          "rmeta": 0,
+          "fingerprint_files": 0,
+          "target_bytes": 0,
+          "rustc": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n"
+        },
+        "check": {
+          "seconds": 98.834818216,
+          "returncode": 0,
+          "compiling": 237,
+          "checking": 563,
+          "test_results": [],
+          "finished": [
+            "    Finished `dev` profile [unoptimized] target(s) in 1m 38s"
+          ],
+          "rlibs": 365,
+          "rmeta": 1136,
+          "fingerprint_files": 0,
+          "target_bytes": 1676840765
+        },
+        "test": {
+          "seconds": 206.59471066299997,
+          "returncode": 0,
+          "compiling": 682,
+          "checking": 0,
+          "test_results": [
+            "test result: ok. 69 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s",
+            "test result: ok. 502 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 11.40s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 133 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 32.97s",
+            "test result: ok. 397 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.31s",
+            "test result: ok. 923 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 71.79s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s",
+            "test result: ok. 134 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 64 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+          ],
+          "finished": [
+            "    Finished `test` profile [unoptimized] target(s) in 1m 11s",
+            "    Finished `test` profile [optimized + debuginfo] target(s) in 15.97s"
+          ],
+          "rlibs": 1016,
+          "rmeta": 1786,
+          "fingerprint_files": 0,
+          "target_bytes": 4041308429
+        }
+      },
+      "job_seconds": 337.0,
+      "cargo_build_seconds": 184.97,
+      "job": {
+        "startedAt": "2026-10-14T14:44:10Z",
+        "completedAt": "2026-10-14T14:49:47Z",
+        "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38583155313/job/115918081826"
+      },
+      "cache": {
+        "id": 8944270879,
+        "ref": "refs/heads/bench/cache-3000-standalone-r1",
+        "key": "v0-rust-bench-pr3000-r1-before-20261014-b-Linux-x64-e2f94ece-6e53ec72",
+        "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+        "size_in_bytes": 818972709
+      },
+      "rust_seconds": 305.429528879,
+      "compiling": 919,
+      "checking": 563,
+      "cache_bytes": 818972709,
+      "restored_rlibs": 0,
+      "passed": 2339,
+      "ignored": 7
+    },
+    {
+      "variant": "before",
+      "cache_state": "warm",
+      "pair": "20261014-b",
+      "databaseId": 38584056523,
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38584056523",
+      "headSha": "75c8ab96fb8c0e42b61c16127e789fd9d1ff46ad",
+      "phases": {
+        "start": {
+          "base": "2970c91d161082860dae13adbdfe4ac08bfbdc6e",
+          "head": "68f149cb19035ad2dcb44fcc8cef9d71d2d5dc80",
+          "job": "ci.yml / test / Linux x64",
+          "runner": "namespace-profile-linux-x64-default",
+          "samples_per_variant_and_state": 2,
+          "rust_cache_before": "c19371144df3bb44fab255c43d04cbc2ab54d1c4",
+          "rust_cache_after": "6323deb102c322ba6fcbdcafc7e3dddab59af2b6",
+          "cache_policy": "Each cold run saves one isolated cache; its warm run requires an exact hit and does not save. Delete each benchmark cache after its warm run.",
+          "measured_commands": [
+            "RUSTFLAGS=\"-D warnings --cfg tokio_unstable\" cargo check --all-targets --all-features",
+            "just test"
+          ],
+          "variant": "before",
+          "cache_state": "warm",
+          "pair": "20261014-b",
+          "machine": {
+            "system": "Linux",
+            "node": "4thep19a5muia",
+            "release": "7.1.4",
+            "version": "#1 SMP PREEMPT_DYNAMIC Tue Aug 18 07:42:21 UTC 2026",
+            "machine": "x86_64",
+            "processor": "x86_64"
+          },
+          "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC\nCPU family:                              26\nModel:                                   68\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                0\nBogoMIPS:                                8583.83\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext perfctr_core ssbd perfmon_v2 ibrs ibpb stibp ibrs_enhanced vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx_vnni avx512_bf16 clzero xsaveerptr wbnoinvd arat npt lbrv nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold vgif vnmi avx512vbmi umip pku ospke avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid movdiri movdir64b fsrm avx512_vp2intersect flush_l1d\nVirtualization:                          AMD-V\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                2 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Mitigation; Safe RET\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Enhanced / Automatic IBRS; IBPB conditional; STIBP always-on; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected\n",
+          "inputs": {
+            "Cargo.toml": "66e75f177c30d4e0bdaaa5999668a78e0317c32d660f38b56990b0a3f2c03337",
+            "Cargo.lock": "79e1f81fef2321ec1321aac2d509b2261bad529916f552bbfb3884b18a2f8f39",
+            "rust-toolchain.toml": "2cd828a945377d5177f035d816934d21ade4f6f67a91e38b9c8081ee90bee742",
+            ".cargo/config.toml": "ccf7338c7175fbbd3c5f47acdde85d6a049a3916a51948d0d9dbfafe4da8cf4f",
+            "justfile": "802a028f1875450981cff992735bc72fb8a527697e00c93de20b26a129642b6c"
+          }
+        },
+        "restored": {
+          "cache_hit": "true",
+          "rlibs": 788,
+          "rmeta": 1264,
+          "fingerprint_files": 0,
+          "target_bytes": 2944556308,
+          "rustc": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n"
+        },
+        "check": {
+          "seconds": 107.98405056300001,
+          "returncode": 0,
+          "compiling": 153,
+          "checking": 439,
+          "test_results": [],
+          "finished": [
+            "    Finished `dev` profile [unoptimized] target(s) in 1m 47s"
+          ],
+          "rlibs": 858,
+          "rmeta": 1628,
+          "fingerprint_files": 0,
+          "target_bytes": 3189695974
+        },
+        "test": {
+          "seconds": 179.62818990300002,
+          "returncode": 0,
+          "compiling": 502,
+          "checking": 0,
+          "test_results": [
+            "test result: ok. 69 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s",
+            "test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s",
+            "test result: ok. 502 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 12.48s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 133 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 40.93s",
+            "test result: ok. 397 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.26s",
+            "test result: ok. 923 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 29.14s",
+            "test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 34 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s",
+            "test result: ok. 134 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s",
+            "test result: ok. 64 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s",
+            "test result: ok. 23 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s"
+          ],
+          "finished": [
+            "    Finished `test` profile [unoptimized] target(s) in 1m 17s",
+            "    Finished `test` profile [optimized + debuginfo] target(s) in 17.33s"
+          ],
+          "rlibs": 1016,
+          "rmeta": 1786,
+          "fingerprint_files": 0,
+          "target_bytes": 4041308427
+        }
+      },
+      "job_seconds": 318.0,
+      "cargo_build_seconds": 201.32999999999998,
+      "job": {
+        "startedAt": "2026-10-14T14:50:12Z",
+        "completedAt": "2026-10-14T14:55:30Z",
+        "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38584056523/job/115921200785"
+      },
+      "cache": {
+        "id": 8944270879,
+        "ref": "refs/heads/bench/cache-3000-standalone-r1",
+        "key": "v0-rust-bench-pr3000-r1-before-20261014-b-Linux-x64-e2f94ece-6e53ec72",
+        "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+        "size_in_bytes": 818972709
+      },
+      "rust_seconds": 287.612240466,
+      "compiling": 655,
+      "checking": 439,
+      "cache_bytes": 818972709,
+      "restored_rlibs": 788,
+      "passed": 2339,
+      "ignored": 7
+    }
+  ]
+}

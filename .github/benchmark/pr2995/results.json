@@ -1,0 +1,1040 @@
+{
+  "metadata": {
+    "base": "2e9d7cb0f9d808d1426ba915f01c4735a517fe98",
+    "head": "94440c95cb6e44722f96fba960ed8d9e43e382c1",
+    "pr": 2995,
+    "source_difference": ".github/actions/setup-xwin/action.yml only",
+    "build_commands": "Unchanged release commands from the main Windows CLI build action.",
+    "cache_control": "Only isolated SDK caches are enabled. Cold runs restore none and save an SDK cache. Warm runs require an exact SDK hit. Cargo, native binary, and pnpm caches are disabled. Runner tool caches remain enabled.",
+    "sdk_timing": "Starts after common Rust/cargo-xwin installation, before Clang selection and SDK restore/download. Ends after cargo xwin env resolves the SDK. SDK cache writes are separate.",
+    "samples": 2,
+    "sdk_cache_paths": {
+      "main": [
+        "~/.cache/cargo-xwin"
+      ],
+      "pr": [
+        "~/.cache/cargo-xwin/windows-msvc-sysroot/include",
+        "~/.cache/cargo-xwin/windows-msvc-sysroot/lib/x86_64-unknown-windows-msvc",
+        "~/.cache/cargo-xwin/xwin"
+      ]
+    },
+    "sequence": [
+      [
+        "main",
+        "cold",
+        "1"
+      ],
+      [
+        "pr",
+        "cold",
+        "1"
+      ],
+      [
+        "pr",
+        "warm",
+        "1"
+      ],
+      [
+        "main",
+        "warm",
+        "1"
+      ],
+      [
+        "pr",
+        "cold",
+        "2"
+      ],
+      [
+        "main",
+        "cold",
+        "2"
+      ],
+      [
+        "main",
+        "warm",
+        "2"
+      ],
+      [
+        "pr",
+        "warm",
+        "2"
+      ]
+    ]
+  },
+  "runner_profile": "namespace-profile-linux-x64-default",
+  "aggregation": "Median of two samples per variant and SDK cache state. Queue time excluded from job duration.",
+  "timings": [
+    {
+      "cache_state": "cold",
+      "metric": "sdk_ready",
+      "main": 272.2012519905,
+      "pr": 19.894732048500003,
+      "change_seconds": -252.306519942,
+      "change_pct": -92.69116805928786,
+      "samples": {
+        "main": [
+          206.660104015,
+          337.742399966
+        ],
+        "pr": [
+          21.143272800999995,
+          18.646191296000012
+        ]
+      }
+    },
+    {
+      "cache_state": "cold",
+      "metric": "native_phase_seconds",
+      "main": 441.77965775100006,
+      "pr": 422.26495245750004,
+      "change_seconds": -19.514705293500015,
+      "change_pct": -4.417293768763586,
+      "samples": {
+        "main": [
+          490.185687434,
+          393.37362806800013
+        ],
+        "pr": [
+          448.960702554,
+          395.56920236100007
+        ]
+      }
+    },
+    {
+      "cache_state": "cold",
+      "metric": "sdk_plus_native_seconds",
+      "main": 713.9809097415,
+      "pr": 442.159684506,
+      "change_seconds": -271.8212252355,
+      "change_pct": -38.071217525117596,
+      "samples": {
+        "main": [
+          696.845791449,
+          731.1160280340001
+        ],
+        "pr": [
+          470.103975355,
+          414.21539365700005
+        ]
+      }
+    },
+    {
+      "cache_state": "cold",
+      "metric": "job_seconds",
+      "main": 744.0,
+      "pr": 481.5,
+      "change_seconds": -262.5,
+      "change_pct": -35.28225806451613,
+      "samples": {
+        "main": [
+          726.0,
+          762.0
+        ],
+        "pr": [
+          520.0,
+          443.0
+        ]
+      }
+    },
+    {
+      "cache_state": "warm",
+      "metric": "sdk_ready",
+      "main": 2.659006293500001,
+      "pr": 7.360018951000001,
+      "change_seconds": 4.7010126575,
+      "change_pct": 176.7958454627102,
+      "samples": {
+        "main": [
+          2.995661560000002,
+          2.322351027
+        ],
+        "pr": [
+          7.166561156,
+          7.553476746000001
+        ]
+      }
+    },
+    {
+      "cache_state": "warm",
+      "metric": "native_phase_seconds",
+      "main": 422.91065061050006,
+      "pr": 456.77807609900003,
+      "change_seconds": 33.867425488499975,
+      "change_pct": 8.008175116803052,
+      "samples": {
+        "main": [
+          440.52944482700013,
+          405.29185639400004
+        ],
+        "pr": [
+          398.89911637,
+          514.6570358280001
+        ]
+      }
+    },
+    {
+      "cache_state": "warm",
+      "metric": "sdk_plus_native_seconds",
+      "main": 425.5696569040001,
+      "pr": 464.13809505000006,
+      "change_seconds": 38.56843814599995,
+      "change_pct": 9.062779152673528,
+      "samples": {
+        "main": [
+          443.52510638700016,
+          407.61420742100006
+        ],
+        "pr": [
+          406.065677526,
+          522.2105125740001
+        ]
+      }
+    },
+    {
+      "cache_state": "warm",
+      "metric": "job_seconds",
+      "main": 455.0,
+      "pr": 491.5,
+      "change_seconds": 36.5,
+      "change_pct": 8.021978021978015,
+      "samples": {
+        "main": [
+          476.0,
+          434.0
+        ],
+        "pr": [
+          434.0,
+          549.0
+        ]
+      }
+    }
+  ],
+  "compressed_caches": [
+    {
+      "variant": "main",
+      "sample": "1",
+      "bytes": 137204098,
+      "key": "vp-pr2995-r2-1-main-cargo-xwin-msvc-17"
+    },
+    {
+      "variant": "main",
+      "sample": "2",
+      "bytes": 137226470,
+      "key": "vp-pr2995-r2-2-main-cargo-xwin-msvc-17"
+    },
+    {
+      "variant": "pr",
+      "sample": "1",
+      "bytes": 245020605,
+      "key": "vp-pr2995-r2-1-pr-cargo-xwin-sysroot-2026-09-15-clang-cl-22-x64-v1"
+    },
+    {
+      "variant": "pr",
+      "sample": "2",
+      "bytes": 245022545,
+      "key": "vp-pr2995-r2-2-pr-cargo-xwin-sysroot-2026-09-15-clang-cl-22-x64-v1"
+    }
+  ],
+  "records": [
+    {
+      "variant": "main",
+      "cache_state": "cold",
+      "sample": "1",
+      "run_id": "38508912379",
+      "job_url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38508912379/job/115672662089",
+      "benchmark_commit": "1ff20461a6215aaf2b81dea0f063c9c9e5cc0830",
+      "phases": {
+        "sdk-resolve": {
+          "seconds": 206.59976993099997,
+          "exit_code": 0,
+          "command": [
+            "cargo",
+            "xwin",
+            "env",
+            "--target",
+            "x86_64-pc-windows-msvc"
+          ]
+        },
+        "sdk_ready": {
+          "seconds": 206.660104015
+        },
+        "napi": {
+          "seconds": 364.11120247300005,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/napi.sh"
+          ]
+        },
+        "cli": {
+          "seconds": 113.69226392299993,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/cli.sh"
+          ]
+        },
+        "trampoline": {
+          "seconds": 12.382221038000012,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/trampoline.sh"
+          ]
+        }
+      },
+      "native_phase_seconds": 490.185687434,
+      "sdk_plus_native_seconds": 696.845791449,
+      "job_seconds": 726.0,
+      "sdk_cache_bytes": 1158154521,
+      "sdk_disk_bytes": 1158154521,
+      "clang22_preinstalled": false,
+      "cargo_xwin": {
+        "exit_code": 0,
+        "stdout": "cargo-xwin-xwin 0.23.1\n",
+        "stderr": ""
+      },
+      "rustc": {
+        "exit_code": 0,
+        "stdout": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n",
+        "stderr": ""
+      },
+      "selected_clang": {
+        "exit_code": 127,
+        "stdout": "",
+        "stderr": "clang-cl is not installed yet"
+      },
+      "cpu": {
+        "CPU(s)": "4",
+        "Model name": "AMD EPYC",
+        "CPU family": "26",
+        "Model": "68",
+        "BogoMIPS": "8583.86"
+      },
+      "sdk_actions": [
+        {
+          "name": "Run actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
+          "id": "__self_2.__self.__self.sysroot-cache",
+          "outcome": "skipped",
+          "seconds": 0.0
+        },
+        {
+          "name": "Require exact SDK cache hit",
+          "id": "__self_2.__self.__self.__run_3",
+          "outcome": "skipped",
+          "seconds": 0.0
+        }
+      ],
+      "restored_sdk_keys": [],
+      "started_at": "2026-10-14T03:57:26Z",
+      "completed_at": "2026-10-14T04:09:32Z"
+    },
+    {
+      "variant": "pr",
+      "cache_state": "cold",
+      "sample": "1",
+      "run_id": "38510004908",
+      "job_url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38510004908/job/115676096437",
+      "benchmark_commit": "1ff20461a6215aaf2b81dea0f063c9c9e5cc0830",
+      "phases": {
+        "sdk-resolve": {
+          "seconds": 0.07172292299999583,
+          "exit_code": 0,
+          "command": [
+            "cargo",
+            "xwin",
+            "env",
+            "--target",
+            "x86_64-pc-windows-msvc"
+          ]
+        },
+        "sdk_ready": {
+          "seconds": 21.143272800999995
+        },
+        "napi": {
+          "seconds": 330.26678335599996,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/napi.sh"
+          ]
+        },
+        "cli": {
+          "seconds": 104.29876128999996,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/cli.sh"
+          ]
+        },
+        "trampoline": {
+          "seconds": 14.395157908000101,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/trampoline.sh"
+          ]
+        }
+      },
+      "native_phase_seconds": 448.960702554,
+      "sdk_plus_native_seconds": 470.103975355,
+      "job_seconds": 520.0,
+      "sdk_cache_bytes": 1704567531,
+      "sdk_disk_bytes": 4715675475,
+      "clang22_preinstalled": false,
+      "cargo_xwin": {
+        "exit_code": 0,
+        "stdout": "cargo-xwin-xwin 0.23.1\n",
+        "stderr": ""
+      },
+      "rustc": {
+        "exit_code": 0,
+        "stdout": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n",
+        "stderr": ""
+      },
+      "selected_clang": {
+        "exit_code": 0,
+        "stdout": "Ubuntu clang version 22.1.8 (++20260714014902+ca7933e47d3a-1~exp1~20260714135019.80)\nTarget: x86_64-pc-windows-msvc\nThread model: posix\nInstalledDir: /usr/lib/llvm-22/bin\n",
+        "stderr": ""
+      },
+      "cpu": {
+        "CPU(s)": "4",
+        "Model name": "AMD EPYC",
+        "CPU family": "26",
+        "Model": "68",
+        "BogoMIPS": "8583.82"
+      },
+      "sdk_actions": [
+        {
+          "name": "Select packaged Windows SDK",
+          "id": "__self_2.__self.__self_2.__run_3",
+          "outcome": "success",
+          "seconds": 5.826
+        },
+        {
+          "name": "Run actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
+          "id": "__self_2.__self.__self_2.sysroot-cache",
+          "outcome": "skipped",
+          "seconds": 0.0
+        },
+        {
+          "name": "Download pinned Windows SDK",
+          "id": "__self_2.__self.__self_2.__run_4",
+          "outcome": "success",
+          "seconds": 15.191
+        },
+        {
+          "name": "Require exact SDK cache hit",
+          "id": "__self_2.__self.__self_2.__run_5",
+          "outcome": "skipped",
+          "seconds": 0.0
+        }
+      ],
+      "restored_sdk_keys": [],
+      "started_at": "2026-10-14T04:10:15Z",
+      "completed_at": "2026-10-14T04:18:55Z"
+    },
+    {
+      "variant": "pr",
+      "cache_state": "warm",
+      "sample": "1",
+      "run_id": "38518748820",
+      "job_url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38518748820/job/115703374398",
+      "benchmark_commit": "1ff20461a6215aaf2b81dea0f063c9c9e5cc0830",
+      "phases": {
+        "sdk-resolve": {
+          "seconds": 0.06222329099999868,
+          "exit_code": 0,
+          "command": [
+            "cargo",
+            "xwin",
+            "env",
+            "--target",
+            "x86_64-pc-windows-msvc"
+          ]
+        },
+        "sdk_ready": {
+          "seconds": 7.166561156
+        },
+        "napi": {
+          "seconds": 275.70874457900004,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/napi.sh"
+          ]
+        },
+        "cli": {
+          "seconds": 110.87638904099998,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/cli.sh"
+          ]
+        },
+        "trampoline": {
+          "seconds": 12.31398274999998,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/trampoline.sh"
+          ]
+        }
+      },
+      "native_phase_seconds": 398.89911637,
+      "sdk_plus_native_seconds": 406.065677526,
+      "job_seconds": 434.0,
+      "sdk_cache_bytes": 1704567531,
+      "sdk_disk_bytes": 1704571480,
+      "clang22_preinstalled": false,
+      "cargo_xwin": {
+        "exit_code": 0,
+        "stdout": "cargo-xwin-xwin 0.23.1\n",
+        "stderr": ""
+      },
+      "rustc": {
+        "exit_code": 0,
+        "stdout": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n",
+        "stderr": ""
+      },
+      "selected_clang": {
+        "exit_code": 0,
+        "stdout": "Ubuntu clang version 22.1.8 (++20260714014902+ca7933e47d3a-1~exp1~20260714135019.80)\nTarget: x86_64-pc-windows-msvc\nThread model: posix\nInstalledDir: /usr/lib/llvm-22/bin\n",
+        "stderr": ""
+      },
+      "cpu": {
+        "CPU(s)": "4",
+        "Model name": "AMD EPYC",
+        "CPU family": "26",
+        "Model": "68",
+        "BogoMIPS": "8583.84"
+      },
+      "sdk_actions": [
+        {
+          "name": "Select packaged Windows SDK",
+          "id": "__self_2.__self.__self_2.__run_3",
+          "outcome": "success",
+          "seconds": 3.887
+        },
+        {
+          "name": "Run actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
+          "id": "__self_2.__self.__self_2.sysroot-cache",
+          "outcome": "success",
+          "seconds": 3.159
+        },
+        {
+          "name": "Download pinned Windows SDK",
+          "id": "__self_2.__self.__self_2.__run_4",
+          "outcome": "skipped",
+          "seconds": 0.0
+        },
+        {
+          "name": "Require exact SDK cache hit",
+          "id": "__self_2.__self.__self_2.__run_5",
+          "outcome": "success",
+          "seconds": 0.005
+        }
+      ],
+      "restored_sdk_keys": [
+        "vp-pr2995-r2-1-pr-cargo-xwin-sysroot-2026-09-15-clang-cl-22-x64-v1"
+      ],
+      "started_at": "2026-10-14T05:50:02Z",
+      "completed_at": "2026-10-14T05:57:16Z"
+    },
+    {
+      "variant": "main",
+      "cache_state": "warm",
+      "sample": "1",
+      "run_id": "38519501666",
+      "job_url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38519501666/job/115705725695",
+      "benchmark_commit": "1ff20461a6215aaf2b81dea0f063c9c9e5cc0830",
+      "phases": {
+        "sdk-resolve": {
+          "seconds": 0.05487397699999974,
+          "exit_code": 0,
+          "command": [
+            "cargo",
+            "xwin",
+            "env",
+            "--target",
+            "x86_64-pc-windows-msvc"
+          ]
+        },
+        "sdk_ready": {
+          "seconds": 2.995661560000002
+        },
+        "napi": {
+          "seconds": 327.32352331900006,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/napi.sh"
+          ]
+        },
+        "cli": {
+          "seconds": 98.33151541000007,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/cli.sh"
+          ]
+        },
+        "trampoline": {
+          "seconds": 14.874406098000009,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/trampoline.sh"
+          ]
+        }
+      },
+      "native_phase_seconds": 440.52944482700013,
+      "sdk_plus_native_seconds": 443.52510638700016,
+      "job_seconds": 476.0,
+      "sdk_cache_bytes": 1158154521,
+      "sdk_disk_bytes": 1158154521,
+      "clang22_preinstalled": false,
+      "cargo_xwin": {
+        "exit_code": 0,
+        "stdout": "cargo-xwin-xwin 0.23.1\n",
+        "stderr": ""
+      },
+      "rustc": {
+        "exit_code": 0,
+        "stdout": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n",
+        "stderr": ""
+      },
+      "selected_clang": {
+        "exit_code": 127,
+        "stdout": "",
+        "stderr": "clang-cl is not installed yet"
+      },
+      "cpu": {
+        "CPU(s)": "4",
+        "Model name": "AMD EPYC",
+        "CPU family": "26",
+        "Model": "68",
+        "BogoMIPS": "8583.82"
+      },
+      "sdk_actions": [
+        {
+          "name": "Run actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
+          "id": "__self_2.__self.__self.sysroot-cache",
+          "outcome": "success",
+          "seconds": 2.853
+        },
+        {
+          "name": "Require exact SDK cache hit",
+          "id": "__self_2.__self.__self.__run_3",
+          "outcome": "success",
+          "seconds": 0.008
+        }
+      ],
+      "restored_sdk_keys": [
+        "vp-pr2995-r2-1-main-cargo-xwin-msvc-17"
+      ],
+      "started_at": "2026-10-14T05:58:11Z",
+      "completed_at": "2026-10-14T06:06:07Z"
+    },
+    {
+      "variant": "pr",
+      "cache_state": "cold",
+      "sample": "2",
+      "run_id": "38520341124",
+      "job_url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38520341124/job/115708363420",
+      "benchmark_commit": "1ff20461a6215aaf2b81dea0f063c9c9e5cc0830",
+      "phases": {
+        "sdk-resolve": {
+          "seconds": 0.06926302799999462,
+          "exit_code": 0,
+          "command": [
+            "cargo",
+            "xwin",
+            "env",
+            "--target",
+            "x86_64-pc-windows-msvc"
+          ]
+        },
+        "sdk_ready": {
+          "seconds": 18.646191296000012
+        },
+        "napi": {
+          "seconds": 290.10650929400003,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/napi.sh"
+          ]
+        },
+        "cli": {
+          "seconds": 95.65257411300001,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/cli.sh"
+          ]
+        },
+        "trampoline": {
+          "seconds": 9.810118954000018,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/trampoline.sh"
+          ]
+        }
+      },
+      "native_phase_seconds": 395.56920236100007,
+      "sdk_plus_native_seconds": 414.21539365700005,
+      "job_seconds": 443.0,
+      "sdk_cache_bytes": 1704567531,
+      "sdk_disk_bytes": 4715675475,
+      "clang22_preinstalled": false,
+      "cargo_xwin": {
+        "exit_code": 0,
+        "stdout": "cargo-xwin-xwin 0.23.1\n",
+        "stderr": ""
+      },
+      "rustc": {
+        "exit_code": 0,
+        "stdout": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n",
+        "stderr": ""
+      },
+      "selected_clang": {
+        "exit_code": 0,
+        "stdout": "Ubuntu clang version 22.1.8 (++20260714014902+ca7933e47d3a-1~exp1~20260714135019.80)\nTarget: x86_64-pc-windows-msvc\nThread model: posix\nInstalledDir: /usr/lib/llvm-22/bin\n",
+        "stderr": ""
+      },
+      "cpu": {
+        "CPU(s)": "4",
+        "Model name": "AMD EPYC",
+        "CPU family": "26",
+        "Model": "68",
+        "BogoMIPS": "8583.84"
+      },
+      "sdk_actions": [
+        {
+          "name": "Select packaged Windows SDK",
+          "id": "__self_2.__self.__self_2.__run_3",
+          "outcome": "success",
+          "seconds": 4.066
+        },
+        {
+          "name": "Run actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
+          "id": "__self_2.__self.__self_2.sysroot-cache",
+          "outcome": "skipped",
+          "seconds": 0.0
+        },
+        {
+          "name": "Download pinned Windows SDK",
+          "id": "__self_2.__self.__self_2.__run_4",
+          "outcome": "success",
+          "seconds": 14.451
+        },
+        {
+          "name": "Require exact SDK cache hit",
+          "id": "__self_2.__self.__self_2.__run_5",
+          "outcome": "skipped",
+          "seconds": 0.0
+        }
+      ],
+      "restored_sdk_keys": [],
+      "started_at": "2026-10-14T06:07:06Z",
+      "completed_at": "2026-10-14T06:14:29Z"
+    },
+    {
+      "variant": "main",
+      "cache_state": "cold",
+      "sample": "2",
+      "run_id": "38521122638",
+      "job_url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38521122638/job/115710810136",
+      "benchmark_commit": "1ff20461a6215aaf2b81dea0f063c9c9e5cc0830",
+      "phases": {
+        "sdk-resolve": {
+          "seconds": 337.68679689600003,
+          "exit_code": 0,
+          "command": [
+            "cargo",
+            "xwin",
+            "env",
+            "--target",
+            "x86_64-pc-windows-msvc"
+          ]
+        },
+        "sdk_ready": {
+          "seconds": 337.742399966
+        },
+        "napi": {
+          "seconds": 280.826512985,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/napi.sh"
+          ]
+        },
+        "cli": {
+          "seconds": 101.54170688800002,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/cli.sh"
+          ]
+        },
+        "trampoline": {
+          "seconds": 11.005408195000086,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/trampoline.sh"
+          ]
+        }
+      },
+      "native_phase_seconds": 393.37362806800013,
+      "sdk_plus_native_seconds": 731.1160280340001,
+      "job_seconds": 762.0,
+      "sdk_cache_bytes": 1158154521,
+      "sdk_disk_bytes": 1158154521,
+      "clang22_preinstalled": false,
+      "cargo_xwin": {
+        "exit_code": 0,
+        "stdout": "cargo-xwin-xwin 0.23.1\n",
+        "stderr": ""
+      },
+      "rustc": {
+        "exit_code": 0,
+        "stdout": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n",
+        "stderr": ""
+      },
+      "selected_clang": {
+        "exit_code": 127,
+        "stdout": "",
+        "stderr": "clang-cl is not installed yet"
+      },
+      "cpu": {
+        "CPU(s)": "4",
+        "Model name": "AMD EPYC",
+        "CPU family": "26",
+        "Model": "68",
+        "BogoMIPS": "8583.84"
+      },
+      "sdk_actions": [
+        {
+          "name": "Run actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
+          "id": "__self_2.__self.__self.sysroot-cache",
+          "outcome": "skipped",
+          "seconds": 0.0
+        },
+        {
+          "name": "Require exact SDK cache hit",
+          "id": "__self_2.__self.__self.__run_3",
+          "outcome": "skipped",
+          "seconds": 0.0
+        }
+      ],
+      "restored_sdk_keys": [],
+      "started_at": "2026-10-14T06:15:25Z",
+      "completed_at": "2026-10-14T06:28:07Z"
+    },
+    {
+      "variant": "main",
+      "cache_state": "warm",
+      "sample": "2",
+      "run_id": "38522435108",
+      "job_url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38522435108/job/115714999999",
+      "benchmark_commit": "1ff20461a6215aaf2b81dea0f063c9c9e5cc0830",
+      "phases": {
+        "sdk-resolve": {
+          "seconds": 0.03724273599999961,
+          "exit_code": 0,
+          "command": [
+            "cargo",
+            "xwin",
+            "env",
+            "--target",
+            "x86_64-pc-windows-msvc"
+          ]
+        },
+        "sdk_ready": {
+          "seconds": 2.322351027
+        },
+        "napi": {
+          "seconds": 282.87029025000004,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/napi.sh"
+          ]
+        },
+        "cli": {
+          "seconds": 111.42022999200003,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/cli.sh"
+          ]
+        },
+        "trampoline": {
+          "seconds": 11.001336151999965,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/trampoline.sh"
+          ]
+        }
+      },
+      "native_phase_seconds": 405.29185639400004,
+      "sdk_plus_native_seconds": 407.61420742100006,
+      "job_seconds": 434.0,
+      "sdk_cache_bytes": 1158154521,
+      "sdk_disk_bytes": 1158154521,
+      "clang22_preinstalled": false,
+      "cargo_xwin": {
+        "exit_code": 0,
+        "stdout": "cargo-xwin-xwin 0.23.1\n",
+        "stderr": ""
+      },
+      "rustc": {
+        "exit_code": 0,
+        "stdout": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n",
+        "stderr": ""
+      },
+      "selected_clang": {
+        "exit_code": 127,
+        "stdout": "",
+        "stderr": "clang-cl is not installed yet"
+      },
+      "cpu": {
+        "CPU(s)": "4",
+        "Model name": "AMD EPYC",
+        "CPU family": "26",
+        "Model": "68",
+        "BogoMIPS": "8583.84"
+      },
+      "sdk_actions": [
+        {
+          "name": "Run actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
+          "id": "__self_2.__self.__self.sysroot-cache",
+          "outcome": "success",
+          "seconds": 2.229
+        },
+        {
+          "name": "Require exact SDK cache hit",
+          "id": "__self_2.__self.__self.__run_3",
+          "outcome": "success",
+          "seconds": 0.005
+        }
+      ],
+      "restored_sdk_keys": [
+        "vp-pr2995-r2-2-main-cargo-xwin-msvc-17"
+      ],
+      "started_at": "2026-10-14T06:28:52Z",
+      "completed_at": "2026-10-14T06:36:06Z"
+    },
+    {
+      "variant": "pr",
+      "cache_state": "warm",
+      "sample": "2",
+      "run_id": "38523230687",
+      "job_url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38523230687/job/115717533619",
+      "benchmark_commit": "1ff20461a6215aaf2b81dea0f063c9c9e5cc0830",
+      "phases": {
+        "sdk-resolve": {
+          "seconds": 0.06770544400000134,
+          "exit_code": 0,
+          "command": [
+            "cargo",
+            "xwin",
+            "env",
+            "--target",
+            "x86_64-pc-windows-msvc"
+          ]
+        },
+        "sdk_ready": {
+          "seconds": 7.553476746000001
+        },
+        "napi": {
+          "seconds": 348.502881461,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/napi.sh"
+          ]
+        },
+        "cli": {
+          "seconds": 153.68657528600005,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/cli.sh"
+          ]
+        },
+        "trampoline": {
+          "seconds": 12.467579081000054,
+          "exit_code": 0,
+          "command": [
+            "bash",
+            ".github/benchmark/pr2995/trampoline.sh"
+          ]
+        }
+      },
+      "native_phase_seconds": 514.6570358280001,
+      "sdk_plus_native_seconds": 522.2105125740001,
+      "job_seconds": 549.0,
+      "sdk_cache_bytes": 1704567531,
+      "sdk_disk_bytes": 1704571480,
+      "clang22_preinstalled": false,
+      "cargo_xwin": {
+        "exit_code": 0,
+        "stdout": "cargo-xwin-xwin 0.23.1\n",
+        "stderr": ""
+      },
+      "rustc": {
+        "exit_code": 0,
+        "stdout": "rustc 1.99.0-nightly (73dc9167f 2026-08-01)\nbinary: rustc\ncommit-hash: 73dc9167f1cd099e525c9ade2e068d1907b78564\ncommit-date: 2026-08-01\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.0-nightly\nLLVM version: 22.1.8\n",
+        "stderr": ""
+      },
+      "selected_clang": {
+        "exit_code": 0,
+        "stdout": "Ubuntu clang version 22.1.8 (++20260714014902+ca7933e47d3a-1~exp1~20260714135019.80)\nTarget: x86_64-pc-windows-msvc\nThread model: posix\nInstalledDir: /usr/lib/llvm-22/bin\n",
+        "stderr": ""
+      },
+      "cpu": {
+        "CPU(s)": "4",
+        "Model name": "AMD EPYC",
+        "CPU family": "26",
+        "Model": "68",
+        "BogoMIPS": "8583.82"
+      },
+      "sdk_actions": [
+        {
+          "name": "Select packaged Windows SDK",
+          "id": "__self_2.__self.__self_2.__run_3",
+          "outcome": "success",
+          "seconds": 4.348
+        },
+        {
+          "name": "Run actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9",
+          "id": "__self_2.__self.__self_2.sysroot-cache",
+          "outcome": "success",
+          "seconds": 3.074
+        },
+        {
+          "name": "Download pinned Windows SDK",
+          "id": "__self_2.__self.__self_2.__run_4",
+          "outcome": "skipped",
+          "seconds": 0.0
+        },
+        {
+          "name": "Require exact SDK cache hit",
+          "id": "__self_2.__self.__self_2.__run_5",
+          "outcome": "success",
+          "seconds": 0.006
+        }
+      ],
+      "restored_sdk_keys": [
+        "vp-pr2995-r2-2-pr-cargo-xwin-sysroot-2026-09-15-clang-cl-22-x64-v1"
+      ],
+      "started_at": "2026-10-14T06:36:55Z",
+      "completed_at": "2026-10-14T06:46:04Z"
+    }
+  ]
+}

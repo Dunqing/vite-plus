@@ -1,0 +1,23 @@
+{
+  "base": "2970c91d161082860dae13adbdfe4ac08bfbdc6e",
+  "head": "d3f12e52cf370e10730e336ccd8efc26f1d1bfd3",
+  "source": "crates/vp_migration/src/ast_grep.rs",
+  "profile": "release",
+  "rayon_threads": 4,
+  "samples": 6,
+  "projects": {
+    "dify": {
+      "repository": "https://github.com/langgenius/dify.git",
+      "branch": "main",
+      "hash": "baf2191ee360c5f058a9e25c2c2c26cafea2bbe6",
+      "forceFreshMigration": true
+    },
+    "vinext": {
+      "repository": "https://github.com/cloudflare/vinext.git",
+      "branch": "main",
+      "hash": "2a2ce31ecc286ae38ab1f0bce13d94418da8a513",
+      "forceFreshMigration": true
+    }
+  },
+  "comparison": "PR #2987 only, rebased on main; release profile for both variants"
+}

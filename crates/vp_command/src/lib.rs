@@ -13,7 +13,7 @@ use std::{
     process::{ExitStatus, Stdio},
 };
 
-use fspy::AccessMode;
+use fspy::PathAccess;
 use tokio::process::Command;
 use tokio_util::sync::CancellationToken;
 use vp_error::Error;
@@ -22,6 +22,16 @@ use vt_path::{AbsolutePath, AbsolutePathBuf, RelativePathBuf};
 mod ps1_shim;
 
 pub use ps1_shim::rewrite_cmd_to_powershell;
+
+bitflags::bitflags! {
+    /// File access modes combined across a tracked command's accesses to one path.
+    #[derive(Debug, Clone, Copy)]
+    pub struct AccessMode: u8 {
+        const READ = 1;
+        const WRITE = 1 << 1;
+        const READ_DIR = 1 << 2;
+    }
+}
 
 /// Result of running a command with fspy tracking.
 #[derive(Debug)]
@@ -268,8 +278,13 @@ where
     let mut path_accesses = HashMap::<RelativePathBuf, AccessMode>::new();
     for access in tracked_accesses.iter() {
         tracing::debug!("Path access: {:?}", access);
-        let relative_path = access
-            .path
+        let (path, mode) = match access {
+            PathAccess::Read(path) => (path, AccessMode::READ),
+            PathAccess::Write(path) => (path, AccessMode::WRITE),
+            PathAccess::ReadWrite(path) => (path, AccessMode::READ | AccessMode::WRITE),
+            PathAccess::ReadDir(path) => (path, AccessMode::READ_DIR),
+        };
+        let relative_path = path
             .strip_path_prefix(cwd, |strip_result| {
                 let Ok(stripped_path) = strip_result else {
                     return None;
@@ -286,10 +301,7 @@ where
         let Some(relative_path) = relative_path else {
             continue;
         };
-        path_accesses
-            .entry(relative_path)
-            .and_modify(|mode| *mode |= access.mode)
-            .or_insert(access.mode);
+        path_accesses.entry(relative_path).and_modify(|existing| *existing |= mode).or_insert(mode);
     }
 
     Ok(FspyCommandResult { status: termination.status, path_accesses })
@@ -658,6 +670,27 @@ mod tests {
                 .expect("package.json should be in path accesses");
             assert!(path_access.contains(AccessMode::WRITE));
             assert!(path_access.contains(AccessMode::READ));
+        }
+
+        #[tokio::test]
+        async fn test_run_command_with_fspy_read_write_and_directory_modes() {
+            let temp_dir = create_temp_dir();
+            let cwd = AbsolutePathBuf::new(temp_dir.path().canonicalize().unwrap()).unwrap();
+            let result = run_command_with_fspy(
+                "node",
+                &["-e", "const fs = require('node:fs'); fs.closeSync(fs.openSync('file.txt', 'w+')); fs.mkdirSync('entries'); fs.readdirSync('entries');"],
+                &HashMap::new(),
+                &cwd,
+            )
+            .await
+            .unwrap();
+            assert!(result.status.success());
+            let file =
+                result.path_accesses.get(&RelativePathBuf::new("file.txt").unwrap()).unwrap();
+            assert!(file.contains(AccessMode::READ | AccessMode::WRITE));
+            let directory =
+                result.path_accesses.get(&RelativePathBuf::new("entries").unwrap()).unwrap();
+            assert!(directory.contains(AccessMode::READ_DIR));
         }
 
         #[tokio::test]

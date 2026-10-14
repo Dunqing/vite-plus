@@ -1,0 +1,14 @@
+{
+  "base": "2970c91d161082860dae13adbdfe4ac08bfbdc6e",
+  "head": "68f149cb19035ad2dcb44fcc8cef9d71d2d5dc80",
+  "job": "ci.yml / test / Linux x64",
+  "runner": "namespace-profile-linux-x64-default",
+  "samples_per_variant_and_state": 2,
+  "rust_cache_before": "c19371144df3bb44fab255c43d04cbc2ab54d1c4",
+  "rust_cache_after": "6323deb102c322ba6fcbdcafc7e3dddab59af2b6",
+  "cache_policy": "Each cold run saves one isolated cache; its warm run requires an exact hit and does not save. Delete each benchmark cache after its warm run.",
+  "measured_commands": [
+    "RUSTFLAGS=\"-D warnings --cfg tokio_unstable\" cargo check --all-targets --all-features",
+    "just test"
+  ]
+}

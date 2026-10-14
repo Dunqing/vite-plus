@@ -1,0 +1,11 @@
+{
+  "base": "62de57888056903ecf0d6f3dde0fa1e36f9364d4",
+  "head": "b28bee2e8dfd5fbaa389d2292cbaca4b50b00c11",
+  "commands": {
+    "before": "cd crates/vp_trampoline && cargo test",
+    "after": "cargo test --manifest-path crates/vp_trampoline/Cargo.toml --target-dir \"${CARGO_TARGET_DIR:-target}\""
+  },
+  "samples_per_condition": 6,
+  "rust_cache": "c19371144df3bb44fab255c43d04cbc2ab54d1c4",
+  "scope": "Only the trampoline command in the Unix just test recipe. Toolchain setup, source downloads, other test suites, and cache transfer are outside the timer."
+}

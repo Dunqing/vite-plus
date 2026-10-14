@@ -14,7 +14,10 @@ def save(data):
     REPORT.write_text(json.dumps(data, indent=2) + '\n')
 
 def command(*args):
-    result = subprocess.run(args, text=True, capture_output=True)
+    try:
+        result = subprocess.run(args, text=True, capture_output=True)
+    except FileNotFoundError:
+        return {'exit_code': 127, 'stdout': '', 'stderr': f'{args[0]} is not installed yet'}
     return {'exit_code': result.returncode, 'stdout': result.stdout, 'stderr': result.stderr}
 
 mode = sys.argv[1]

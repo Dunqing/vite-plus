@@ -1,0 +1,29 @@
+name: Setup cargo-xwin
+description: Install the Rust toolchain and cargo-xwin for cross-compiling to x86_64-pc-windows-msvc on Linux, with a pinned MSVC sysroot.
+inputs:
+  cache-key:
+    description: setup-rust cache-key prefix; pass a distinct value per caller.
+    required: true
+  save-cache:
+    description: Whether setup-rust should save its cache (usually only on main).
+    required: false
+    default: 'false'
+  tools:
+    description: Extra comma-separated taiki-e/install-action tools to install alongside cargo-xwin (e.g. "cargo-nextest").
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+  - uses: ./.github/actions/benchmark-sdk-main
+    if: env.SDK_VARIANT == 'main'
+    with:
+      cache-key: ${{ inputs.cache-key }}
+      save-cache: ${{ inputs.save-cache }}
+      tools: ${{ inputs.tools }}
+  - uses: ./.github/actions/benchmark-sdk-pr
+    if: env.SDK_VARIANT == 'pr'
+    with:
+      cache-key: ${{ inputs.cache-key }}
+      save-cache: ${{ inputs.save-cache }}
+      tools: ${{ inputs.tools }}

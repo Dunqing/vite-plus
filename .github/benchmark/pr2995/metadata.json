@@ -1,0 +1,62 @@
+{
+  "base": "2e9d7cb0f9d808d1426ba915f01c4735a517fe98",
+  "head": "94440c95cb6e44722f96fba960ed8d9e43e382c1",
+  "pr": 2995,
+  "source_difference": ".github/actions/setup-xwin/action.yml only",
+  "build_commands": "Unchanged release commands from the main Windows CLI build action.",
+  "cache_control": "Only isolated SDK caches are enabled. Cold runs restore none and save an SDK cache. Warm runs require an exact SDK hit. Cargo, native binary, and pnpm caches are disabled. Runner tool caches remain enabled.",
+  "sdk_timing": "Starts after common Rust/cargo-xwin installation, before Clang selection and SDK restore/download. Ends after cargo xwin env resolves the SDK. SDK cache writes are separate.",
+  "samples": 2,
+  "sdk_cache_paths": {
+    "main": [
+      "~/.cache/cargo-xwin"
+    ],
+    "pr": [
+      "~/.cache/cargo-xwin/windows-msvc-sysroot/include",
+      "~/.cache/cargo-xwin/windows-msvc-sysroot/lib/x86_64-unknown-windows-msvc",
+      "~/.cache/cargo-xwin/xwin"
+    ]
+  },
+  "sequence": [
+    [
+      "main",
+      "cold",
+      "1"
+    ],
+    [
+      "pr",
+      "cold",
+      "1"
+    ],
+    [
+      "pr",
+      "warm",
+      "1"
+    ],
+    [
+      "main",
+      "warm",
+      "1"
+    ],
+    [
+      "pr",
+      "cold",
+      "2"
+    ],
+    [
+      "main",
+      "cold",
+      "2"
+    ],
+    [
+      "main",
+      "warm",
+      "2"
+    ],
+    [
+      "pr",
+      "warm",
+      "2"
+    ]
+  ]
+}

@@ -1,0 +1,52 @@
+name: Setup cargo-xwin
+description: Install the Rust toolchain and cargo-xwin for cross-compiling to x86_64-pc-windows-msvc on Linux, with the MSVC CRT / Windows SDK cached.
+inputs:
+  cache-key:
+    description: setup-rust cache-key prefix; pass a distinct value per caller.
+    required: true
+  save-cache:
+    description: Whether setup-rust should save its cache (usually only on main).
+    required: false
+    default: 'false'
+  tools:
+    description: Extra comma-separated taiki-e/install-action tools to install alongside cargo-xwin (e.g. "cargo-nextest").
+    required: false
+    default: ''
+runs:
+  using: composite
+  steps:
+  - uses: oxc-project/setup-rust@68c3199c5339f965e6e163924c3c450773eba42b
+    with:
+      save-cache: 'false'
+      cache-key: ${{ inputs.cache-key }}
+      components: llvm-tools
+      restore-cache: 'false'
+  - run: rustup target add x86_64-pc-windows-msvc
+    shell: bash
+  - uses: taiki-e/install-action@ab6895351a88b908e96a4697860d4ffea5e57dbe
+    with:
+      tool: ${{ inputs.tools != '' && format('{0},cargo-xwin', inputs.tools) || 'cargo-xwin' }}
+  - name: Start SDK acquisition timer
+    shell: bash
+    run: python3 .github/benchmark/pr2995/measure.py sdk-start
+  - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+    with:
+      path: ~/.cache/cargo-xwin
+      key: vp-pr2995-r2-${{ env.SDK_SAMPLE }}-main-cargo-xwin-msvc-17
+      fail-on-cache-miss: 'true'
+    id: sysroot-cache
+    if: env.SDK_CACHE_STATE == 'warm'
+  - name: Require exact SDK cache hit
+    shell: bash
+    run: test "$CACHE_HIT" = true
+    if: env.SDK_CACHE_STATE == 'warm'
+    env:
+      CACHE_HIT: ${{ steps.sysroot-cache.outputs.cache-hit }}
+  - name: Resolve the Windows SDK
+    shell: bash
+    run: python3 .github/benchmark/pr2995/measure.py run sdk-resolve cargo xwin env --target x86_64-pc-windows-msvc
+    env:
+      XWIN_ACCEPT_LICENSE: '1'
+  - name: Record SDK acquisition time and size
+    shell: bash
+    run: python3 .github/benchmark/pr2995/measure.py sdk-end

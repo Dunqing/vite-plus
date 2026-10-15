@@ -1,0 +1,17 @@
+{
+  "pr": 2986,
+  "base": "0b304d1f7f868481ac57dee570e9202d4c68e20e",
+  "head": "1d3c541a3e16157d48852e86ce0fd09838e872d2",
+  "branch": "bench/scheduling-2986-r2",
+  "prefix": "bench-scheduling-2986-r2",
+  "scope": "Default PR CI plus six install repositories. SFW excluded because it is optional and unchanged.",
+  "controls": [
+    "Identical product source and two shared browser port fixes, unchanged snapshot coverage.",
+    "Identical tool versions and runner labels.",
+    "Cold: no Cargo, SDK, pnpm, native or archive cache restore or save.",
+    "Warm: exact cache hits required, no saves, same immutable common caches.",
+    "New archive caches and new Cargo keys are primed separately. Cache IDs and versions recorded.",
+    "Zig action cache disabled in all runs.",
+    "Runner images, tool download caches, network services and allocation are uncontrolled."
+  ]
+}

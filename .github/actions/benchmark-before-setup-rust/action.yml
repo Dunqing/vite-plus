@@ -1,0 +1,55 @@
+name: Setup Rust
+description: Set up Rust with dependency caching for Cargo's current output layout.
+inputs:
+  components:
+    description: Space-separated Rust components.
+    required: false
+  tools:
+    description: Comma-separated Cargo tools.
+    required: false
+  restore-cache:
+    description: Whether to restore Cargo dependencies.
+    default: 'true'
+  save-cache:
+    description: Whether to save Cargo dependencies.
+    default: 'false'
+  cache-key:
+    description: Shared cache key prefix.
+    default: main
+  cache-workspace-crates:
+    description: Whether to include workspace crates in the cache.
+    default: 'false'
+  target-dir:
+    description: Custom Cargo target directory.
+    required: false
+runs:
+  using: composite
+  steps:
+    - uses: oxc-project/setup-rust@68c3199c5339f965e6e163924c3c450773eba42b
+      with:
+        components: ${{ inputs.components }}
+        restore-cache: false
+        target-dir: ${{ inputs.target-dir }}
+    - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6
+      if: inputs.restore-cache == 'true'
+      with:
+        prefix-key: ${{ env.VP_SCHEDULING_CACHE == 'cold' && 'bench-scheduling-2986-r2-cold' || 'v1-rust' }}
+        shared-key:
+          ${{ (inputs.cache-key == 'check' || inputs.cache-key == 'windows-check' || inputs.cache-key == 'windows-snapshot-tests')
+          && format('bench-scheduling-2986-r2-{0}', inputs.cache-key) || inputs.cache-key }}
+        save-if: ${{ env.VP_SCHEDULING_CACHE == 'prime' }}
+        cache-workspace-crates: ${{ inputs.cache-workspace-crates }}
+        cache-targets: ${{ inputs.target-dir && 'false' || 'true' }}
+        cache-directories: ${{ inputs.target-dir || '' }}
+        lookup-only: ${{ env.VP_SCHEDULING_CACHE == 'cold' }}
+      id: benchmark-cargo
+    - name: Require exact Cargo cache hit
+      if: (env.VP_SCHEDULING_CACHE == 'warm') && inputs.restore-cache == 'true'
+      shell: bash
+      run: test "$CACHE_HIT" = true
+      env:
+        CACHE_HIT: ${{ steps.benchmark-cargo.outputs.cache-hit }}
+    - uses: taiki-e/install-action@711e1c3275189d76dcc4d34ddea63bf96ac49090
+      if: inputs.tools
+      with:
+        tool: ${{ inputs.tools }}

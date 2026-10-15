@@ -1,0 +1,20 @@
+name: Setup Node and pnpm for CI
+description: Install CI dependencies without slow pnpm cache restores on macOS and Windows.
+runs:
+  using: composite
+  steps:
+    - name: Setup Node and pnpm with caching on Linux
+      if: runner.os == 'Linux'
+      uses: ./.github/actions/benchmark-setup-node
+    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+      if: runner.os != 'Linux'
+      with:
+        node-version-file: .node-version
+        registry-url: https://registry.npmjs.org
+        package-manager-cache: false
+    - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413
+      if: runner.os != 'Linux'
+    - name: Install dependencies
+      if: runner.os != 'Linux'
+      shell: bash
+      run: pnpm install --frozen-lockfile --ignore-scripts

@@ -1,0 +1,109 @@
+name: Build Windows CLI binaries
+description:
+  Cross-compile the Windows release NAPI binding and vp/vp-shim/vp-setup binaries on Linux with cargo-xwin, cache
+  them by source hash, and upload them as an artifact for Windows jobs to consume (with build-upstream's skip-native input).
+  Run on a Linux runner after checkout + clone.
+inputs:
+  profile:
+    description: Cargo profile for native builds (release or ci).
+    required: false
+    default: release
+  save-cache:
+    description: Whether setup-xwin's setup-rust should save its cache (usually only on main).
+    required: false
+    default: 'false'
+  artifact-name:
+    description: Name for the uploaded binaries artifact.
+    required: false
+    default: windows-cli-binaries
+runs:
+  using: composite
+  steps:
+    - uses: ./.github/actions/benchmark-before-compute-native-cache-input-hash
+      id: native-cache-inputs
+      with:
+        profile: ${{ inputs.profile }}
+    - name: Compute binaries cache key
+      id: cache-key
+      shell: bash
+      run: |
+        echo "key=windows-cli-xwin-v2-${{ steps.native-cache-inputs.outputs.hash }}" >> "$GITHUB_OUTPUT"
+    - name: Define binary paths
+      id: binary-paths
+      shell: bash
+      run: |
+        {
+          echo 'paths<<EOF'
+          echo 'packages/cli/binding/*.node'
+          echo 'packages/cli/binding/vite-plus.build-time'
+          echo 'packages/cli/binding/vite-plus.cargo-metadata.json'
+          echo 'target/x86_64-pc-windows-msvc/release/vp.exe'
+          echo 'target/x86_64-pc-windows-msvc/release/vp-shim.exe'
+          echo 'target/x86_64-pc-windows-msvc/release/vp-setup.exe'
+          echo 'EOF'
+        } >> "$GITHUB_OUTPUT"
+    - name: Restore binaries cache
+      id: binaries-cache
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+      with:
+        path: ${{ steps.binary-paths.outputs.paths }}
+        key: bench-scheduling-2986-r2-${{ steps.cache-key.outputs.key }}
+        fail-on-cache-miss: ${{ env.VP_SCHEDULING_CACHE == 'warm' }}
+      if: (true) && env.VP_SCHEDULING_CACHE != 'cold'
+    - uses: ./.github/actions/benchmark-before-setup-xwin
+      if: steps.binaries-cache.outputs.cache-hit != 'true'
+      with:
+        save-cache: ${{ inputs.save-cache }}
+        cache-key: windows-cli-cross-${{ inputs.profile }}
+    - uses: ./.github/actions/benchmark-setup-node
+      if: steps.binaries-cache.outputs.cache-hit != 'true'
+    - name: Build NAPI binding
+      if: steps.binaries-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: pnpm --filter=vite-plus build-native --profile "$INPUTS_PROFILE" --target x86_64-pc-windows-msvc -x --skip-format
+      env:
+        INPUTS_PROFILE: ${{ inputs.profile }}
+        DEBUG: napi:*
+        XWIN_ACCEPT_LICENSE: '1'
+        CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
+    - name: Build Rust CLI binaries
+      if: steps.binaries-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: cargo xwin build --profile "$INPUTS_PROFILE" --target x86_64-pc-windows-msvc -p vp_global_cli -p vp_installer
+      env:
+        INPUTS_PROFILE: ${{ inputs.profile }}
+        XWIN_ACCEPT_LICENSE: '1'
+        CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
+    - name: Build trampoline shim binary
+      if: steps.binaries-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: node packages/tools/src/build-trampoline.ts --xwin --release --target x86_64-pc-windows-msvc
+      env:
+        XWIN_ACCEPT_LICENSE: '1'
+    - name: Stage native CLI binaries
+      if: steps.binaries-cache.outputs.cache-hit != 'true' && inputs.profile != 'release'
+      shell: bash
+      run: |
+        target_dir="${CARGO_TARGET_DIR:-target}/x86_64-pc-windows-msvc"
+        mkdir -p "$target_dir/release"
+        cp "$target_dir/$INPUTS_PROFILE/vp.exe" "$target_dir/$INPUTS_PROFILE/vp-setup.exe" "$target_dir/release/"
+      env:
+        INPUTS_PROFILE: ${{ inputs.profile }}
+    - name: Export Cargo metadata
+      if: steps.binaries-cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        cargo metadata --locked --format-version 1 \
+          | jq '{packages: [.packages[] | {name, version, source}]}' \
+          > packages/cli/binding/vite-plus.cargo-metadata.json
+    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ steps.binary-paths.outputs.paths }}
+        if-no-files-found: error
+        retention-days: 7
+    - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+      if: env.VP_SCHEDULING_CACHE == 'prime' && (steps.binaries-cache.outputs.cache-hit != 'true')
+      with:
+        path: ${{ steps.binary-paths.outputs.paths }}
+        key: bench-scheduling-2986-r2-${{ steps.cache-key.outputs.key }}

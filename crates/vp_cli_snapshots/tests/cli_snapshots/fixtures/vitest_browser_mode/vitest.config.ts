@@ -4,6 +4,16 @@ import { playwright } from 'vite-plus/test/browser-playwright';
 export default defineConfig({
   plugins: [
     {
+      name: 'benchmark-browser-server-port',
+      enforce: 'post',
+      config: {
+        order: 'post',
+        handler(config) {
+          config.test.api.port = 0;
+        },
+      },
+    },
+    {
       name: 'vitest-browser-mode-suppress-known-vite-logs',
       configResolved(config) {
         // "is in use, trying another one": port fallback depends on other

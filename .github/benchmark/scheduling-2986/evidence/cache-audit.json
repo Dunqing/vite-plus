@@ -1,0 +1,1919 @@
+[
+  {
+    "run": {
+      "id": 38688707872,
+      "variant": "before",
+      "cache": "cold",
+      "sample": 1,
+      "conclusion": "success",
+      "excluded_from_measurement": "Overlaps the initial regular PR CI; retained as a calibration run. Exclusion chosen before candidate cold result."
+    },
+    "scope": "Cargo, pnpm, SDK, native binaries and test archives; runner/tool caches are separate.",
+    "install_refs": {
+      "pnpm/pnpm": "8e1e4c0aaece387dfda16377b2ba31f7a1a2602c",
+      "vitejs/vite": "7e4dfe0bf57011239134fa80b5332b4823ecaab6",
+      "napi-rs/napi-rs": "806d9e865c628b2277b977c287e3468f4bee4969",
+      "toeverything/AFFiNE": "0b69a6da21e8fd35beb85667bb8496d9b3852238",
+      "npm/cli": "83ea1a1c19648a6b4f5e52a498d8a6aaaf60e52b",
+      "redhat-developer/vscode-extension-tester": "35f17caa70bcbf9bd8e303455a0096c4b13b884b"
+    },
+    "jobs": [
+      {
+        "name": "0_before _ done.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "1_before _ CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "2_before _ CLI snapshot test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "3_before _ CLI snapshot test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "4_before _ CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "5_before _ CLI snapshot test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "6_before _ CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "7_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "8_before _ Local CLI `vp install` E2E test.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [
+          ["pnpm/pnpm", "8e1e4c0aaece387dfda16377b2ba31f7a1a2602c"],
+          ["vitejs/vite", "7e4dfe0bf57011239134fa80b5332b4823ecaab6"],
+          ["napi-rs/napi-rs", "806d9e865c628b2277b977c287e3468f4bee4969"],
+          ["toeverything/AFFiNE", "0b69a6da21e8fd35beb85667bb8496d9b3852238"],
+          ["npm/cli", "83ea1a1c19648a6b4f5e52a498d8a6aaaf60e52b"],
+          ["redhat-developer/vscode-extension-tester", "35f17caa70bcbf9bd8e303455a0096c4b13b884b"]
+        ],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "9_before _ CLI snapshot test (aarch64-apple-darwin, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "10_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "12_before _ CLI snapshot test (aarch64-apple-darwin, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "13_before _ CLI snapshot test (aarch64-apple-darwin, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "14_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "15_before _ Test (Windows).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "16_before _ Build CLI test binaries (aarch64-apple-darwin).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T05:48:38.4852310Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "17_before _ Build CLI test binaries (x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T05:48:16.0759183Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "18_before _ CLI E2E test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T05:48:17.2627587Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": [
+          "2026-10-15T05:48:44.2231267Z Using cached Zig installation from tool-cache"
+        ]
+      },
+      {
+        "name": "19_before _ Build Windows tests.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T05:48:03.6323998Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "20_before _ Cert-less image E2E test.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T05:48:00.4759792Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "21_before _ download-previous-rolldown-binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "22_before _ Test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "23_before _ Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T05:47:58.5946378Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "24_before _ Build Windows CLI binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T05:47:59.6161972Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "25_before _ Test (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T05:48:16.8792930Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "26_before _ Lint.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T05:48:05.5809090Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "28_before _ detect-changes.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      }
+    ]
+  },
+  {
+    "run": {
+      "id": 38689942310,
+      "variant": "after",
+      "cache": "cold",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    "scope": "Cargo, pnpm, SDK, native binaries and test archives; runner/tool caches are separate.",
+    "install_refs": {
+      "napi-rs/napi-rs": "806d9e865c628b2277b977c287e3468f4bee4969",
+      "toeverything/AFFiNE": "0b69a6da21e8fd35beb85667bb8496d9b3852238",
+      "pnpm/pnpm": "8e1e4c0aaece387dfda16377b2ba31f7a1a2602c",
+      "redhat-developer/vscode-extension-tester": "35f17caa70bcbf9bd8e303455a0096c4b13b884b",
+      "npm/cli": "83ea1a1c19648a6b4f5e52a498d8a6aaaf60e52b",
+      "vitejs/vite": "7e4dfe0bf57011239134fa80b5332b4823ecaab6"
+    },
+    "jobs": [
+      {
+        "name": "0_after _ done.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "1_after _ CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "2_after _ Local CLI `vp install` E2E test (napi-rs_napi-rs).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [["napi-rs/napi-rs", "806d9e865c628b2277b977c287e3468f4bee4969"]],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "3_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "5_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "6_after _ Local CLI `vp install` E2E test (toeverything_AFFiNE).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [["toeverything/AFFiNE", "0b69a6da21e8fd35beb85667bb8496d9b3852238"]],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "7_after _ CLI snapshot test (aarch64-apple-darwin, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "8_after _ CLI snapshot test (aarch64-apple-darwin, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "9_after _ Local CLI `vp install` E2E test (pnpm_pnpm).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [["pnpm/pnpm", "8e1e4c0aaece387dfda16377b2ba31f7a1a2602c"]],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "10_after _ CLI snapshot test (aarch64-apple-darwin, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "11_after _ CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "12_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "13_after _ Local CLI `vp install` E2E test (redhat-developer_vscode-extension-tester).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [
+          ["redhat-developer/vscode-extension-tester", "35f17caa70bcbf9bd8e303455a0096c4b13b884b"]
+        ],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "14_after _ Local CLI `vp install` E2E test (npm_cli).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [["npm/cli", "83ea1a1c19648a6b4f5e52a498d8a6aaaf60e52b"]],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "15_after _ CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "16_after _ Local CLI `vp install` E2E test (vitejs_vite).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [["vitejs/vite", "7e4dfe0bf57011239134fa80b5332b4823ecaab6"]],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "17_after _ CLI snapshot test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "18_after _ CLI snapshot test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "19_after _ CLI snapshot test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "20_after _ Test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "21_after _ Test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "22_after _ Test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "23_after _ Build CLI test binaries (x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:01:29.4879484Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "24_after _ CLI E2E test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:01:26.6973958Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": [
+          "2026-10-15T06:01:55.8976631Z Using cached Zig installation from tool-cache"
+        ]
+      },
+      {
+        "name": "25_after _ Build CLI test binaries (aarch64-apple-darwin).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:02:08.0600300Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "26_after _ Check (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:01:38.4080350Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "27_after _ Check (Windows).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:01:25.2129359Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "28_after _ Test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:01:29.7620204Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "29_after _ download-previous-rolldown-binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "30_after _ Check (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:01:21.1778962Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "31_after _ Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:01:21.1838154Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "33_after _ Cert-less image E2E test.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:01:21.1332428Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "34_after _ Build Windows snapshot tests.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:01:24.4876639Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "35_after _ Build Windows tests.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:01:24.3762780Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "36_after _ Test (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:01:37.9374520Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "37_after _ Build Windows CLI binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:01:20.5109416Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "38_after _ Lint.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:01:30.6336700Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "39_after _ detect-changes.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      }
+    ]
+  },
+  {
+    "run": {
+      "id": 38691149859,
+      "variant": "before",
+      "cache": "cold",
+      "sample": 2,
+      "conclusion": "success"
+    },
+    "scope": "Cargo, pnpm, SDK, native binaries and test archives; runner/tool caches are separate.",
+    "install_refs": {
+      "pnpm/pnpm": "8e1e4c0aaece387dfda16377b2ba31f7a1a2602c",
+      "vitejs/vite": "7e4dfe0bf57011239134fa80b5332b4823ecaab6",
+      "napi-rs/napi-rs": "806d9e865c628b2277b977c287e3468f4bee4969",
+      "toeverything/AFFiNE": "0b69a6da21e8fd35beb85667bb8496d9b3852238",
+      "npm/cli": "83ea1a1c19648a6b4f5e52a498d8a6aaaf60e52b",
+      "redhat-developer/vscode-extension-tester": "35f17caa70bcbf9bd8e303455a0096c4b13b884b"
+    },
+    "jobs": [
+      {
+        "name": "0_before _ done.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "1_before _ CLI snapshot test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "2_before _ CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "3_before _ CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "4_before _ CLI snapshot test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "5_before _ CLI snapshot test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "6_before _ CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "7_before _ CLI snapshot test (aarch64-apple-darwin, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "8_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "9_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "10_before _ CLI snapshot test (aarch64-apple-darwin, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "11_before _ Local CLI `vp install` E2E test.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [
+          ["pnpm/pnpm", "8e1e4c0aaece387dfda16377b2ba31f7a1a2602c"],
+          ["vitejs/vite", "7e4dfe0bf57011239134fa80b5332b4823ecaab6"],
+          ["napi-rs/napi-rs", "806d9e865c628b2277b977c287e3468f4bee4969"],
+          ["toeverything/AFFiNE", "0b69a6da21e8fd35beb85667bb8496d9b3852238"],
+          ["npm/cli", "83ea1a1c19648a6b4f5e52a498d8a6aaaf60e52b"],
+          ["redhat-developer/vscode-extension-tester", "35f17caa70bcbf9bd8e303455a0096c4b13b884b"]
+        ],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "12_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "13_before _ CLI snapshot test (aarch64-apple-darwin, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "15_before _ Test (Windows).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "16_before _ Build CLI test binaries (aarch64-apple-darwin).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:14:27.0993900Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "17_before _ CLI E2E test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:14:05.9696899Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": [
+          "2026-10-15T06:14:35.1375163Z Cache miss. Fetching Zig 0.15.2",
+          "2026-10-15T06:14:45.3679120Z Fetch took 10288 ms",
+          "2026-10-15T06:14:47.6414272Z Extract took 2274 ms"
+        ]
+      },
+      {
+        "name": "18_before _ Build CLI test binaries (x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:14:08.6611686Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "19_before _ Test (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:14:11.5295970Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "20_before _ Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:13:57.8516603Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "21_before _ Cert-less image E2E test.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:13:56.3579718Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "22_before _ Lint.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:14:08.5547066Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "23_before _ download-previous-rolldown-binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "24_before _ Build Windows CLI binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:13:55.9535005Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "25_before _ Build Windows tests.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T06:13:54.8195004Z No cache found."],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "26_before _ Test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "28_before _ detect-changes.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      }
+    ]
+  },
+  {
+    "run": {
+      "id": 38694781467,
+      "variant": "after",
+      "cache": "warm",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    "scope": "Cargo, pnpm, SDK, native binaries and test archives; runner/tool caches are separate.",
+    "install_refs": {
+      "redhat-developer/vscode-extension-tester": "35f17caa70bcbf9bd8e303455a0096c4b13b884b",
+      "vitejs/vite": "7e4dfe0bf57011239134fa80b5332b4823ecaab6",
+      "npm/cli": "83ea1a1c19648a6b4f5e52a498d8a6aaaf60e52b",
+      "pnpm/pnpm": "8e1e4c0aaece387dfda16377b2ba31f7a1a2602c",
+      "napi-rs/napi-rs": "806d9e865c628b2277b977c287e3468f4bee4969",
+      "toeverything/AFFiNE": "0b69a6da21e8fd35beb85667bb8496d9b3852238"
+    },
+    "jobs": [
+      {
+        "name": "0_after _ done.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "1_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 3_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "2_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 1_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "3_after _ Local CLI `vp install` E2E test (redhat-developer_vscode-extension-tester).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [
+          ["redhat-developer/vscode-extension-tester", "35f17caa70bcbf9bd8e303455a0096c4b13b884b"]
+        ],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "4_after _ CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "5_after _ Local CLI `vp install` E2E test (vitejs_vite).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [["vitejs/vite", "7e4dfe0bf57011239134fa80b5332b4823ecaab6"]],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "6_after _ CLI snapshot test (aarch64-apple-darwin, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "7_after _ Local CLI `vp install` E2E test (npm_cli).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [["npm/cli", "83ea1a1c19648a6b4f5e52a498d8a6aaaf60e52b"]],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "8_after _ Local CLI `vp install` E2E test (pnpm_pnpm).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [["pnpm/pnpm", "8e1e4c0aaece387dfda16377b2ba31f7a1a2602c"]],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "9_after _ CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "10_after _ CLI snapshot test (aarch64-apple-darwin, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "11_after _ Local CLI `vp install` E2E test (napi-rs_napi-rs).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [["napi-rs/napi-rs", "806d9e865c628b2277b977c287e3468f4bee4969"]],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "12_after _ CLI snapshot test (aarch64-apple-darwin, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "13_after _ CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "14_after _ Local CLI `vp install` E2E test (toeverything_AFFiNE).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [["toeverything/AFFiNE", "0b69a6da21e8fd35beb85667bb8496d9b3852238"]],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "15_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 2_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "17_after _ CLI snapshot test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "18_after _ CLI snapshot test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "19_after _ CLI snapshot test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "20_after _ Test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "21_after _ Test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "22_after _ Test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "23_after _ CLI E2E test (Linux x64 musl).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "bench-scheduling-2986-r2-napi-binding-v3-x86_64-unknown-linux-musl-----12b574f2cdc675bc-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-ci",
+          "v1-rust-cli-e2e-test-musl-ci-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "24_after _ Build CLI test binaries (x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [
+          "bench-scheduling-2986-r2-cli-test-binaries-v1-x86_64-unknown-linux-gnu-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-8ff525ddfee63c51222a22cc657574b1694d048e044367e5c5813aec4cd48f97"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "25_after _ Build CLI test binaries (aarch64-apple-darwin).txt",
+        "restored_keys": [
+          "bench-scheduling-2986-r2-cli-test-binaries-v1-aarch64-apple-darwin-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-8ff525ddfee63c51222a22cc657574b1694d048e044367e5c5813aec4cd48f97"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "26_after _ Lint.txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "v1-rust-lint-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "27_after _ Build Windows snapshot tests.txt",
+        "restored_keys": [
+          "bench-scheduling-2986-r2-windows-snapshot-test-archive-v1-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-e9d671bec024d98d265f93249d6d166dad2b9280fb98048cc8c970c6c816bd13"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "28_after _ Check (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": ["v1-rust-bench-scheduling-2986-r2-check-Darwin-arm64-26c55cd9-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "29_after _ Test (Linux x64 musl).txt",
+        "restored_keys": ["v1-rust-bench-scheduling-2986-r2-test-musl-Linux-x64-d51b47fb-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "30_after _ Test (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": ["v1-rust-test-Darwin-arm64-26c55cd9-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "32_after _ Check (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": ["v1-rust-bench-scheduling-2986-r2-check-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "33_after _ Build Windows CLI binaries.txt",
+        "restored_keys": [
+          "bench-scheduling-2986-r2-windows-cli-xwin-v2-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-ci"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "34_after _ download-previous-rolldown-binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "35_after _ Build Windows tests.txt",
+        "restored_keys": [
+          "bench-scheduling-2986-r2-windows-test-archive-v1-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-e9d671bec024d98d265f93249d6d166dad2b9280fb98048cc8c970c6c816bd13"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "36_after _ Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": ["v1-rust-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "37_after _ Check (Windows).txt",
+        "restored_keys": [
+          "cargo-xwin-sysroot-2026-09-15-6aeecd2d25bcc90c72af09dc525dfdf7143c374d476dc4296692d42efb27a9b9-clang-cl-22-x64-v1",
+          "v1-rust-bench-scheduling-2986-r2-windows-check-Linux-x64-ef5e6c71-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "38_after _ Cert-less image E2E test.txt",
+        "restored_keys": ["v1-rust-certless-image-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "39_after _ detect-changes.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      }
+    ]
+  },
+  {
+    "run": {
+      "id": 38695646217,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    "scope": "Cargo, pnpm, SDK, native binaries and test archives; runner/tool caches are separate.",
+    "install_refs": {
+      "pnpm/pnpm": "8e1e4c0aaece387dfda16377b2ba31f7a1a2602c",
+      "vitejs/vite": "7e4dfe0bf57011239134fa80b5332b4823ecaab6",
+      "napi-rs/napi-rs": "806d9e865c628b2277b977c287e3468f4bee4969",
+      "toeverything/AFFiNE": "0b69a6da21e8fd35beb85667bb8496d9b3852238",
+      "npm/cli": "83ea1a1c19648a6b4f5e52a498d8a6aaaf60e52b",
+      "redhat-developer/vscode-extension-tester": "35f17caa70bcbf9bd8e303455a0096c4b13b884b"
+    },
+    "jobs": [
+      {
+        "name": "0_before _ done.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "1_before _ CLI snapshot test (aarch64-apple-darwin, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "2_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 3_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "3_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 2_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "4_before _ Local CLI `vp install` E2E test.txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [
+          ["pnpm/pnpm", "8e1e4c0aaece387dfda16377b2ba31f7a1a2602c"],
+          ["vitejs/vite", "7e4dfe0bf57011239134fa80b5332b4823ecaab6"],
+          ["napi-rs/napi-rs", "806d9e865c628b2277b977c287e3468f4bee4969"],
+          ["toeverything/AFFiNE", "0b69a6da21e8fd35beb85667bb8496d9b3852238"],
+          ["npm/cli", "83ea1a1c19648a6b4f5e52a498d8a6aaaf60e52b"],
+          ["redhat-developer/vscode-extension-tester", "35f17caa70bcbf9bd8e303455a0096c4b13b884b"]
+        ],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "5_before _ CLI snapshot test (aarch64-apple-darwin, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "6_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 1_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "7_before _ CLI snapshot test (aarch64-apple-darwin, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "8_before _ CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "9_before _ CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "10_before _ CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "12_before _ CLI snapshot test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "13_before _ Test (Windows).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "14_before _ CLI snapshot test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "15_before _ CLI snapshot test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "16_before _ Build CLI test binaries (aarch64-apple-darwin).txt",
+        "restored_keys": [
+          "bench-scheduling-2986-r2-napi-binding-v3-aarch64-apple-darwin-----12b574f2cdc675bc-f16c4344a0b7cb4c8540c59ed60ee44ec32f9c6bd43ad45ffb3c071f750b2f34-ci",
+          "v1-rust-cli-snapshot-test-aarch64-apple-darwin-ci-Darwin-arm64-26c55cd9-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "17_before _ Build CLI test binaries (x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "bench-scheduling-2986-r2-napi-binding-v3-x86_64-unknown-linux-gnu-----12b574f2cdc675bc-f16c4344a0b7cb4c8540c59ed60ee44ec32f9c6bd43ad45ffb3c071f750b2f34-ci",
+          "v1-rust-cli-snapshot-test-x86_64-unknown-linux-gnu-ci-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "18_before _ CLI E2E test (Linux x64 musl).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "bench-scheduling-2986-r2-napi-binding-v3-x86_64-unknown-linux-musl-----12b574f2cdc675bc-f16c4344a0b7cb4c8540c59ed60ee44ec32f9c6bd43ad45ffb3c071f750b2f34-ci",
+          "v1-rust-cli-e2e-test-musl-ci-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "19_before _ download-previous-rolldown-binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "20_before _ Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": ["v1-rust-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "21_before _ Test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "22_before _ Test (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": ["v1-rust-test-Darwin-arm64-26c55cd9-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "23_before _ Build Windows tests.txt",
+        "restored_keys": [
+          "cargo-xwin-sysroot-2026-09-15-6aeecd2d25bcc90c72af09dc525dfdf7143c374d476dc4296692d42efb27a9b9-clang-cl-22-x64-v1",
+          "v1-rust-windows-cross-Linux-x64-ef5e6c71-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "24_before _ Build Windows CLI binaries.txt",
+        "restored_keys": [
+          "bench-scheduling-2986-r2-windows-cli-xwin-v2-f16c4344a0b7cb4c8540c59ed60ee44ec32f9c6bd43ad45ffb3c071f750b2f34-ci"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "25_before _ Lint.txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "v1-rust-lint-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "26_before _ Cert-less image E2E test.txt",
+        "restored_keys": ["v1-rust-certless-image-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "28_before _ detect-changes.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      }
+    ]
+  },
+  {
+    "run": {
+      "id": 38697851965,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 2,
+      "replaces_failed_run": 38696490098,
+      "conclusion": "success",
+      "comparison_note": "Successful unpaired warm baseline. Its candidate run failed cache checks, so it supplies no before/after speed result."
+    },
+    "scope": "Cargo, pnpm, SDK, native binaries and test archives; runner/tool caches are separate.",
+    "install_refs": {
+      "pnpm/pnpm": "8e1e4c0aaece387dfda16377b2ba31f7a1a2602c",
+      "vitejs/vite": "7e4dfe0bf57011239134fa80b5332b4823ecaab6",
+      "napi-rs/napi-rs": "806d9e865c628b2277b977c287e3468f4bee4969",
+      "toeverything/AFFiNE": "0b69a6da21e8fd35beb85667bb8496d9b3852238",
+      "npm/cli": "83ea1a1c19648a6b4f5e52a498d8a6aaaf60e52b",
+      "redhat-developer/vscode-extension-tester": "35f17caa70bcbf9bd8e303455a0096c4b13b884b"
+    },
+    "jobs": [
+      {
+        "name": "0_before _ done.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "1_before _ CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "2_before _ CLI snapshot test (aarch64-apple-darwin, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "3_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 3_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "4_before _ Local CLI `vp install` E2E test.txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [
+          ["pnpm/pnpm", "8e1e4c0aaece387dfda16377b2ba31f7a1a2602c"],
+          ["vitejs/vite", "7e4dfe0bf57011239134fa80b5332b4823ecaab6"],
+          ["napi-rs/napi-rs", "806d9e865c628b2277b977c287e3468f4bee4969"],
+          ["toeverything/AFFiNE", "0b69a6da21e8fd35beb85667bb8496d9b3852238"],
+          ["npm/cli", "83ea1a1c19648a6b4f5e52a498d8a6aaaf60e52b"],
+          ["redhat-developer/vscode-extension-tester", "35f17caa70bcbf9bd8e303455a0096c4b13b884b"]
+        ],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "5_before _ CLI snapshot test (aarch64-apple-darwin, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "6_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 2_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "7_before _ CLI snapshot test (aarch64-apple-darwin, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "8_before _ CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "9_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 1_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "10_before _ CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "12_before _ Test (Windows).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "13_before _ CLI snapshot test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "14_before _ CLI snapshot test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "15_before _ CLI snapshot test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "16_before _ Build CLI test binaries (x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "bench-scheduling-2986-r2-napi-binding-v3-x86_64-unknown-linux-gnu-----12b574f2cdc675bc-f16c4344a0b7cb4c8540c59ed60ee44ec32f9c6bd43ad45ffb3c071f750b2f34-ci",
+          "v1-rust-cli-snapshot-test-x86_64-unknown-linux-gnu-ci-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "17_before _ Build CLI test binaries (aarch64-apple-darwin).txt",
+        "restored_keys": [
+          "bench-scheduling-2986-r2-napi-binding-v3-aarch64-apple-darwin-----12b574f2cdc675bc-f16c4344a0b7cb4c8540c59ed60ee44ec32f9c6bd43ad45ffb3c071f750b2f34-ci",
+          "v1-rust-cli-snapshot-test-aarch64-apple-darwin-ci-Darwin-arm64-26c55cd9-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "18_before _ CLI E2E test (Linux x64 musl).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "bench-scheduling-2986-r2-napi-binding-v3-x86_64-unknown-linux-musl-----12b574f2cdc675bc-f16c4344a0b7cb4c8540c59ed60ee44ec32f9c6bd43ad45ffb3c071f750b2f34-ci",
+          "v1-rust-cli-e2e-test-musl-ci-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "19_before _ Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": ["v1-rust-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "20_before _ Build Windows CLI binaries.txt",
+        "restored_keys": [
+          "bench-scheduling-2986-r2-windows-cli-xwin-v2-f16c4344a0b7cb4c8540c59ed60ee44ec32f9c6bd43ad45ffb3c071f750b2f34-ci"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "21_before _ Cert-less image E2E test.txt",
+        "restored_keys": ["v1-rust-certless-image-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "22_before _ Test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "23_before _ Test (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": ["v1-rust-test-Darwin-arm64-26c55cd9-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "24_before _ Lint.txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "v1-rust-lint-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "25_before _ download-previous-rolldown-binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "26_before _ Build Windows tests.txt",
+        "restored_keys": [
+          "cargo-xwin-sysroot-2026-09-15-6aeecd2d25bcc90c72af09dc525dfdf7143c374d476dc4296692d42efb27a9b9-clang-cl-22-x64-v1",
+          "v1-rust-windows-cross-Linux-x64-ef5e6c71-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "install_repos": [],
+        "tool_cache_messages": []
+      },
+      {
+        "name": "28_before _ detect-changes.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "install_repos": [],
+        "tool_cache_messages": []
+      }
+    ]
+  }
+]

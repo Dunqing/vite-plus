@@ -1,0 +1,90 @@
+{
+  "new_cargo_entries": [
+    {
+      "id": 8979105380,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "v1-rust-bench-scheduling-2986-r2-check-Darwin-arm64-26c55cd9-8ba63e6e",
+      "version": "f32cfe70f0cda45aa1788bd3f36113c455c430c5b4ebaac86f6644aaf3e15251",
+      "last_accessed_at": "2026-10-15T06:42:34.702169Z",
+      "created_at": "2026-10-15T06:42:34.702169Z",
+      "size_in_bytes": 502076489
+    },
+    {
+      "id": 8979055586,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "v1-rust-bench-scheduling-2986-r2-test-musl-Linux-x64-d51b47fb-8ba63e6e",
+      "version": "6d4b7aa0ce81ad7ec4fdaa1314503a211ef1d5a0f4c7679d67045b3c674a514d",
+      "last_accessed_at": "2026-10-15T06:40:59.396431Z",
+      "created_at": "2026-10-15T06:40:59.396431Z",
+      "size_in_bytes": 508324995
+    },
+    {
+      "id": 8979003183,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "v1-rust-bench-scheduling-2986-r2-windows-check-Linux-x64-ef5e6c71-8ba63e6e",
+      "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+      "last_accessed_at": "2026-10-15T06:39:19.026474Z",
+      "created_at": "2026-10-15T06:39:19.026474Z",
+      "size_in_bytes": 551220692
+    },
+    {
+      "id": 8978983179,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "v1-rust-bench-scheduling-2986-r2-check-Linux-x64-0cde8d0c-8ba63e6e",
+      "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+      "last_accessed_at": "2026-10-15T06:38:41.821607Z",
+      "created_at": "2026-10-15T06:38:41.821607Z",
+      "size_in_bytes": 510115423
+    },
+    {
+      "id": 8978957060,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "v1-rust-bench-scheduling-2986-r2-windows-snapshot-tests-Linux-x64-ef5e6c71-8ba63e6e",
+      "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+      "last_accessed_at": "2026-10-15T06:37:53.300216Z",
+      "created_at": "2026-10-15T06:37:53.300216Z",
+      "size_in_bytes": 199074698
+    }
+  ],
+  "new_cargo_bytes": 2270812297,
+  "note": "Preparation entries for five new Cargo key groups. This is not a prediction of steady-state cache usage after old keys expire. The unused windows-snapshot-tests dependency entry was removed after its complete archive was saved.",
+  "new_archive_entries": [
+    {
+      "id": 8979187922,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "bench-scheduling-2986-r2-cli-test-binaries-v1-aarch64-apple-darwin-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-8ff525ddfee63c51222a22cc657574b1694d048e044367e5c5813aec4cd48f97",
+      "version": "333952014aa18066977a0a102845989df26fd358d43529c3bfa53440a1199719",
+      "last_accessed_at": "2026-10-15T06:45:05.686051Z",
+      "created_at": "2026-10-15T06:45:05.686051Z",
+      "size_in_bytes": 32455345
+    },
+    {
+      "id": 8979079651,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "bench-scheduling-2986-r2-cli-test-binaries-v1-x86_64-unknown-linux-gnu-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-8ff525ddfee63c51222a22cc657574b1694d048e044367e5c5813aec4cd48f97",
+      "version": "7458a9d589ad8f9eef4a206b536544ac00a6af713af5a629a56c9c8c67ab88cf",
+      "last_accessed_at": "2026-10-15T06:41:42.436694Z",
+      "created_at": "2026-10-15T06:41:42.436694Z",
+      "size_in_bytes": 30052345
+    },
+    {
+      "id": 8978961659,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "bench-scheduling-2986-r2-windows-test-archive-v1-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-e9d671bec024d98d265f93249d6d166dad2b9280fb98048cc8c970c6c816bd13",
+      "version": "99b8f582b5929f893cc131f175c30f5aff06aca06d8cded634d5b995103b870b",
+      "last_accessed_at": "2026-10-15T06:38:01.918122Z",
+      "created_at": "2026-10-15T06:38:01.918122Z",
+      "size_in_bytes": 65875368
+    },
+    {
+      "id": 8978955567,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "bench-scheduling-2986-r2-windows-snapshot-test-archive-v1-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-e9d671bec024d98d265f93249d6d166dad2b9280fb98048cc8c970c6c816bd13",
+      "version": "8f45469a4718912e5b74bb64b87efc1416167a4c7b56dffd6b103d6dd223ddf0",
+      "last_accessed_at": "2026-10-15T06:37:49.315483Z",
+      "created_at": "2026-10-15T06:37:49.315483Z",
+      "size_in_bytes": 7620390
+    }
+  ],
+  "new_archive_bytes": 136003448
+}

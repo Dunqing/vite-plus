@@ -1,0 +1,112 @@
+{
+  "pr": 2986,
+  "base": "0b304d1f7f868481ac57dee570e9202d4c68e20e",
+  "head": "1d3c541a3e16157d48852e86ce0fd09838e872d2",
+  "branch": "bench/scheduling-2986-r2",
+  "prefix": "bench-scheduling-2986-r2",
+  "scope": "Default PR CI plus six install repositories. SFW excluded because it is optional and unchanged.",
+  "controls": [
+    "Identical product source and two shared browser port fixes, unchanged snapshot coverage.",
+    "Identical tool versions and runner labels.",
+    "Cold: no Cargo, SDK, pnpm, native or archive cache restore or save.",
+    "Warm: exact cache hits required, no saves, same immutable common caches.",
+    "New archive caches and new Cargo keys are primed separately. Cache IDs and versions recorded.",
+    "Zig global/local build caches disabled; compiler installation/download caches are uncontrolled.",
+    "Runner images, tool download caches, network services and allocation are uncontrolled."
+  ],
+  "runs": [
+    {
+      "id": 38688707872,
+      "variant": "before",
+      "cache": "cold",
+      "sample": 1,
+      "conclusion": "success",
+      "excluded_from_measurement": "Overlaps the initial regular PR CI; retained as a calibration run. Exclusion chosen before candidate cold result."
+    },
+    {
+      "id": 38689942310,
+      "variant": "after",
+      "cache": "cold",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    {
+      "id": 38691149859,
+      "variant": "before",
+      "cache": "cold",
+      "sample": 2,
+      "conclusion": "success"
+    },
+    {
+      "id": 38692296238,
+      "variant": "before",
+      "cache": "prime",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    {
+      "id": 38693461887,
+      "variant": "after",
+      "cache": "prime",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    {
+      "id": 38694781467,
+      "variant": "after",
+      "cache": "warm",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    {
+      "id": 38695646217,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    {
+      "id": 38696490098,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 2,
+      "conclusion": "failure",
+      "excluded_from_measurement": "Failed Windows command_owner_pnpm10 snapshot: npm cache copyfile EBUSY/EEXIST. Replace the complete run on unchanged source; do not combine a partial retry with original timings."
+    },
+    {
+      "id": 38697851965,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 2,
+      "replaces_failed_run": 38696490098,
+      "conclusion": "success",
+      "comparison_note": "Successful unpaired warm baseline. Its candidate run failed cache checks, so it supplies no before/after speed result."
+    },
+    {
+      "id": 38700704392,
+      "variant": "after",
+      "cache": "warm",
+      "sample": 2,
+      "conclusion": "failure",
+      "excluded_from_measurement": "Six candidate cache entries disappeared before or during this run; exact-hit checks failed."
+    },
+    {
+      "id": 38701334265,
+      "variant": "after",
+      "cache": "prime",
+      "sample": 2,
+      "purpose": "Replace five evicted PR-side caches; excluded preparation.",
+      "conclusion": "success"
+    }
+  ],
+  "remaining": [],
+  "benchmark_head": "b6b74e86cfde3c2846f0210411e0d3f7d210b316",
+  "regular_ci_success": true,
+  "regular_ci_run": 38688383997,
+  "regular_ci_attempt": 2,
+  "benchmark_cache_cleanup": "All remaining cache entries under refs/heads/bench/scheduling-2986-r2 were removed after audit. See benchmark-cache-cleanup.json; no main or production PR cache entries were manually removed.",
+  "comparison_note": "Report one complete cold pair and one complete warm pair. The additional successful warm baseline is unpaired. Candidate exact-hit checks failed after cache loss; a repeat preflight then found six shared entries missing. Do not mix these attempts into a timing comparison.",
+  "main_advanced_during_measurement": "a590ae04c97c30039a88f1e04100d344c0c36f70",
+  "comparison_audited": true,
+  "paired_measurement_ids": [38689942310, 38691149859, 38694781467, 38695646217]
+}

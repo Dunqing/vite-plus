@@ -1,0 +1,65 @@
+[
+  {
+    "id": 8973038803,
+    "ref": "refs/heads/main",
+    "key": "v1-rust-lint-Linux-x64-0cde8d0c-8ba63e6e",
+    "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+    "last_accessed_at": "2026-10-15T05:37:27.579174Z",
+    "created_at": "2026-10-15T03:09:21.350301Z",
+    "size_in_bytes": 514428000
+  },
+  {
+    "id": 8973090299,
+    "ref": "refs/heads/main",
+    "key": "v1-rust-test-Darwin-arm64-26c55cd9-8ba63e6e",
+    "version": "f32cfe70f0cda45aa1788bd3f36113c455c430c5b4ebaac86f6644aaf3e15251",
+    "last_accessed_at": "2026-10-15T05:37:18.489145Z",
+    "created_at": "2026-10-15T03:11:21.767306Z",
+    "size_in_bytes": 836539772
+  },
+  {
+    "id": 8973202426,
+    "ref": "refs/heads/main",
+    "key": "v1-rust-cli-e2e-test-musl-ci-Linux-x64-0cde8d0c-8ba63e6e",
+    "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+    "last_accessed_at": "2026-10-15T05:37:06.787300Z",
+    "created_at": "2026-10-15T03:14:58.157338Z",
+    "size_in_bytes": 679198453
+  },
+  {
+    "id": 8973012325,
+    "ref": "refs/heads/main",
+    "key": "v1-rust-certless-image-test-Linux-x64-0cde8d0c-8ba63e6e",
+    "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+    "last_accessed_at": "2026-10-15T05:37:02.161265Z",
+    "created_at": "2026-10-15T03:08:24.134826Z",
+    "size_in_bytes": 339055442
+  },
+  {
+    "id": 8973125323,
+    "ref": "refs/heads/main",
+    "key": "v1-rust-test-Linux-x64-0cde8d0c-8ba63e6e",
+    "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+    "last_accessed_at": "2026-10-15T05:36:59.165377Z",
+    "created_at": "2026-10-15T03:12:21.361771Z",
+    "size_in_bytes": 850080587
+  },
+  {
+    "id": 8974109975,
+    "ref": "refs/heads/main",
+    "key": "cargo-xwin-sysroot-2026-09-15-6aeecd2d25bcc90c72af09dc525dfdf7143c374d476dc4296692d42efb27a9b9-clang-cl-22-x64-v1",
+    "version": "c9180d95fa9a03a01ff2ae3c2d7b514bfd4dffa69c32216d8386fcebbc723c75",
+    "last_accessed_at": "2026-10-15T05:37:16.645947Z",
+    "created_at": "2026-10-15T03:47:11.600193Z",
+    "size_in_bytes": 245018822
+  },
+  {
+    "id": 8943528774,
+    "ref": "refs/heads/main",
+    "key": "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+    "version": "448f2d7dc1f8ceb9086f9e11e6d35c5d2161b7d5aec564630e1c5d3c3ea058b6",
+    "last_accessed_at": "2026-10-15T05:42:17.110433Z",
+    "created_at": "2026-10-14T14:35:54.981531Z",
+    "size_in_bytes": 174830092
+  }
+]

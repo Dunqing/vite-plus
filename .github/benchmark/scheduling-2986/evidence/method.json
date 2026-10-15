@@ -1,0 +1,162 @@
+{
+  "base": "0b304d1f7f868481ac57dee570e9202d4c68e20e",
+  "head": "1d3c541a3e16157d48852e86ce0fd09838e872d2",
+  "benchmark_head": "b6b74e86cfde3c2846f0210411e0d3f7d210b316",
+  "initial_pr_ci_run": 38688383997,
+  "cold_baseline_overlap": "The first baseline (38688707872) overlaps regular PR CI. Excluded before the candidate result; the later clean baseline (38691149859) supplies the reported cold result.",
+  "shared_fixture_changes": [
+    "crates/vp_cli_snapshots/tests/cli_snapshots/fixtures/vitest_browser_mode/vitest.config.ts",
+    "crates/vp_cli_snapshots/tests/cli_snapshots/fixtures/test_v5_webdriverio/verify.mjs"
+  ],
+  "fixture_reason": "Use an available browser API port on both sides. The production PR excludes these changes.",
+  "rebase_resolution": [
+    "Drop an SDK change and its revert.",
+    "Keep main setup-rust and setup-ci-node wrappers.",
+    "Use main artifact action pins.",
+    "Use rust-cache v2.9.2 and v1-rust namespace for the added musl cache.",
+    "Keep three snapshot shards per platform."
+  ],
+  "pr_ci_retry": "Retry failed Windows snapshot shard 2 and the done gate on unchanged source; original failure was EACCES on port 63315.",
+  "zig_tool_cache": {
+    "controlled": "The Zig global/local build cache is disabled through use-cache=false.",
+    "uncontrolled": "The action still uses runner-image tool installations and caches the downloaded compiler tarball.",
+    "cold_after_run": 38689942310,
+    "cold_after_setup_ms": 262,
+    "cold_before_run": 38691149859,
+    "cold_before_setup_ms": 13971,
+    "impact": "The musl E2E job finishes before the completion chain in both measured cold runs. The tool-download difference does not change the reported total elapsed time.",
+    "tarball_cache_key": "setup-zig-tarball-zig-x86_64-linux-0.15.2"
+  },
+  "failed_warm_baseline": {
+    "run": 38696490098,
+    "job": 116294611280,
+    "test": "command_owner_pnpm10::command_owner_pnpm10",
+    "error": "npm owner ls: EBUSY/EEXIST copying to npm cache on Windows",
+    "handling": "Exclude failed run from timing results and repeat the entire run on the same benchmark commit. Retain the failure record."
+  },
+  "warm_cache_loss": {
+    "failed_run": 38700704392,
+    "first_missing_inventory": "38697851965-caches-after.json",
+    "observed_repository_cache_gib": 10.291,
+    "cause": "Consistent with cache-capacity eviction; API snapshots establish disappearance, not who removed entries.",
+    "handling": "Re-prime candidate-specific entries and repeat the candidate run. Preserve the seven caches shared by both variants. Check each successful run against the cache identities actually required by that variant.",
+    "missing_after_failed_run": [
+      {
+        "id": 8979187922,
+        "ref": "refs/heads/bench/scheduling-2986-r2",
+        "key": "bench-scheduling-2986-r2-cli-test-binaries-v1-aarch64-apple-darwin-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-8ff525ddfee63c51222a22cc657574b1694d048e044367e5c5813aec4cd48f97",
+        "version": "333952014aa18066977a0a102845989df26fd358d43529c3bfa53440a1199719",
+        "last_accessed_at": "2026-10-15T06:45:05.686051Z",
+        "created_at": "2026-10-15T06:45:05.686051Z",
+        "size_in_bytes": 32455345
+      },
+      {
+        "id": 8979070983,
+        "ref": "refs/heads/bench/scheduling-2986-r2",
+        "key": "bench-scheduling-2986-r2-windows-cli-xwin-v2-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-ci",
+        "version": "9d93ad34e9dab8387103ae5f56a8ab7544086e5a4f82213d1c88d94f28423c40",
+        "last_accessed_at": "2026-10-15T06:41:25.002698Z",
+        "created_at": "2026-10-15T06:41:25.002698Z",
+        "size_in_bytes": 18803002
+      },
+      {
+        "id": 8979003183,
+        "ref": "refs/heads/bench/scheduling-2986-r2",
+        "key": "v1-rust-bench-scheduling-2986-r2-windows-check-Linux-x64-ef5e6c71-8ba63e6e",
+        "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+        "last_accessed_at": "2026-10-15T06:39:19.026474Z",
+        "created_at": "2026-10-15T06:39:19.026474Z",
+        "size_in_bytes": 551220692
+      },
+      {
+        "id": 8978983179,
+        "ref": "refs/heads/bench/scheduling-2986-r2",
+        "key": "v1-rust-bench-scheduling-2986-r2-check-Linux-x64-0cde8d0c-8ba63e6e",
+        "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+        "last_accessed_at": "2026-10-15T06:38:41.821607Z",
+        "created_at": "2026-10-15T06:38:41.821607Z",
+        "size_in_bytes": 510115423
+      },
+      {
+        "id": 8978961659,
+        "ref": "refs/heads/bench/scheduling-2986-r2",
+        "key": "bench-scheduling-2986-r2-windows-test-archive-v1-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-e9d671bec024d98d265f93249d6d166dad2b9280fb98048cc8c970c6c816bd13",
+        "version": "99b8f582b5929f893cc131f175c30f5aff06aca06d8cded634d5b995103b870b",
+        "last_accessed_at": "2026-10-15T06:38:01.918122Z",
+        "created_at": "2026-10-15T06:38:01.918122Z",
+        "size_in_bytes": 65875368
+      },
+      {
+        "id": 8978955567,
+        "ref": "refs/heads/bench/scheduling-2986-r2",
+        "key": "bench-scheduling-2986-r2-windows-snapshot-test-archive-v1-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-e9d671bec024d98d265f93249d6d166dad2b9280fb98048cc8c970c6c816bd13",
+        "version": "8f45469a4718912e5b74bb64b87efc1416167a4c7b56dffd6b103d6dd223ddf0",
+        "last_accessed_at": "2026-10-15T06:37:49.315483Z",
+        "created_at": "2026-10-15T06:37:49.315483Z",
+        "size_in_bytes": 7620390
+      }
+    ],
+    "missing_before_failed_run_count": 5
+  },
+  "warm_repeat_outcome": "No additional warm comparison: original shared identities are unavailable. Keep complete cold and first warm pairs; retain unpaired baseline and failed attempt as evidence.",
+  "shared_entries_missing_after_reprime": [
+    {
+      "id": 8973038803,
+      "ref": "refs/heads/main",
+      "key": "v1-rust-lint-Linux-x64-0cde8d0c-8ba63e6e",
+      "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+      "last_accessed_at": "2026-10-15T05:37:27.579174Z",
+      "created_at": "2026-10-15T03:09:21.350301Z",
+      "size_in_bytes": 514428000
+    },
+    {
+      "id": 8973090299,
+      "ref": "refs/heads/main",
+      "key": "v1-rust-test-Darwin-arm64-26c55cd9-8ba63e6e",
+      "version": "f32cfe70f0cda45aa1788bd3f36113c455c430c5b4ebaac86f6644aaf3e15251",
+      "last_accessed_at": "2026-10-15T05:37:18.489145Z",
+      "created_at": "2026-10-15T03:11:21.767306Z",
+      "size_in_bytes": 836539772
+    },
+    {
+      "id": 8973202426,
+      "ref": "refs/heads/main",
+      "key": "v1-rust-cli-e2e-test-musl-ci-Linux-x64-0cde8d0c-8ba63e6e",
+      "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+      "last_accessed_at": "2026-10-15T05:37:06.787300Z",
+      "created_at": "2026-10-15T03:14:58.157338Z",
+      "size_in_bytes": 679198453
+    },
+    {
+      "id": 8973012325,
+      "ref": "refs/heads/main",
+      "key": "v1-rust-certless-image-test-Linux-x64-0cde8d0c-8ba63e6e",
+      "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+      "last_accessed_at": "2026-10-15T05:37:02.161265Z",
+      "created_at": "2026-10-15T03:08:24.134826Z",
+      "size_in_bytes": 339055442
+    },
+    {
+      "id": 8973125323,
+      "ref": "refs/heads/main",
+      "key": "v1-rust-test-Linux-x64-0cde8d0c-8ba63e6e",
+      "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+      "last_accessed_at": "2026-10-15T05:36:59.165377Z",
+      "created_at": "2026-10-15T03:12:21.361771Z",
+      "size_in_bytes": 850080587
+    },
+    {
+      "id": 8943528774,
+      "ref": "refs/heads/main",
+      "key": "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+      "version": "448f2d7dc1f8ceb9086f9e11e6d35c5d2161b7d5aec564630e1c5d3c3ea058b6",
+      "last_accessed_at": "2026-10-15T05:42:17.110433Z",
+      "created_at": "2026-10-14T14:35:54.981531Z",
+      "size_in_bytes": 174830092
+    }
+  ],
+  "elapsed_definition": "done.completedAt - detect-changes.startedAt; includes downstream queues and job setup.",
+  "uncontrolled": "Runner images, tool installations/downloads, registry services, and runner allocation.",
+  "cache_controls": "Cold: no Cargo, pnpm, SDK, native binary or test archive restores. Warm: all configured restores must be exact hits. No measured run saves these caches. Zig compiler download caching is separate; see zig_tool_cache.",
+  "warm_cache_preparation": "Before the complete warm pair, both variants are primed for their cache keys. Common caches use seven identical immutable entries. Each successful warm run checks the required IDs and versions before and after measurement. The attempted second pair is incomplete because required caches disappear."
+}

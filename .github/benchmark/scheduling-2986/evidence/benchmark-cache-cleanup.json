@@ -1,0 +1,121 @@
+{
+  "ref": "refs/heads/bench/scheduling-2986-r2",
+  "time": "2026-10-15T08:05:12.260016+00:00",
+  "entries": [
+    {
+      "id": 8981877273,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+      "version": "448f2d7dc1f8ceb9086f9e11e6d35c5d2161b7d5aec564630e1c5d3c3ea058b6",
+      "last_accessed_at": "2026-10-15T07:58:36.362555Z",
+      "created_at": "2026-10-15T07:58:36.362555Z",
+      "size_in_bytes": 174834455
+    },
+    {
+      "id": 8981826076,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "v1-rust-cli-snapshot-test-aarch64-apple-darwin-ci-Darwin-arm64-26c55cd9-8ba63e6e",
+      "version": "f32cfe70f0cda45aa1788bd3f36113c455c430c5b4ebaac86f6644aaf3e15251",
+      "last_accessed_at": "2026-10-15T07:58:02.614135Z",
+      "created_at": "2026-10-15T07:58:02.614135Z",
+      "size_in_bytes": 734270281
+    },
+    {
+      "id": 8981818699,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "bench-scheduling-2986-r2-cli-test-binaries-v1-aarch64-apple-darwin-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-8ff525ddfee63c51222a22cc657574b1694d048e044367e5c5813aec4cd48f97",
+      "version": "333952014aa18066977a0a102845989df26fd358d43529c3bfa53440a1199719",
+      "last_accessed_at": "2026-10-15T07:57:15.495607Z",
+      "created_at": "2026-10-15T07:57:15.495607Z",
+      "size_in_bytes": 32475403
+    },
+    {
+      "id": 8981808271,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "bench-scheduling-2986-r2-napi-binding-v3-aarch64-apple-darwin-----12b574f2cdc675bc-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-ci",
+      "version": "c0ca27ef387e252b01ae79541457622933aa7a2545410878c19fa238688803cc",
+      "last_accessed_at": "2026-10-15T07:56:58.646411Z",
+      "created_at": "2026-10-15T07:56:58.646411Z",
+      "size_in_bytes": 21743501
+    },
+    {
+      "id": 8981676450,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "v1-rust-windows-cli-cross-ci-Linux-x64-0cde8d0c-8ba63e6e",
+      "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+      "last_accessed_at": "2026-10-15T07:53:36.159949Z",
+      "created_at": "2026-10-15T07:53:36.159949Z",
+      "size_in_bytes": 772533265
+    },
+    {
+      "id": 8981673427,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "bench-scheduling-2986-r2-windows-cli-xwin-v2-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-ci",
+      "version": "9d93ad34e9dab8387103ae5f56a8ab7544086e5a4f82213d1c88d94f28423c40",
+      "last_accessed_at": "2026-10-15T07:53:30.338308Z",
+      "created_at": "2026-10-15T07:53:30.338308Z",
+      "size_in_bytes": 18802991
+    },
+    {
+      "id": 8981603310,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "v1-rust-bench-scheduling-2986-r2-windows-check-Linux-x64-ef5e6c71-8ba63e6e",
+      "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+      "last_accessed_at": "2026-10-15T07:51:47.085818Z",
+      "created_at": "2026-10-15T07:51:47.085818Z",
+      "size_in_bytes": 551208023
+    },
+    {
+      "id": 8981581566,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "v1-rust-bench-scheduling-2986-r2-check-Linux-x64-0cde8d0c-8ba63e6e",
+      "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+      "last_accessed_at": "2026-10-15T07:51:13.872789Z",
+      "created_at": "2026-10-15T07:51:13.872789Z",
+      "size_in_bytes": 510162089
+    },
+    {
+      "id": 8981554418,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "v1-rust-windows-cross-Linux-x64-ef5e6c71-8ba63e6e",
+      "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+      "last_accessed_at": "2026-10-15T07:50:34.678882Z",
+      "created_at": "2026-10-15T07:50:34.678882Z",
+      "size_in_bytes": 997156675
+    },
+    {
+      "id": 8981549770,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "bench-scheduling-2986-r2-windows-test-archive-v1-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-e9d671bec024d98d265f93249d6d166dad2b9280fb98048cc8c970c6c816bd13",
+      "version": "99b8f582b5929f893cc131f175c30f5aff06aca06d8cded634d5b995103b870b",
+      "last_accessed_at": "2026-10-15T07:50:26.184280Z",
+      "created_at": "2026-10-15T07:50:26.184280Z",
+      "size_in_bytes": 65881509
+    },
+    {
+      "id": 8981549525,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "v1-rust-bench-scheduling-2986-r2-windows-snapshot-tests-Linux-x64-ef5e6c71-8ba63e6e",
+      "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+      "last_accessed_at": "2026-10-15T07:50:25.705771Z",
+      "created_at": "2026-10-15T07:50:25.705771Z",
+      "size_in_bytes": 199053489
+    },
+    {
+      "id": 8981547256,
+      "ref": "refs/heads/bench/scheduling-2986-r2",
+      "key": "bench-scheduling-2986-r2-windows-snapshot-test-archive-v1-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-release-e9d671bec024d98d265f93249d6d166dad2b9280fb98048cc8c970c6c816bd13",
+      "version": "8f45469a4718912e5b74bb64b87efc1416167a4c7b56dffd6b103d6dd223ddf0",
+      "last_accessed_at": "2026-10-15T07:50:21.327639Z",
+      "created_at": "2026-10-15T07:50:21.327639Z",
+      "size_in_bytes": 7620179
+    }
+  ],
+  "deleted_ids": [
+    8981877273, 8981826076, 8981818699, 8981808271, 8981676450, 8981673427, 8981603310, 8981581566,
+    8981554418, 8981549770, 8981549525, 8981547256
+  ],
+  "already_absent_ids": [],
+  "remaining_entries": 0,
+  "deleted_bytes": 4085741860
+}

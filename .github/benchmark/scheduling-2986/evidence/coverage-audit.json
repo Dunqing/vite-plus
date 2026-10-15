@@ -1,0 +1,185 @@
+[
+  {
+    "run": {
+      "id": 38688707872,
+      "variant": "before",
+      "cache": "cold",
+      "sample": 1,
+      "conclusion": "success",
+      "excluded_from_measurement": "Overlaps the initial regular PR CI; retained as a calibration run. Exclusion chosen before candidate cold result."
+    },
+    "passed": {
+      "snapshot-windows": 829,
+      "snapshot-linux": 1078,
+      "snapshot-macos": 1084,
+      "unit-windows": 2201,
+      "utilities-macos": 54,
+      "utilities-linux": 54,
+      "unit-musl": 2315,
+      "unit-linux": 2326,
+      "unit-macos": 2326
+    },
+    "windows_test_names": {
+      "snapshot-windows": {
+        "count": 829,
+        "sha256": "0f4aa54d448d5015fec72d768563769ed47fa8a840958d6c7eeeda9c269e2506"
+      },
+      "unit-windows": {
+        "count": 2201,
+        "sha256": "c9ca66e4bedd27f78f7aa8f4e5ab1dff70cb9ef7193dba5afd11e7f6de82a49b"
+      }
+    }
+  },
+  {
+    "run": {
+      "id": 38689942310,
+      "variant": "after",
+      "cache": "cold",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    "passed": {
+      "snapshot-linux": 1078,
+      "snapshot-macos": 1084,
+      "snapshot-windows": 829,
+      "unit-windows": 2201,
+      "utilities-linux": 54,
+      "utilities-macos": 54,
+      "unit-musl": 2315,
+      "unit-linux": 2326,
+      "unit-macos": 2326
+    },
+    "windows_test_names": {
+      "snapshot-windows": {
+        "count": 829,
+        "sha256": "0f4aa54d448d5015fec72d768563769ed47fa8a840958d6c7eeeda9c269e2506"
+      },
+      "unit-windows": {
+        "count": 2201,
+        "sha256": "c9ca66e4bedd27f78f7aa8f4e5ab1dff70cb9ef7193dba5afd11e7f6de82a49b"
+      }
+    }
+  },
+  {
+    "run": {
+      "id": 38691149859,
+      "variant": "before",
+      "cache": "cold",
+      "sample": 2,
+      "conclusion": "success"
+    },
+    "passed": {
+      "snapshot-windows": 829,
+      "snapshot-macos": 1084,
+      "snapshot-linux": 1078,
+      "unit-windows": 2201,
+      "utilities-macos": 54,
+      "utilities-linux": 54,
+      "unit-macos": 2326,
+      "unit-linux": 2326,
+      "unit-musl": 2315
+    },
+    "windows_test_names": {
+      "snapshot-windows": {
+        "count": 829,
+        "sha256": "0f4aa54d448d5015fec72d768563769ed47fa8a840958d6c7eeeda9c269e2506"
+      },
+      "unit-windows": {
+        "count": 2201,
+        "sha256": "c9ca66e4bedd27f78f7aa8f4e5ab1dff70cb9ef7193dba5afd11e7f6de82a49b"
+      }
+    }
+  },
+  {
+    "run": {
+      "id": 38694781467,
+      "variant": "after",
+      "cache": "warm",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    "passed": {
+      "snapshot-linux": 1078,
+      "snapshot-macos": 1084,
+      "snapshot-windows": 829,
+      "unit-windows": 2201,
+      "utilities-linux": 54,
+      "utilities-macos": 54,
+      "unit-musl": 2315,
+      "unit-macos": 2326,
+      "unit-linux": 2326
+    },
+    "windows_test_names": {
+      "snapshot-windows": {
+        "count": 829,
+        "sha256": "0f4aa54d448d5015fec72d768563769ed47fa8a840958d6c7eeeda9c269e2506"
+      },
+      "unit-windows": {
+        "count": 2201,
+        "sha256": "c9ca66e4bedd27f78f7aa8f4e5ab1dff70cb9ef7193dba5afd11e7f6de82a49b"
+      }
+    }
+  },
+  {
+    "run": {
+      "id": 38695646217,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    "passed": {
+      "snapshot-macos": 1084,
+      "snapshot-linux": 1078,
+      "snapshot-windows": 829,
+      "unit-windows": 2201,
+      "utilities-macos": 54,
+      "utilities-linux": 54,
+      "unit-linux": 2326,
+      "unit-musl": 2315,
+      "unit-macos": 2326
+    },
+    "windows_test_names": {
+      "snapshot-windows": {
+        "count": 829,
+        "sha256": "0f4aa54d448d5015fec72d768563769ed47fa8a840958d6c7eeeda9c269e2506"
+      },
+      "unit-windows": {
+        "count": 2201,
+        "sha256": "c9ca66e4bedd27f78f7aa8f4e5ab1dff70cb9ef7193dba5afd11e7f6de82a49b"
+      }
+    }
+  },
+  {
+    "run": {
+      "id": 38697851965,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 2,
+      "replaces_failed_run": 38696490098,
+      "conclusion": "success",
+      "comparison_note": "Successful unpaired warm baseline. Its candidate run failed cache checks, so it supplies no before/after speed result."
+    },
+    "passed": {
+      "snapshot-macos": 1084,
+      "snapshot-linux": 1078,
+      "unit-windows": 2201,
+      "snapshot-windows": 829,
+      "utilities-linux": 54,
+      "utilities-macos": 54,
+      "unit-linux": 2326,
+      "unit-musl": 2315,
+      "unit-macos": 2326
+    },
+    "windows_test_names": {
+      "unit-windows": {
+        "count": 2201,
+        "sha256": "c9ca66e4bedd27f78f7aa8f4e5ab1dff70cb9ef7193dba5afd11e7f6de82a49b"
+      },
+      "snapshot-windows": {
+        "count": 829,
+        "sha256": "0f4aa54d448d5015fec72d768563769ed47fa8a840958d6c7eeeda9c269e2506"
+      }
+    }
+  }
+]

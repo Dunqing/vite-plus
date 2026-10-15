@@ -1,0 +1,2121 @@
+{
+  "conclusion": "success",
+  "createdAt": "2026-10-15T06:25:16Z",
+  "headSha": "b6b74e86cfde3c2846f0210411e0d3f7d210b316",
+  "jobs": [
+    {
+      "completedAt": "2026-10-15T06:25:22Z",
+      "conclusion": "success",
+      "databaseId": 116280771887,
+      "name": "before / detect-changes",
+      "startedAt": "2026-10-15T06:25:19Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:25:20Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:25:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:20Z",
+          "conclusion": "success",
+          "name": "Run echo \"Benchmark default CI plus the six install repositories\"",
+          "number": 2,
+          "startedAt": "2026-10-15T06:25:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:20Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 3,
+          "startedAt": "2026-10-15T06:25:20Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280771887"
+    },
+    {
+      "completedAt": "2026-10-15T06:25:17Z",
+      "conclusion": "skipped",
+      "databaseId": 116280773455,
+      "name": "after",
+      "startedAt": "2026-10-15T06:25:18Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280773455"
+    },
+    {
+      "completedAt": "2026-10-15T06:26:06Z",
+      "conclusion": "success",
+      "databaseId": 116280794137,
+      "name": "before / Cert-less image E2E test",
+      "startedAt": "2026-10-15T06:25:28Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:25:29Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:29Z",
+          "conclusion": "success",
+          "name": "Set up runner",
+          "number": 2,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:29Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 3,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:31Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/clone",
+          "number": 4,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:41Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 5,
+          "startedAt": "2026-10-15T06:25:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:02Z",
+          "conclusion": "success",
+          "name": "Build the global vp in a bookworm container",
+          "number": 6,
+          "startedAt": "2026-10-15T06:25:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:02Z",
+          "conclusion": "success",
+          "name": "Restore Cargo cache ownership",
+          "number": 7,
+          "startedAt": "2026-10-15T06:26:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:04Z",
+          "conclusion": "success",
+          "name": "Run vp in node:24-bookworm-slim without a CA store",
+          "number": 8,
+          "startedAt": "2026-10-15T06:26:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:04Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 15,
+          "startedAt": "2026-10-15T06:26:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:05Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/clone",
+          "number": 16,
+          "startedAt": "2026-10-15T06:26:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:05Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 17,
+          "startedAt": "2026-10-15T06:26:05Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280794137"
+    },
+    {
+      "completedAt": "2026-10-15T06:28:01Z",
+      "conclusion": "success",
+      "databaseId": 116280794138,
+      "name": "before / Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu)",
+      "startedAt": "2026-10-15T06:25:28Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:25:28Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:25:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:29Z",
+          "conclusion": "success",
+          "name": "Set up runner",
+          "number": 2,
+          "startedAt": "2026-10-15T06:25:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:29Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 3,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:31Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/clone",
+          "number": 4,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:46Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 5,
+          "startedAt": "2026-10-15T06:25:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:03Z",
+          "conclusion": "success",
+          "name": "Run cargo check --all-targets --all-features",
+          "number": 6,
+          "startedAt": "2026-10-15T06:25:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:28:00Z",
+          "conclusion": "success",
+          "name": "Run just test",
+          "number": 7,
+          "startedAt": "2026-10-15T06:26:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:28:00Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 13,
+          "startedAt": "2026-10-15T06:28:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:28:00Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/clone",
+          "number": 14,
+          "startedAt": "2026-10-15T06:28:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:28:00Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 15,
+          "startedAt": "2026-10-15T06:28:00Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280794138"
+    },
+    {
+      "completedAt": "2026-10-15T06:29:17Z",
+      "conclusion": "success",
+      "databaseId": 116280794141,
+      "name": "before / Test (Linux x64 musl)",
+      "startedAt": "2026-10-15T06:25:28Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:25:29Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:29Z",
+          "conclusion": "success",
+          "name": "Set up runner",
+          "number": 2,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:30Z",
+          "conclusion": "success",
+          "name": "Initialize containers",
+          "number": 3,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:32Z",
+          "conclusion": "success",
+          "name": "Install Alpine dependencies",
+          "number": 4,
+          "startedAt": "2026-10-15T06:25:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:33Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 5,
+          "startedAt": "2026-10-15T06:25:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:33Z",
+          "conclusion": "success",
+          "name": "Record Alpine Node.js runtime",
+          "number": 6,
+          "startedAt": "2026-10-15T06:25:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:35Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/clone",
+          "number": 7,
+          "startedAt": "2026-10-15T06:25:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:35Z",
+          "conclusion": "success",
+          "name": "Verify clone preserves the Alpine Node.js runtime",
+          "number": 8,
+          "startedAt": "2026-10-15T06:25:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:35Z",
+          "conclusion": "success",
+          "name": "Install rustup",
+          "number": 9,
+          "startedAt": "2026-10-15T06:25:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:46Z",
+          "conclusion": "success",
+          "name": "Install Rust toolchain",
+          "number": 10,
+          "startedAt": "2026-10-15T06:25:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:14Z",
+          "conclusion": "success",
+          "name": "Run just test",
+          "number": 11,
+          "startedAt": "2026-10-15T06:25:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:14Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/clone",
+          "number": 21,
+          "startedAt": "2026-10-15T06:29:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:16Z",
+          "conclusion": "success",
+          "name": "Stop containers",
+          "number": 22,
+          "startedAt": "2026-10-15T06:29:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:16Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 23,
+          "startedAt": "2026-10-15T06:29:16Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280794141"
+    },
+    {
+      "completedAt": "2026-10-15T06:25:38Z",
+      "conclusion": "success",
+      "databaseId": 116280794149,
+      "name": "before / download-previous-rolldown-binaries",
+      "startedAt": "2026-10-15T06:25:24Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:25:25Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:25:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:26Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 2,
+          "startedAt": "2026-10-15T06:25:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:37Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/download-rolldown-binaries",
+          "number": 3,
+          "startedAt": "2026-10-15T06:25:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:37Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 4,
+          "startedAt": "2026-10-15T06:25:37Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280794149"
+    },
+    {
+      "completedAt": "2026-10-15T06:30:11Z",
+      "conclusion": "success",
+      "databaseId": 116280794189,
+      "name": "before / Build Windows CLI binaries",
+      "startedAt": "2026-10-15T06:25:23Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:25:24Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:25:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:24Z",
+          "conclusion": "success",
+          "name": "Set up runner",
+          "number": 2,
+          "startedAt": "2026-10-15T06:25:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:24Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 3,
+          "startedAt": "2026-10-15T06:25:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:28Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/clone",
+          "number": 4,
+          "startedAt": "2026-10-15T06:25:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:30:09Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-build-windows-cli",
+          "number": 5,
+          "startedAt": "2026-10-15T06:25:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:30:09Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-build-windows-cli",
+          "number": 9,
+          "startedAt": "2026-10-15T06:30:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:30:09Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/clone",
+          "number": 10,
+          "startedAt": "2026-10-15T06:30:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:30:09Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 11,
+          "startedAt": "2026-10-15T06:30:09Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280794189"
+    },
+    {
+      "completedAt": "2026-10-15T06:26:41Z",
+      "conclusion": "success",
+      "databaseId": 116280794206,
+      "name": "before / Build Windows tests",
+      "startedAt": "2026-10-15T06:25:28Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:25:29Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:29Z",
+          "conclusion": "success",
+          "name": "Set up runner",
+          "number": 2,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:29Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 3,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:31Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/clone",
+          "number": 4,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:02Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-xwin",
+          "number": 5,
+          "startedAt": "2026-10-15T06:25:31Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:21Z",
+          "conclusion": "success",
+          "name": "Check Windows target",
+          "number": 6,
+          "startedAt": "2026-10-15T06:26:02Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:36Z",
+          "conclusion": "success",
+          "name": "Build test archive",
+          "number": 7,
+          "startedAt": "2026-10-15T06:26:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:38Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+          "number": 8,
+          "startedAt": "2026-10-15T06:26:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:39Z",
+          "conclusion": "success",
+          "name": "Build snapshot test archive",
+          "number": 9,
+          "startedAt": "2026-10-15T06:26:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:40Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+          "number": 10,
+          "startedAt": "2026-10-15T06:26:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:40Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-xwin",
+          "number": 19,
+          "startedAt": "2026-10-15T06:26:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:41Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/clone",
+          "number": 20,
+          "startedAt": "2026-10-15T06:26:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:41Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 21,
+          "startedAt": "2026-10-15T06:26:41Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280794206"
+    },
+    {
+      "completedAt": "2026-10-15T06:30:19Z",
+      "conclusion": "success",
+      "databaseId": 116280794288,
+      "name": "before / Test (namespace-profile-mac-default, aarch64-apple-darwin)",
+      "startedAt": "2026-10-15T06:27:48Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:27:49Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:27:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:27:50Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 2,
+          "startedAt": "2026-10-15T06:27:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:27:53Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/clone",
+          "number": 3,
+          "startedAt": "2026-10-15T06:27:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:28:49Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 4,
+          "startedAt": "2026-10-15T06:27:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:01Z",
+          "conclusion": "success",
+          "name": "Run cargo check --all-targets --all-features",
+          "number": 5,
+          "startedAt": "2026-10-15T06:28:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:30:16Z",
+          "conclusion": "success",
+          "name": "Run just test",
+          "number": 6,
+          "startedAt": "2026-10-15T06:29:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:30:16Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 11,
+          "startedAt": "2026-10-15T06:30:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:30:17Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/clone",
+          "number": 12,
+          "startedAt": "2026-10-15T06:30:16Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:30:18Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 13,
+          "startedAt": "2026-10-15T06:30:17Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280794288"
+    },
+    {
+      "completedAt": "2026-10-15T06:26:21Z",
+      "conclusion": "success",
+      "databaseId": 116280794394,
+      "name": "before / Lint",
+      "startedAt": "2026-10-15T06:25:29Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:25:30Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:25:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:30Z",
+          "conclusion": "success",
+          "name": "Set up runner",
+          "number": 2,
+          "startedAt": "2026-10-15T06:25:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:30Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 3,
+          "startedAt": "2026-10-15T06:25:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:32Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/clone",
+          "number": 4,
+          "startedAt": "2026-10-15T06:25:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:39Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 5,
+          "startedAt": "2026-10-15T06:25:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:58Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 6,
+          "startedAt": "2026-10-15T06:25:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:19Z",
+          "conclusion": "success",
+          "name": "Rust lint",
+          "number": 7,
+          "startedAt": "2026-10-15T06:25:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:58Z",
+          "conclusion": "success",
+          "name": "Run crate-ci/typos@7f9d0819ca1c008ade73f4b41fa9d258d48f605b",
+          "number": 8,
+          "startedAt": "2026-10-15T06:25:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:00Z",
+          "conclusion": "success",
+          "name": "Install docs dependencies",
+          "number": 9,
+          "startedAt": "2026-10-15T06:25:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:04Z",
+          "conclusion": "success",
+          "name": "Deduplicate dependencies",
+          "number": 10,
+          "startedAt": "2026-10-15T06:26:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:19Z",
+          "conclusion": "success",
+          "name": "Wait",
+          "number": 11,
+          "startedAt": "2026-10-15T06:26:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:19Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 20,
+          "startedAt": "2026-10-15T06:26:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:20Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 21,
+          "startedAt": "2026-10-15T06:26:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:20Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/clone",
+          "number": 22,
+          "startedAt": "2026-10-15T06:26:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:20Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 23,
+          "startedAt": "2026-10-15T06:26:20Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280794394"
+    },
+    {
+      "completedAt": "2026-10-15T06:25:22Z",
+      "conclusion": "skipped",
+      "databaseId": 116280796040,
+      "name": "before / Docs format check",
+      "startedAt": "2026-10-15T06:25:22Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280796040"
+    },
+    {
+      "completedAt": "2026-10-15T06:31:35Z",
+      "conclusion": "success",
+      "databaseId": 116280881546,
+      "name": "before / CLI E2E test (Linux x64 musl)",
+      "startedAt": "2026-10-15T06:25:39Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:25:40Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:25:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:40Z",
+          "conclusion": "success",
+          "name": "Set up runner",
+          "number": 2,
+          "startedAt": "2026-10-15T06:25:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:41Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 3,
+          "startedAt": "2026-10-15T06:25:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:43Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/clone",
+          "number": 4,
+          "startedAt": "2026-10-15T06:25:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:58Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 5,
+          "startedAt": "2026-10-15T06:25:43Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:06Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 6,
+          "startedAt": "2026-10-15T06:25:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:07Z",
+          "conclusion": "success",
+          "name": "Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
+          "number": 7,
+          "startedAt": "2026-10-15T06:26:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:30:26Z",
+          "conclusion": "success",
+          "name": "Build with upstream (musl)",
+          "number": 8,
+          "startedAt": "2026-10-15T06:26:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:31:32Z",
+          "conclusion": "success",
+          "name": "Run E2E in Alpine container",
+          "number": 9,
+          "startedAt": "2026-10-15T06:30:26Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:31:33Z",
+          "conclusion": "success",
+          "name": "Post Build with upstream (musl)",
+          "number": 15,
+          "startedAt": "2026-10-15T06:31:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:31:33Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 16,
+          "startedAt": "2026-10-15T06:31:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:31:33Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 17,
+          "startedAt": "2026-10-15T06:31:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:31:33Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/clone",
+          "number": 18,
+          "startedAt": "2026-10-15T06:31:33Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:31:33Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 19,
+          "startedAt": "2026-10-15T06:31:33Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280881546"
+    },
+    {
+      "completedAt": "2026-10-15T06:33:16Z",
+      "conclusion": "success",
+      "databaseId": 116280881564,
+      "name": "before / Build CLI test binaries (aarch64-apple-darwin)",
+      "startedAt": "2026-10-15T06:29:22Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:29:23Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:29:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:24Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 2,
+          "startedAt": "2026-10-15T06:29:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:28Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/clone",
+          "number": 3,
+          "startedAt": "2026-10-15T06:29:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:30:03Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 4,
+          "startedAt": "2026-10-15T06:29:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:30:15Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 5,
+          "startedAt": "2026-10-15T06:30:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:30:17Z",
+          "conclusion": "success",
+          "name": "Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
+          "number": 6,
+          "startedAt": "2026-10-15T06:30:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:04Z",
+          "conclusion": "success",
+          "name": "Build with upstream",
+          "number": 7,
+          "startedAt": "2026-10-15T06:30:17Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:04Z",
+          "conclusion": "skipped",
+          "name": "Ensure no unexpected file changes after build",
+          "number": 8,
+          "startedAt": "2026-10-15T06:33:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:05Z",
+          "conclusion": "success",
+          "name": "Build snapshot test binaries",
+          "number": 9,
+          "startedAt": "2026-10-15T06:33:04Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:05Z",
+          "conclusion": "success",
+          "name": "Test snapshot runner utilities",
+          "number": 10,
+          "startedAt": "2026-10-15T06:33:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:08Z",
+          "conclusion": "success",
+          "name": "Package CLI test binaries",
+          "number": 11,
+          "startedAt": "2026-10-15T06:33:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:11Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+          "number": 12,
+          "startedAt": "2026-10-15T06:33:08Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:11Z",
+          "conclusion": "success",
+          "name": "Post Build with upstream",
+          "number": 21,
+          "startedAt": "2026-10-15T06:33:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:12Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 22,
+          "startedAt": "2026-10-15T06:33:11Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:12Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 23,
+          "startedAt": "2026-10-15T06:33:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:13Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/clone",
+          "number": 24,
+          "startedAt": "2026-10-15T06:33:12Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:15Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 25,
+          "startedAt": "2026-10-15T06:33:13Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280881564"
+    },
+    {
+      "completedAt": "2026-10-15T06:29:44Z",
+      "conclusion": "success",
+      "databaseId": 116280881714,
+      "name": "before / Build CLI test binaries (x86_64-unknown-linux-gnu)",
+      "startedAt": "2026-10-15T06:25:45Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:25:46Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:25:45Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:46Z",
+          "conclusion": "success",
+          "name": "Set up runner",
+          "number": 2,
+          "startedAt": "2026-10-15T06:25:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:46Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 3,
+          "startedAt": "2026-10-15T06:25:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:25:48Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/clone",
+          "number": 4,
+          "startedAt": "2026-10-15T06:25:46Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:00Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 5,
+          "startedAt": "2026-10-15T06:25:48Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:07Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 6,
+          "startedAt": "2026-10-15T06:26:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:26:07Z",
+          "conclusion": "success",
+          "name": "Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
+          "number": 7,
+          "startedAt": "2026-10-15T06:26:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:36Z",
+          "conclusion": "success",
+          "name": "Build with upstream",
+          "number": 8,
+          "startedAt": "2026-10-15T06:26:07Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:36Z",
+          "conclusion": "success",
+          "name": "Ensure no unexpected file changes after build",
+          "number": 9,
+          "startedAt": "2026-10-15T06:29:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:37Z",
+          "conclusion": "success",
+          "name": "Build snapshot test binaries",
+          "number": 10,
+          "startedAt": "2026-10-15T06:29:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:38Z",
+          "conclusion": "success",
+          "name": "Test snapshot runner utilities",
+          "number": 11,
+          "startedAt": "2026-10-15T06:29:37Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:40Z",
+          "conclusion": "success",
+          "name": "Package CLI test binaries",
+          "number": 12,
+          "startedAt": "2026-10-15T06:29:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:41Z",
+          "conclusion": "success",
+          "name": "Run actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+          "number": 13,
+          "startedAt": "2026-10-15T06:29:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:41Z",
+          "conclusion": "success",
+          "name": "Post Build with upstream",
+          "number": 23,
+          "startedAt": "2026-10-15T06:29:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:41Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 24,
+          "startedAt": "2026-10-15T06:29:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:41Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-rust",
+          "number": 25,
+          "startedAt": "2026-10-15T06:29:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:42Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/clone",
+          "number": 26,
+          "startedAt": "2026-10-15T06:29:41Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:29:42Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 27,
+          "startedAt": "2026-10-15T06:29:42Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116280881714"
+    },
+    {
+      "completedAt": "2026-10-15T06:26:42Z",
+      "conclusion": "skipped",
+      "databaseId": 116281215821,
+      "name": "before / Test (Windows)",
+      "startedAt": "2026-10-15T06:26:42Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116281215821"
+    },
+    {
+      "completedAt": "2026-10-15T06:30:11Z",
+      "conclusion": "skipped",
+      "databaseId": 116282320583,
+      "name": "before / CLI snapshot test (Windows, shard ${{ matrix.shard }}/3)",
+      "startedAt": "2026-10-15T06:30:11Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116282320583"
+    },
+    {
+      "completedAt": "2026-10-15T06:35:21Z",
+      "conclusion": "success",
+      "databaseId": 116283315337,
+      "name": "before / CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0)",
+      "startedAt": "2026-10-15T06:33:35Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:33:35Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:33:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:35Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 2,
+          "startedAt": "2026-10-15T06:33:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:40Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/clone",
+          "number": 3,
+          "startedAt": "2026-10-15T06:33:35Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:50Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 4,
+          "startedAt": "2026-10-15T06:33:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:54Z",
+          "conclusion": "success",
+          "name": "Install docs dependencies",
+          "number": 5,
+          "startedAt": "2026-10-15T06:33:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:56Z",
+          "conclusion": "success",
+          "name": "Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
+          "number": 6,
+          "startedAt": "2026-10-15T06:33:54Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:56Z",
+          "conclusion": "skipped",
+          "name": "Download prebuilt Windows binaries",
+          "number": 7,
+          "startedAt": "2026-10-15T06:33:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:38Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/download-cli-test-binaries",
+          "number": 8,
+          "startedAt": "2026-10-15T06:33:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:49Z",
+          "conclusion": "success",
+          "name": "Build with upstream",
+          "number": 9,
+          "startedAt": "2026-10-15T06:34:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:49Z",
+          "conclusion": "skipped",
+          "name": "Ensure no unexpected file changes after build",
+          "number": 10,
+          "startedAt": "2026-10-15T06:34:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:49Z",
+          "conclusion": "skipped",
+          "name": "Check TypeScript types",
+          "number": 11,
+          "startedAt": "2026-10-15T06:34:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:50Z",
+          "conclusion": "success",
+          "name": "Install Global CLI vp",
+          "number": 12,
+          "startedAt": "2026-10-15T06:34:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:50Z",
+          "conclusion": "skipped",
+          "name": "Load Windows CLI environment",
+          "number": 13,
+          "startedAt": "2026-10-15T06:34:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:50Z",
+          "conclusion": "success",
+          "name": "Verify vp installation",
+          "number": 14,
+          "startedAt": "2026-10-15T06:34:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:53Z",
+          "conclusion": "success",
+          "name": "Run vp check",
+          "number": 15,
+          "startedAt": "2026-10-15T06:34:50Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:03Z",
+          "conclusion": "success",
+          "name": "Run unit tests",
+          "number": 16,
+          "startedAt": "2026-10-15T06:34:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:05Z",
+          "conclusion": "success",
+          "name": "Test global package install (powershell)",
+          "number": 17,
+          "startedAt": "2026-10-15T06:35:03Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:05Z",
+          "conclusion": "skipped",
+          "name": "Test global package install (cmd)",
+          "number": 18,
+          "startedAt": "2026-10-15T06:35:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:06Z",
+          "conclusion": "success",
+          "name": "Test global package install (bash)",
+          "number": 19,
+          "startedAt": "2026-10-15T06:35:05Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:09Z",
+          "conclusion": "success",
+          "name": "Test upgrade (bash)",
+          "number": 20,
+          "startedAt": "2026-10-15T06:35:06Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:10Z",
+          "conclusion": "success",
+          "name": "Test upgrade (powershell)",
+          "number": 21,
+          "startedAt": "2026-10-15T06:35:09Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:10Z",
+          "conclusion": "skipped",
+          "name": "Test upgrade (cmd)",
+          "number": 22,
+          "startedAt": "2026-10-15T06:35:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:10Z",
+          "conclusion": "skipped",
+          "name": "Test same-version forced upgrade (Windows)",
+          "number": 23,
+          "startedAt": "2026-10-15T06:35:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:13Z",
+          "conclusion": "success",
+          "name": "Test same-version forced upgrade (Unix)",
+          "number": 24,
+          "startedAt": "2026-10-15T06:35:10Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:14Z",
+          "conclusion": "success",
+          "name": "Test implode (bash)",
+          "number": 25,
+          "startedAt": "2026-10-15T06:35:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:15Z",
+          "conclusion": "success",
+          "name": "Test implode (powershell)",
+          "number": 26,
+          "startedAt": "2026-10-15T06:35:14Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:15Z",
+          "conclusion": "skipped",
+          "name": "Test implode (cmd)",
+          "number": 27,
+          "startedAt": "2026-10-15T06:35:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:15Z",
+          "conclusion": "success",
+          "name": "Post Build with upstream",
+          "number": 52,
+          "startedAt": "2026-10-15T06:35:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:15Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 53,
+          "startedAt": "2026-10-15T06:35:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:16Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/clone",
+          "number": 54,
+          "startedAt": "2026-10-15T06:35:15Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:18Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 55,
+          "startedAt": "2026-10-15T06:35:16Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116283315337"
+    },
+    {
+      "completedAt": "2026-10-15T06:35:56Z",
+      "conclusion": "success",
+      "databaseId": 116283315359,
+      "name": "before / CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0)",
+      "startedAt": "2026-10-15T06:33:42Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:33:25Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:33:24Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:30Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 2,
+          "startedAt": "2026-10-15T06:33:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:44Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/clone",
+          "number": 3,
+          "startedAt": "2026-10-15T06:33:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:55Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 4,
+          "startedAt": "2026-10-15T06:33:44Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:58Z",
+          "conclusion": "success",
+          "name": "Install docs dependencies",
+          "number": 5,
+          "startedAt": "2026-10-15T06:33:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:20Z",
+          "conclusion": "success",
+          "name": "Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
+          "number": 6,
+          "startedAt": "2026-10-15T06:33:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:30Z",
+          "conclusion": "success",
+          "name": "Download prebuilt Windows binaries",
+          "number": 7,
+          "startedAt": "2026-10-15T06:34:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:30Z",
+          "conclusion": "skipped",
+          "name": "Run ./.github/actions/download-cli-test-binaries",
+          "number": 8,
+          "startedAt": "2026-10-15T06:34:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:51Z",
+          "conclusion": "success",
+          "name": "Build with upstream",
+          "number": 9,
+          "startedAt": "2026-10-15T06:34:30Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:51Z",
+          "conclusion": "skipped",
+          "name": "Ensure no unexpected file changes after build",
+          "number": 10,
+          "startedAt": "2026-10-15T06:34:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:51Z",
+          "conclusion": "skipped",
+          "name": "Check TypeScript types",
+          "number": 11,
+          "startedAt": "2026-10-15T06:34:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:53Z",
+          "conclusion": "success",
+          "name": "Install Global CLI vp",
+          "number": 12,
+          "startedAt": "2026-10-15T06:34:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:53Z",
+          "conclusion": "success",
+          "name": "Load Windows CLI environment",
+          "number": 13,
+          "startedAt": "2026-10-15T06:34:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:53Z",
+          "conclusion": "success",
+          "name": "Verify vp installation",
+          "number": 14,
+          "startedAt": "2026-10-15T06:34:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:58Z",
+          "conclusion": "success",
+          "name": "Run vp check",
+          "number": 15,
+          "startedAt": "2026-10-15T06:34:53Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:19Z",
+          "conclusion": "success",
+          "name": "Run unit tests",
+          "number": 16,
+          "startedAt": "2026-10-15T06:34:58Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:23Z",
+          "conclusion": "success",
+          "name": "Test global package install (powershell)",
+          "number": 17,
+          "startedAt": "2026-10-15T06:35:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:25Z",
+          "conclusion": "success",
+          "name": "Test global package install (cmd)",
+          "number": 18,
+          "startedAt": "2026-10-15T06:35:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:27Z",
+          "conclusion": "success",
+          "name": "Test global package install (bash)",
+          "number": 19,
+          "startedAt": "2026-10-15T06:35:25Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:32Z",
+          "conclusion": "success",
+          "name": "Test upgrade (bash)",
+          "number": 20,
+          "startedAt": "2026-10-15T06:35:27Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:34Z",
+          "conclusion": "success",
+          "name": "Test upgrade (powershell)",
+          "number": 21,
+          "startedAt": "2026-10-15T06:35:32Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:36Z",
+          "conclusion": "success",
+          "name": "Test upgrade (cmd)",
+          "number": 22,
+          "startedAt": "2026-10-15T06:35:34Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:40Z",
+          "conclusion": "success",
+          "name": "Test same-version forced upgrade (Windows)",
+          "number": 23,
+          "startedAt": "2026-10-15T06:35:36Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:40Z",
+          "conclusion": "skipped",
+          "name": "Test same-version forced upgrade (Unix)",
+          "number": 24,
+          "startedAt": "2026-10-15T06:35:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:42Z",
+          "conclusion": "success",
+          "name": "Test implode (bash)",
+          "number": 25,
+          "startedAt": "2026-10-15T06:35:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:49Z",
+          "conclusion": "success",
+          "name": "Test implode (powershell)",
+          "number": 26,
+          "startedAt": "2026-10-15T06:35:42Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:51Z",
+          "conclusion": "success",
+          "name": "Test implode (cmd)",
+          "number": 27,
+          "startedAt": "2026-10-15T06:35:49Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:51Z",
+          "conclusion": "success",
+          "name": "Post Build with upstream",
+          "number": 52,
+          "startedAt": "2026-10-15T06:35:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:51Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 53,
+          "startedAt": "2026-10-15T06:35:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:55Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/clone",
+          "number": 54,
+          "startedAt": "2026-10-15T06:35:51Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:35:55Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 55,
+          "startedAt": "2026-10-15T06:35:55Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116283315359"
+    },
+    {
+      "completedAt": "2026-10-15T06:34:32Z",
+      "conclusion": "success",
+      "databaseId": 116283315436,
+      "name": "before / CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0)",
+      "startedAt": "2026-10-15T06:33:17Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:33:18Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:33:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:18Z",
+          "conclusion": "success",
+          "name": "Set up runner",
+          "number": 2,
+          "startedAt": "2026-10-15T06:33:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:19Z",
+          "conclusion": "success",
+          "name": "Run taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b",
+          "number": 3,
+          "startedAt": "2026-10-15T06:33:18Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:21Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/clone",
+          "number": 4,
+          "startedAt": "2026-10-15T06:33:19Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:29Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 5,
+          "startedAt": "2026-10-15T06:33:21Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:38Z",
+          "conclusion": "success",
+          "name": "Install docs dependencies",
+          "number": 6,
+          "startedAt": "2026-10-15T06:33:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:39Z",
+          "conclusion": "success",
+          "name": "Run actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333",
+          "number": 7,
+          "startedAt": "2026-10-15T06:33:38Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:39Z",
+          "conclusion": "skipped",
+          "name": "Download prebuilt Windows binaries",
+          "number": 8,
+          "startedAt": "2026-10-15T06:33:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:40Z",
+          "conclusion": "success",
+          "name": "Run ./.github/actions/download-cli-test-binaries",
+          "number": 9,
+          "startedAt": "2026-10-15T06:33:39Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:55Z",
+          "conclusion": "success",
+          "name": "Build with upstream",
+          "number": 10,
+          "startedAt": "2026-10-15T06:33:40Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:55Z",
+          "conclusion": "success",
+          "name": "Ensure no unexpected file changes after build",
+          "number": 11,
+          "startedAt": "2026-10-15T06:33:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:56Z",
+          "conclusion": "success",
+          "name": "Check TypeScript types",
+          "number": 12,
+          "startedAt": "2026-10-15T06:33:55Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:57Z",
+          "conclusion": "success",
+          "name": "Install Global CLI vp",
+          "number": 13,
+          "startedAt": "2026-10-15T06:33:56Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:57Z",
+          "conclusion": "skipped",
+          "name": "Load Windows CLI environment",
+          "number": 14,
+          "startedAt": "2026-10-15T06:33:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:33:57Z",
+          "conclusion": "success",
+          "name": "Verify vp installation",
+          "number": 15,
+          "startedAt": "2026-10-15T06:33:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:01Z",
+          "conclusion": "success",
+          "name": "Run vp check",
+          "number": 16,
+          "startedAt": "2026-10-15T06:33:57Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:13Z",
+          "conclusion": "success",
+          "name": "Run unit tests",
+          "number": 17,
+          "startedAt": "2026-10-15T06:34:01Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:13Z",
+          "conclusion": "skipped",
+          "name": "Test global package install (powershell)",
+          "number": 18,
+          "startedAt": "2026-10-15T06:34:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:13Z",
+          "conclusion": "skipped",
+          "name": "Test global package install (cmd)",
+          "number": 19,
+          "startedAt": "2026-10-15T06:34:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:20Z",
+          "conclusion": "success",
+          "name": "Test global package install (bash)",
+          "number": 20,
+          "startedAt": "2026-10-15T06:34:13Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:23Z",
+          "conclusion": "success",
+          "name": "Test upgrade (bash)",
+          "number": 21,
+          "startedAt": "2026-10-15T06:34:20Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:23Z",
+          "conclusion": "skipped",
+          "name": "Test upgrade (powershell)",
+          "number": 22,
+          "startedAt": "2026-10-15T06:34:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:23Z",
+          "conclusion": "skipped",
+          "name": "Test upgrade (cmd)",
+          "number": 23,
+          "startedAt": "2026-10-15T06:34:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:23Z",
+          "conclusion": "skipped",
+          "name": "Test same-version forced upgrade (Windows)",
+          "number": 24,
+          "startedAt": "2026-10-15T06:34:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:28Z",
+          "conclusion": "success",
+          "name": "Test same-version forced upgrade (Unix)",
+          "number": 25,
+          "startedAt": "2026-10-15T06:34:23Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:29Z",
+          "conclusion": "success",
+          "name": "Test implode (bash)",
+          "number": 26,
+          "startedAt": "2026-10-15T06:34:28Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:29Z",
+          "conclusion": "skipped",
+          "name": "Test implode (powershell)",
+          "number": 27,
+          "startedAt": "2026-10-15T06:34:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:29Z",
+          "conclusion": "skipped",
+          "name": "Test implode (cmd)",
+          "number": 28,
+          "startedAt": "2026-10-15T06:34:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:29Z",
+          "conclusion": "success",
+          "name": "Post Build with upstream",
+          "number": 54,
+          "startedAt": "2026-10-15T06:34:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:29Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/benchmark-before-setup-ci-node",
+          "number": 55,
+          "startedAt": "2026-10-15T06:34:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:30Z",
+          "conclusion": "success",
+          "name": "Post Run ./.github/actions/clone",
+          "number": 56,
+          "startedAt": "2026-10-15T06:34:29Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:34:30Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 57,
+          "startedAt": "2026-10-15T06:34:30Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116283315436"
+    },
+    {
+      "completedAt": "2026-10-15T06:33:16Z",
+      "conclusion": "skipped",
+      "databaseId": 116283316688,
+      "name": "before / CLI snapshot test (${{ matrix.target }}, shard ${{ matrix.shard }}/3)",
+      "startedAt": "2026-10-15T06:33:16Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116283316688"
+    },
+    {
+      "completedAt": "2026-10-15T06:33:16Z",
+      "conclusion": "skipped",
+      "databaseId": 116283317076,
+      "name": "before / Local CLI `vp install` E2E test",
+      "startedAt": "2026-10-15T06:33:17Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116283317076"
+    },
+    {
+      "completedAt": "2026-10-15T06:33:16Z",
+      "conclusion": "skipped",
+      "databaseId": 116283317176,
+      "name": "before / Local CLI `vp install` E2E test (Socket Firewall Free)",
+      "startedAt": "2026-10-15T06:33:17Z",
+      "status": "completed",
+      "steps": [],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116283317176"
+    },
+    {
+      "completedAt": "2026-10-15T06:36:02Z",
+      "conclusion": "success",
+      "databaseId": 116284180980,
+      "name": "before / done",
+      "startedAt": "2026-10-15T06:35:59Z",
+      "status": "completed",
+      "steps": [
+        {
+          "completedAt": "2026-10-15T06:36:00Z",
+          "conclusion": "success",
+          "name": "Set up job",
+          "number": 1,
+          "startedAt": "2026-10-15T06:35:59Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:36:00Z",
+          "conclusion": "skipped",
+          "name": "Run exit 1",
+          "number": 2,
+          "startedAt": "2026-10-15T06:36:00Z",
+          "status": "completed"
+        },
+        {
+          "completedAt": "2026-10-15T06:36:00Z",
+          "conclusion": "success",
+          "name": "Complete job",
+          "number": 3,
+          "startedAt": "2026-10-15T06:36:00Z",
+          "status": "completed"
+        }
+      ],
+      "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238/job/116284180980"
+    }
+  ],
+  "startedAt": "2026-10-15T06:25:16Z",
+  "status": "completed",
+  "updatedAt": "2026-10-15T06:36:02Z",
+  "url": "https://github.com/voidzero-dev/vite-plus/actions/runs/38692296238"
+}

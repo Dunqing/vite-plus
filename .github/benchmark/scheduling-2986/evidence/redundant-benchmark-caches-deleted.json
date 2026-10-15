@@ -1,0 +1,47 @@
+[
+  {
+    "id": 8978566758,
+    "ref": "refs/heads/bench/scheduling-2986-r2",
+    "key": "cargo-xwin-sysroot-2026-09-15-6aeecd2d25bcc90c72af09dc525dfdf7143c374d476dc4296692d42efb27a9b9-clang-cl-22-x64-v1",
+    "version": "c9180d95fa9a03a01ff2ae3c2d7b514bfd4dffa69c32216d8386fcebbc723c75",
+    "last_accessed_at": "2026-10-15T06:37:37.673164Z",
+    "created_at": "2026-10-15T06:26:02.177187Z",
+    "size_in_bytes": 244949420
+  },
+  {
+    "id": 8978207483,
+    "ref": "refs/heads/bench/scheduling-2986-r2",
+    "key": "setup-zig-tarball-zig-x86_64-linux-0.15.2",
+    "version": "2910d758b898cf14253f20592b94a1bf1be668df4d6c865591b11f1e85a38fa4",
+    "last_accessed_at": "2026-10-15T06:14:45.383742Z",
+    "created_at": "2026-10-15T06:14:45.383742Z",
+    "size_in_bytes": 53737147
+  },
+  {
+    "id": 8978957060,
+    "ref": "refs/heads/bench/scheduling-2986-r2",
+    "key": "v1-rust-bench-scheduling-2986-r2-windows-snapshot-tests-Linux-x64-ef5e6c71-8ba63e6e",
+    "version": "e374dd2d31e3fb33bfedb9e1c86456221f66c08cf14fe50e6c88ac2c97e08e83",
+    "last_accessed_at": "2026-10-15T06:37:53.300216Z",
+    "created_at": "2026-10-15T06:37:53.300216Z",
+    "size_in_bytes": 199074698
+  },
+  {
+    "id": 8979180065,
+    "ref": "refs/heads/bench/scheduling-2986-r2",
+    "key": "bench-scheduling-2986-r2-napi-binding-v3-aarch64-apple-darwin-----12b574f2cdc675bc-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-ci",
+    "version": "c0ca27ef387e252b01ae79541457622933aa7a2545410878c19fa238688803cc",
+    "last_accessed_at": "2026-10-15T06:44:47.088063Z",
+    "created_at": "2026-10-15T06:44:47.088063Z",
+    "size_in_bytes": 21743523
+  },
+  {
+    "id": 8979074659,
+    "ref": "refs/heads/bench/scheduling-2986-r2",
+    "key": "bench-scheduling-2986-r2-napi-binding-v3-x86_64-unknown-linux-gnu-----12b574f2cdc675bc-0eb68d9a23e063caf09766c5670fd9f6afa72506988b21e5a3606d971a8e49ad-ci",
+    "version": "d455d59bc2c8de5b936f565e45d54ec9d3346e647ae0acfb6b6283b48694439d",
+    "last_accessed_at": "2026-10-15T06:41:32.200608Z",
+    "created_at": "2026-10-15T06:41:32.200608Z",
+    "size_in_bytes": 19544043
+  }
+]

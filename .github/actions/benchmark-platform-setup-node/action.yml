@@ -54,9 +54,7 @@ runs:
       uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       with:
         path: ${{ steps.store.outputs.STORE_PATH }}
-        key:
-          bench-platform-3008-20261015-r1-${{ runner.os }}-${{ runner.arch }}-${{ inputs.cpu || 'default' }}-pnpm-store-${{
-          hashFiles('pnpm-lock.yaml') }}
+        key: ${{ runner.os }}-${{ runner.arch }}-${{ inputs.cpu || 'default' }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
         fail-on-cache-miss: ${{ env.VP_PLATFORM_CACHE == 'warm' }}
       if: (true) && env.VP_PLATFORM_CACHE != 'cold'
     - name: Set CPU architecture for pnpm
@@ -72,6 +70,4 @@ runs:
       if: (env.VP_PLATFORM_CACHE == 'prime' && steps.cache.outputs.cache-hit != 'true') && env.VP_PLATFORM_CACHE == 'prime'
       with:
         path: ${{ steps.store.outputs.STORE_PATH }}
-        key:
-          bench-platform-3008-20261015-r1-${{ runner.os }}-${{ runner.arch }}-${{ inputs.cpu || 'default' }}-pnpm-store-${{
-          hashFiles('pnpm-lock.yaml') }}
+        key: ${{ runner.os }}-${{ runner.arch }}-${{ inputs.cpu || 'default' }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}

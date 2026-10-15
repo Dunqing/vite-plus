@@ -47,7 +47,7 @@ runs:
       uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
       with:
         path: ${{ steps.binary-paths.outputs.paths }}
-        key: bench-platform-3008-20261015-r1-${{ steps.cache-key.outputs.key }}
+        key: ${{ steps.cache-key.outputs.key }}
         fail-on-cache-miss: ${{ env.VP_PLATFORM_CACHE == 'warm' }}
       if: (true) && env.VP_PLATFORM_CACHE != 'cold'
     - uses: ./.github/actions/benchmark-platform-setup-xwin
@@ -106,4 +106,4 @@ runs:
       if: (steps.binaries-cache.outputs.cache-hit != 'true') && env.VP_PLATFORM_CACHE == 'prime'
       with:
         path: ${{ steps.binary-paths.outputs.paths }}
-        key: bench-platform-3008-20261015-r1-${{ steps.cache-key.outputs.key }}
+        key: ${{ steps.cache-key.outputs.key }}

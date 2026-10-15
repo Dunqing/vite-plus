@@ -59,7 +59,7 @@ runs:
           ~/.cache/cargo-xwin/windows-msvc-sysroot/include
           ~/.cache/cargo-xwin/windows-msvc-sysroot/lib/x86_64-unknown-windows-msvc
           ~/.cache/cargo-xwin/xwin
-        key: bench-platform-3008-20261015-r1-cargo-xwin-sysroot-2026-09-15-clang-cl-22-x64-v1
+        key: cargo-xwin-sysroot-2026-09-15-clang-cl-22-x64-v1
         fail-on-cache-miss: ${{ env.VP_PLATFORM_CACHE == 'warm' }}
       if: (true) && env.VP_PLATFORM_CACHE != 'cold'
     - name: Download pinned Windows SDK
@@ -109,4 +109,4 @@ runs:
           ~/.cache/cargo-xwin/windows-msvc-sysroot/include
           ~/.cache/cargo-xwin/windows-msvc-sysroot/lib/x86_64-unknown-windows-msvc
           ~/.cache/cargo-xwin/xwin
-        key: bench-platform-3008-20261015-r1-cargo-xwin-sysroot-2026-09-15-clang-cl-22-x64-v1
+        key: cargo-xwin-sysroot-2026-09-15-clang-cl-22-x64-v1

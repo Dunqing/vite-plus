@@ -33,7 +33,7 @@ runs:
     - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6
       if: (inputs.restore-cache == 'true') && env.VP_PLATFORM_CACHE != 'cold'
       with:
-        prefix-key: bench-platform-3008-20261015-r1-rust
+        prefix-key: v1-rust
         shared-key: ${{ inputs.cache-key }}
         save-if: ${{ env.VP_PLATFORM_CACHE == 'prime' }}
         cache-workspace-crates: ${{ inputs.cache-workspace-crates }}

@@ -58,7 +58,7 @@ runs:
           ${{ steps.rust-target.outputs.dir }}/${{ inputs.target }}/release/vp.exe
           ${{ steps.rust-target.outputs.dir }}/${{ inputs.target }}/release/vp-shim.exe
           ${{ steps.rust-target.outputs.dir }}/${{ inputs.target }}/release/vp-setup.exe
-        key: bench-platform-3008-20261015-r1-${{ steps.cache-key.outputs.key }}
+        key: ${{ steps.cache-key.outputs.key }}
         fail-on-cache-miss: ${{ env.VP_PLATFORM_CACHE == 'warm' }}
     - name: Decide native build
       id: native
@@ -196,7 +196,7 @@ runs:
           ${{ steps.rust-target.outputs.dir }}/${{ inputs.target }}/release/vp.exe
           ${{ steps.rust-target.outputs.dir }}/${{ inputs.target }}/release/vp-shim.exe
           ${{ steps.rust-target.outputs.dir }}/${{ inputs.target }}/release/vp-setup.exe
-        key: bench-platform-3008-20261015-r1-${{ steps.cache-key.outputs.key }}
+        key: ${{ steps.cache-key.outputs.key }}
     - name: Build vite-plus TypeScript packages
       shell: bash
       run: |

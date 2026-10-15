@@ -4,14 +4,34 @@
   "head": "77b69fb28694283279f3e8cbc75e84a95c5b123d",
   "branch": "bench/platform-3008-r1",
   "prefix": "bench-platform-3008-20261015-r1",
-  "runs": [],
+  "runs": [
+    {
+      "id": 38675234887,
+      "variant": "before",
+      "cache": "prime",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    {
+      "id": 38676601766,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 1
+    }
+  ],
+  "benchmark_head": "ce5eafb3ea9cfa800eb63e7402dd6a67029e4b31",
+  "remaining": [
+    ["after", "warm"],
+    ["after", "cold"],
+    ["before", "cold"]
+  ],
   "scope": "Default PR CI; optional install and SFW jobs skipped as on unlabeled PRs.",
   "controls": [
     "Identical source, toolchain, dependency pins and runner labels.",
-    "Same branch and shared isolated cache namespace for both variants.",
+    "Same branch; both variants restore the same immutable production cache keys from main.",
     "Cold: no Cargo, pnpm, SDK or native binary cache restore or save.",
-    "Prime: save isolated caches, excluded from timing.",
-    "Warm: exact cache hits required; all saves disabled.",
+    "No primer needed: exact matching main caches already exist. Duplicate benchmark caches were evicted and that trial was excluded.",
+    "Warm: exact cache hits required; all saves disabled. Cache inventories and restored keys are retained as evidence.",
     "Zig action cache disabled for all runs.",
     "Hosted image/tool download caches and public network services are not controlled."
   ]

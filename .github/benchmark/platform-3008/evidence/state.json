@@ -1,0 +1,68 @@
+{
+  "pr": 3008,
+  "base": "bce9befb5d1f0f81a07bbb0422c4f50cb10105a2",
+  "head": "77b69fb28694283279f3e8cbc75e84a95c5b123d",
+  "branch": "bench/platform-3008-r1",
+  "prefix": "bench-platform-3008-20261015-r1",
+  "benchmark_head": "46e27351c62aaab13b9843d49afb9d3b4f598692",
+  "remaining": [],
+  "excluded_runs": [
+    {
+      "id": 38675234887,
+      "variant": "before",
+      "cache": "prime",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    {
+      "id": 38676601766,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 1
+    }
+  ],
+  "runs": [
+    {
+      "id": 38676967555,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    {
+      "id": 38677544209,
+      "variant": "after",
+      "cache": "warm",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    {
+      "id": 38678223265,
+      "variant": "after",
+      "cache": "cold",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    {
+      "id": 38679493670,
+      "variant": "before",
+      "cache": "cold",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    {
+      "id": 38680706024,
+      "variant": "after",
+      "cache": "warm",
+      "sample": 2,
+      "conclusion": "success"
+    },
+    {
+      "id": 38681342618,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 2,
+      "conclusion": "success"
+    }
+  ]
+}

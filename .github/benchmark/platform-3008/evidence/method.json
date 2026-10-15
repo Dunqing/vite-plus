@@ -1,0 +1,38 @@
+{
+  "base": "bce9befb5d1f0f81a07bbb0422c4f50cb10105a2",
+  "pr_head": "77b69fb28694283279f3e8cbc75e84a95c5b123d",
+  "scope": "Default PR CI; docs-only and label-gated install/SFW jobs are skipped. Ecosystem, preview, security and release workflows are outside this comparison.",
+  "cache_controls": {
+    "cold": "Cargo lookup-only with an unused key prefix; pnpm, SDK and native cache restores skipped. All cache saving disabled. Cargo action still sets its normal environment.",
+    "warm": "Identical exact keys and immutable cache IDs from main. No cache saves or fallback-prefix hits. 14 unique entries, 8 exact Cargo hits, 20 restores per run.",
+    "zig": "Action cache disabled in every run.",
+    "not_controlled": "Runner image/tool download caches, package registries and runner allocation."
+  },
+  "sampling": "One cold pair, two warm pairs. Warm order is before/after, then after/before. Cold order is after/before.",
+  "timing": "CI elapsed is done.completedAt minus detect-changes.startedAt. Runner time sums job API durations. Initial workflow-dispatch queue time is excluded; subsequent job queues are included.",
+  "fixed_duration_model": "Replay each workflow dependency graph with identical measured job durations. Omit job queue delays. Remove the shared Rolldown job and measured redundant artifact-download steps. Treat these as estimates, separate from observed elapsed times.",
+  "harness_revisions": {
+    "a361a3d1e92af662da6dca11041ceace44969074": "First baseline warm run.",
+    "46e27351c62aaab13b9843d49afb9d3b4f598692": "Other runs. Changes the cold Cargo guard to preserve Cargo action environment settings; warm behavior and product files are identical."
+  },
+  "excluded": [
+    {
+      "run": 38675137700,
+      "reason": "Workflow permission validation failed before any jobs ran."
+    },
+    {
+      "run": 38675234887,
+      "reason": "Cache primer, not measured."
+    },
+    {
+      "run": 38676601766,
+      "reason": "Benchmark caches were evicted. Exact-hit checks failed; the incomplete run was canceled and excluded."
+    }
+  ],
+  "regular_ci": {
+    "run": 38674949263,
+    "attempt": 2,
+    "conclusion": "success",
+    "first_attempt_failure": "Windows runner lost communication. The failed job passed on retry without source changes."
+  }
+}

@@ -1,0 +1,1400 @@
+[
+  {
+    "run": {
+      "id": 38676967555,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    "jobs": [
+      {
+        "name": "0_before _ done.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "1_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 1_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "2_before _ CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "3_before _ CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "4_before _ CLI snapshot test (aarch64-apple-darwin, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "5_before _ CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "6_before _ CLI snapshot test (aarch64-apple-darwin, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "7_before _ CLI snapshot test (aarch64-apple-darwin, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "9_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 3_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "10_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 2_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "12_before _ CLI snapshot test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "13_before _ CLI snapshot test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "14_before _ CLI snapshot test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "15_before _ Test (Windows).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "16_before _ CLI E2E test (Linux x64 musl).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "napi-binding-v3-x86_64-unknown-linux-musl-----12b574f2cdc675bc-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci",
+          "v1-rust-cli-e2e-test-musl-ci-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "17_before _ Build CLI test binaries (aarch64-apple-darwin).txt",
+        "restored_keys": [
+          "napi-binding-v3-aarch64-apple-darwin-----12b574f2cdc675bc-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci",
+          "v1-rust-cli-snapshot-test-aarch64-apple-darwin-ci-Darwin-arm64-26c55cd9-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "18_before _ Build CLI test binaries (x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "napi-binding-v3-x86_64-unknown-linux-gnu-----12b574f2cdc675bc-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci",
+          "v1-rust-cli-snapshot-test-x86_64-unknown-linux-gnu-ci-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "19_before _ Test (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": ["v1-rust-test-Darwin-arm64-26c55cd9-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "20_before _ download-previous-rolldown-binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "21_before _ Test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "22_before _ Cert-less image E2E test.txt",
+        "restored_keys": ["v1-rust-certless-image-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "23_before _ Build Windows tests.txt",
+        "restored_keys": [
+          "cargo-xwin-sysroot-2026-09-15-clang-cl-22-x64-v1",
+          "v1-rust-windows-cross-Linux-x64-ef5e6c71-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "24_before _ Build Windows CLI binaries.txt",
+        "restored_keys": [
+          "windows-cli-xwin-v2-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "25_before _ Lint.txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "v1-rust-lint-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "26_before _ Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": ["v1-rust-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "28_before _ detect-changes.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      }
+    ]
+  },
+  {
+    "run": {
+      "id": 38677544209,
+      "variant": "after",
+      "cache": "warm",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    "jobs": [
+      {
+        "name": "0_after _ done.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "1_after _ CLI snapshot test (aarch64-apple-darwin, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "2_after _ CLI snapshot test (aarch64-apple-darwin, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "3_after _ CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "4_after _ CLI snapshot test (aarch64-apple-darwin, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "6_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 3_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "7_after _ CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "8_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 2_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "9_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 1_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "12_after _ CLI snapshot test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "13_after _ Test (Windows).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "14_after _ CLI snapshot test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "15_after _ CLI snapshot test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "16_after _ CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "17_after _ Build CLI test binaries (aarch64-apple-darwin).txt",
+        "restored_keys": [
+          "napi-binding-v3-aarch64-apple-darwin-----12b574f2cdc675bc-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci",
+          "v1-rust-cli-snapshot-test-aarch64-apple-darwin-ci-Darwin-arm64-26c55cd9-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "18_after _ Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": ["v1-rust-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "19_after _ CLI E2E test (Linux x64 musl).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "napi-binding-v3-x86_64-unknown-linux-musl-----12b574f2cdc675bc-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci",
+          "v1-rust-cli-e2e-test-musl-ci-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "20_after _ Build CLI test binaries (x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "napi-binding-v3-x86_64-unknown-linux-gnu-----12b574f2cdc675bc-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci",
+          "v1-rust-cli-snapshot-test-x86_64-unknown-linux-gnu-ci-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "22_after _ Test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "23_after _ Build Windows tests.txt",
+        "restored_keys": [
+          "cargo-xwin-sysroot-2026-09-15-clang-cl-22-x64-v1",
+          "v1-rust-windows-cross-Linux-x64-ef5e6c71-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "24_after _ Lint.txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "v1-rust-lint-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "25_after _ Test (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": ["v1-rust-test-Darwin-arm64-26c55cd9-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "26_after _ Cert-less image E2E test.txt",
+        "restored_keys": ["v1-rust-certless-image-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "27_after _ Build Windows CLI binaries.txt",
+        "restored_keys": [
+          "windows-cli-xwin-v2-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "28_after _ detect-changes.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      }
+    ]
+  },
+  {
+    "run": {
+      "id": 38678223265,
+      "variant": "after",
+      "cache": "cold",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    "jobs": [
+      {
+        "name": "0_after _ done.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "1_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "2_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "4_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "5_after _ CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "7_after _ CLI snapshot test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "8_after _ CLI snapshot test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "9_after _ CLI snapshot test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "10_after _ CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "11_after _ CLI snapshot test (aarch64-apple-darwin, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "12_after _ CLI snapshot test (aarch64-apple-darwin, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "13_after _ CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "14_after _ CLI snapshot test (aarch64-apple-darwin, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "16_after _ Test (Windows).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "17_after _ Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T03:49:33.1156294Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "18_after _ Build CLI test binaries (x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T03:49:33.1337167Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "19_after _ CLI E2E test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T03:49:33.0909713Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "20_after _ Cert-less image E2E test.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T03:49:32.9878601Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "21_after _ Build CLI test binaries (aarch64-apple-darwin).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T03:49:49.0482020Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "22_after _ Test (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T03:49:47.7770880Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "23_after _ Build Windows CLI binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T03:49:35.0142294Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "24_after _ Build Windows tests.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T03:49:30.8582138Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "25_after _ Test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "26_after _ Lint.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T03:49:45.4687076Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "28_after _ detect-changes.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      }
+    ]
+  },
+  {
+    "run": {
+      "id": 38679493670,
+      "variant": "before",
+      "cache": "cold",
+      "sample": 1,
+      "conclusion": "success"
+    },
+    "jobs": [
+      {
+        "name": "0_before _ done.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "1_before _ CLI snapshot test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "2_before _ CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "3_before _ CLI snapshot test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "4_before _ CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "5_before _ CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "6_before _ CLI snapshot test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "7_before _ CLI snapshot test (aarch64-apple-darwin, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "9_before _ CLI snapshot test (aarch64-apple-darwin, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "10_before _ CLI snapshot test (aarch64-apple-darwin, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "11_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "12_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "13_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "15_before _ Test (Windows).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "16_before _ Build CLI test binaries (x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T04:04:39.6220702Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "17_before _ CLI E2E test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T04:04:39.0128921Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "18_before _ Build CLI test binaries (aarch64-apple-darwin).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T04:05:09.5927340Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "19_before _ Build Windows tests.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T04:04:21.7014275Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "20_before _ Test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "21_before _ Test (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T04:04:33.3804900Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "22_before _ Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T04:04:14.3099947Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "23_before _ Build Windows CLI binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T04:04:17.1833928Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "24_before _ Cert-less image E2E test.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T04:04:13.7267777Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "25_before _ Lint.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": ["2026-10-15T04:04:27.4788440Z No cache found."],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "26_before _ download-previous-rolldown-binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "28_before _ detect-changes.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      }
+    ]
+  },
+  {
+    "run": {
+      "id": 38680706024,
+      "variant": "after",
+      "cache": "warm",
+      "sample": 2,
+      "conclusion": "success"
+    },
+    "jobs": [
+      {
+        "name": "0_after _ done.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "1_after _ CLI snapshot test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "2_after _ CLI snapshot test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "3_after _ CLI snapshot test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "4_after _ Test (Windows).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "5_after _ CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "6_after _ CLI snapshot test (aarch64-apple-darwin, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "7_after _ CLI snapshot test (aarch64-apple-darwin, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "8_after _ CLI snapshot test (aarch64-apple-darwin, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "10_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 3_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "11_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 2_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "12_after _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 1_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "13_after _ CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "16_after _ CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "17_after _ Build Windows CLI binaries.txt",
+        "restored_keys": [
+          "windows-cli-xwin-v2-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "18_after _ Build CLI test binaries (aarch64-apple-darwin).txt",
+        "restored_keys": [
+          "napi-binding-v3-aarch64-apple-darwin-----12b574f2cdc675bc-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci",
+          "v1-rust-cli-snapshot-test-aarch64-apple-darwin-ci-Darwin-arm64-26c55cd9-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "19_after _ Cert-less image E2E test.txt",
+        "restored_keys": ["v1-rust-certless-image-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "20_after _ Test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "21_after _ Build Windows tests.txt",
+        "restored_keys": [
+          "cargo-xwin-sysroot-2026-09-15-clang-cl-22-x64-v1",
+          "v1-rust-windows-cross-Linux-x64-ef5e6c71-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "22_after _ Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": ["v1-rust-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "23_after _ Lint.txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "v1-rust-lint-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "24_after _ Test (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": ["v1-rust-test-Darwin-arm64-26c55cd9-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "25_after _ CLI E2E test (Linux x64 musl).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "napi-binding-v3-x86_64-unknown-linux-musl-----12b574f2cdc675bc-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci",
+          "v1-rust-cli-e2e-test-musl-ci-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "26_after _ Build CLI test binaries (x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "napi-binding-v3-x86_64-unknown-linux-gnu-----12b574f2cdc675bc-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci",
+          "v1-rust-cli-snapshot-test-x86_64-unknown-linux-gnu-ci-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "28_after _ detect-changes.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      }
+    ]
+  },
+  {
+    "run": {
+      "id": 38681342618,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 2,
+      "conclusion": "success"
+    },
+    "jobs": [
+      {
+        "name": "0_before _ done.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "1_before _ CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "3_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 2_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "4_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 1_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "5_before _ CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "6_before _ CLI snapshot test (aarch64-apple-darwin, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "7_before _ CLI snapshot test (x86_64-unknown-linux-gnu, shard 3_3).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "8_before _ CLI snapshot test (aarch64-apple-darwin, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "9_before _ CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "11_before _ CLI snapshot test (aarch64-apple-darwin, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "12_before _ CLI snapshot test (Windows, shard 2_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "13_before _ CLI snapshot test (Windows, shard 1_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "14_before _ Test (Windows).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "15_before _ CLI snapshot test (Windows, shard 3_3).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "16_before _ Build CLI test binaries (aarch64-apple-darwin).txt",
+        "restored_keys": [
+          "napi-binding-v3-aarch64-apple-darwin-----12b574f2cdc675bc-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci",
+          "v1-rust-cli-snapshot-test-aarch64-apple-darwin-ci-Darwin-arm64-26c55cd9-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "17_before _ Build CLI test binaries (x86_64-unknown-linux-gnu).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "napi-binding-v3-x86_64-unknown-linux-gnu-----12b574f2cdc675bc-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci",
+          "v1-rust-cli-snapshot-test-x86_64-unknown-linux-gnu-ci-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "18_before _ CLI E2E test (Linux x64 musl).txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "napi-binding-v3-x86_64-unknown-linux-musl-----12b574f2cdc675bc-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci",
+          "v1-rust-cli-e2e-test-musl-ci-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": ["Using rolldown version from source: 1.2.13"]
+      },
+      {
+        "name": "19_before _ Cert-less image E2E test.txt",
+        "restored_keys": ["v1-rust-certless-image-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "20_before _ download-previous-rolldown-binaries.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "21_before _ Build Windows CLI binaries.txt",
+        "restored_keys": [
+          "windows-cli-xwin-v2-7db8ce6303023fbf68512c994a25fed0a983fd806408a5077854a43c5620fcad-ci"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "22_before _ Lint.txt",
+        "restored_keys": [
+          "Linux-X64-default-pnpm-store-c7255c0b6cb1ab97be10650e3ebcca1c2a45f3f777f05fb0ebf7742b498083ee",
+          "v1-rust-lint-Linux-x64-0cde8d0c-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "23_before _ Test (namespace-profile-mac-default, aarch64-apple-darwin).txt",
+        "restored_keys": ["v1-rust-test-Darwin-arm64-26c55cd9-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "24_before _ Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu).txt",
+        "restored_keys": ["v1-rust-test-Linux-x64-0cde8d0c-8ba63e6e"],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "25_before _ Build Windows tests.txt",
+        "restored_keys": [
+          "cargo-xwin-sysroot-2026-09-15-clang-cl-22-x64-v1",
+          "v1-rust-windows-cross-Linux-x64-ef5e6c71-8ba63e6e"
+        ],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 1,
+        "rolldown_versions": []
+      },
+      {
+        "name": "26_before _ Test (Linux x64 musl).txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      },
+      {
+        "name": "28_before _ detect-changes.txt",
+        "restored_keys": [],
+        "saved_keys": [],
+        "missing": [],
+        "exact_cargo_hits": 0,
+        "rolldown_versions": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,149 @@
+{
+  "baseRefName": "main",
+  "checks": [
+    { "conclusion": "SUCCESS", "name": "detect-changes", "status": "COMPLETED" },
+    { "conclusion": "SUCCESS", "name": "detect-changes", "status": "COMPLETED" },
+    { "conclusion": "SUCCESS", "name": "Detect native input changes", "status": "COMPLETED" },
+    { "conclusion": "SUCCESS", "name": "Security Analysis", "status": "COMPLETED" },
+    { "conclusion": "SUCCESS", "name": "Semgrep", "status": "COMPLETED" },
+    { "conclusion": "SUCCESS", "name": "detect-changes", "status": "COMPLETED" },
+    { "conclusion": "SKIPPED", "name": "Docs format check", "status": "COMPLETED" },
+    {
+      "conclusion": "SKIPPED",
+      "name": "download-previous-rolldown-binaries",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SKIPPED",
+      "name": "Build ${{ matrix.source }} ${{ matrix.settings.label }}",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SKIPPED",
+      "name": "download-previous-rolldown-binaries",
+      "status": "COMPLETED"
+    },
+    { "conclusion": "SKIPPED", "name": "Build Windows CLI binaries", "status": "COMPLETED" },
+    { "conclusion": "SKIPPED", "name": "Build vite-plus packages", "status": "COMPLETED" },
+    {
+      "conclusion": "SUCCESS",
+      "name": "Test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu)",
+      "status": "COMPLETED"
+    },
+    { "conclusion": "SUCCESS", "name": "Clear stale binary size report", "status": "COMPLETED" },
+    {
+      "conclusion": "SUCCESS",
+      "name": "Test (namespace-profile-mac-default, aarch64-apple-darwin)",
+      "status": "COMPLETED"
+    },
+    { "conclusion": "SKIPPED", "name": "Linux ecosystem", "status": "COMPLETED" },
+    { "conclusion": "SKIPPED", "name": "Report binary size", "status": "COMPLETED" },
+    {
+      "conclusion": "SKIPPED",
+      "name": "vp create ${{ matrix.template.name }} (${{ matrix.package-manager }})",
+      "status": "COMPLETED"
+    },
+    { "conclusion": "SUCCESS", "name": "Build Windows tests", "status": "COMPLETED" },
+    { "conclusion": "SUCCESS", "name": "Test (Linux x64 musl)", "status": "COMPLETED" },
+    { "conclusion": "SKIPPED", "name": "Windows ecosystem", "status": "COMPLETED" },
+    { "conclusion": "SUCCESS", "name": "Lint", "status": "COMPLETED" },
+    { "conclusion": "SUCCESS", "name": "Build Windows CLI binaries", "status": "COMPLETED" },
+    { "conclusion": "SKIPPED", "name": "Notify on failure", "status": "COMPLETED" },
+    {
+      "conclusion": "SUCCESS",
+      "name": "Build CLI test binaries (x86_64-unknown-linux-gnu)",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "name": "Build CLI test binaries (aarch64-apple-darwin)",
+      "status": "COMPLETED"
+    },
+    { "conclusion": "SUCCESS", "name": "CLI E2E test (Linux x64 musl)", "status": "COMPLETED" },
+    { "conclusion": "SUCCESS", "name": "Cert-less image E2E test", "status": "COMPLETED" },
+    { "conclusion": "SUCCESS", "name": "Test (Windows)", "status": "COMPLETED" },
+    {
+      "conclusion": "SUCCESS",
+      "name": "CLI E2E test (namespace-profile-windows-4c-8g, x86_64-pc-windows-msvc, 26.0.0)",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "name": "CLI snapshot test (Windows, shard 1/3)",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "name": "CLI snapshot test (Windows, shard 2/3)",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "name": "CLI snapshot test (Windows, shard 3/3)",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "name": "CLI E2E test (namespace-profile-linux-x64-default, x86_64-unknown-linux-gnu, 22.18.0)",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "name": "CLI snapshot test (x86_64-unknown-linux-gnu, shard 1/3)",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "name": "CLI snapshot test (x86_64-unknown-linux-gnu, shard 2/3)",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "name": "CLI snapshot test (x86_64-unknown-linux-gnu, shard 3/3)",
+      "status": "COMPLETED"
+    },
+    { "conclusion": "SKIPPED", "name": "Local CLI `vp install` E2E test", "status": "COMPLETED" },
+    {
+      "conclusion": "SKIPPED",
+      "name": "Local CLI `vp install` E2E test (Socket Firewall Free)",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "name": "CLI E2E test (namespace-profile-mac-default, aarch64-apple-darwin, 24.11.0)",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "name": "CLI snapshot test (aarch64-apple-darwin, shard 1/3)",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "name": "CLI snapshot test (aarch64-apple-darwin, shard 2/3)",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SUCCESS",
+      "name": "CLI snapshot test (aarch64-apple-darwin, shard 3/3)",
+      "status": "COMPLETED"
+    },
+    {
+      "conclusion": "SKIPPED",
+      "name": "Local CLI `vp install` E2E test (Socket Firewall Free)",
+      "status": "COMPLETED"
+    },
+    { "conclusion": "SUCCESS", "name": "done", "status": "COMPLETED" },
+    { "conclusion": "SUCCESS", "name": "Socket Security: Project Report", "status": "COMPLETED" },
+    {
+      "conclusion": "SUCCESS",
+      "name": "Socket Security: Pull Request Alerts",
+      "status": "COMPLETED"
+    },
+    { "conclusion": "SUCCESS", "name": "Workers Builds: viteplus-dev", "status": "COMPLETED" }
+  ],
+  "headRefOid": "77b69fb28694283279f3e8cbc75e84a95c5b123d",
+  "isDraft": true,
+  "mergeable": "MERGEABLE",
+  "state": "OPEN"
+}

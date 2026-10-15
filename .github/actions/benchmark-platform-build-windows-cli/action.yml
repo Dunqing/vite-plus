@@ -11,7 +11,7 @@ inputs:
   save-cache:
     description: Whether setup-xwin's setup-rust should save its cache (usually only on main).
     required: false
-    default: "false"
+    default: 'false'
   artifact-name:
     description: Name for the uploaded binaries artifact.
     required: false
@@ -64,7 +64,7 @@ runs:
       env:
         INPUTS_PROFILE: ${{ inputs.profile }}
         DEBUG: napi:*
-        XWIN_ACCEPT_LICENSE: "1"
+        XWIN_ACCEPT_LICENSE: '1'
         CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
     - name: Build Rust CLI binaries
       if: steps.binaries-cache.outputs.cache-hit != 'true'
@@ -72,14 +72,14 @@ runs:
       run: cargo xwin build --profile "$INPUTS_PROFILE" --target x86_64-pc-windows-msvc -p vp_global_cli -p vp_installer
       env:
         INPUTS_PROFILE: ${{ inputs.profile }}
-        XWIN_ACCEPT_LICENSE: "1"
+        XWIN_ACCEPT_LICENSE: '1'
         CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
     - name: Build trampoline shim binary
       if: steps.binaries-cache.outputs.cache-hit != 'true'
       shell: bash
       run: node packages/tools/src/build-trampoline.ts --xwin --release --target x86_64-pc-windows-msvc
       env:
-        XWIN_ACCEPT_LICENSE: "1"
+        XWIN_ACCEPT_LICENSE: '1'
     - name: Stage native CLI binaries
       if: steps.binaries-cache.outputs.cache-hit != 'true' && inputs.profile != 'release'
       shell: bash

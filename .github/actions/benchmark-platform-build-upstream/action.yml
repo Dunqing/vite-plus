@@ -11,13 +11,13 @@ inputs:
   print-after-build:
     description: Print the output after the build
     required: false
-    default: "false"
+    default: 'false'
   skip-native:
     description:
       Skip the NAPI binding cache and all native cargo/napi build steps; the native binaries and Cargo metadata
       must already be in place (e.g. downloaded from the windows-cli-binaries artifact produced by the build-windows-cli job).
     required: false
-    default: "false"
+    default: 'false'
 runs:
   using: composite
   steps:
@@ -25,7 +25,7 @@ runs:
       with:
         github-token: ${{ github.token }}
         target: ${{ inputs.target }}
-        upload: "false"
+        upload: 'false'
     - uses: ./.github/actions/compute-native-cache-input-hash
       id: native-cache-inputs
       with:

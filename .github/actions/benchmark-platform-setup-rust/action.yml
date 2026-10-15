@@ -9,16 +9,16 @@ inputs:
     required: false
   restore-cache:
     description: Whether to restore Cargo dependencies.
-    default: "true"
+    default: 'true'
   save-cache:
     description: Whether to save Cargo dependencies.
-    default: "false"
+    default: 'false'
   cache-key:
     description: Shared cache key prefix.
     default: main
   cache-workspace-crates:
     description: Whether to include workspace crates in the cache.
-    default: "false"
+    default: 'false'
   target-dir:
     description: Custom Cargo target directory.
     required: false

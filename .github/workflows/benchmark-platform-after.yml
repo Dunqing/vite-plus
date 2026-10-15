@@ -1,7 +1,7 @@
 name: Platform dependency comparison after
 permissions:
   contents: read
-"on":
+'on':
   workflow_call:
     inputs:
       cache_state:
@@ -13,11 +13,8 @@ defaults:
 jobs:
   detect-changes:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: read
     outputs:
-      code-changed: "true"
+      code-changed: 'true'
     steps:
       - run: echo "Benchmark default PR CI with code changes"
     name: detect-changes
@@ -75,7 +72,7 @@ jobs:
     name: Build Windows tests
     runs-on: namespace-profile-linux-x64-default
     env:
-      XWIN_ACCEPT_LICENSE: "1"
+      XWIN_ACCEPT_LICENSE: '1'
       CXXFLAGS: -D_ALLOW_COMPILER_AND_STL_VERSION_MISMATCH
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
@@ -142,7 +139,7 @@ jobs:
           cargo-nextest nextest run -E 'platform(target)' --archive-file windows-tests.tar.zst --workspace-remap . --test-threads
           1
         env:
-          RUST_MIN_STACK: "8388608"
+          RUST_MIN_STACK: '8388608'
           __COMPAT_LAYER: RunAsInvoker
           INSTA_WORKSPACE_ROOT: ${{ github.workspace }}
   test-musl:
@@ -165,7 +162,7 @@ jobs:
         run: node -p "'ALPINE_NODE=' + process.execPath" >> "$GITHUB_ENV"
       - uses: ./.github/actions/clone
         with:
-          setup-node: "false"
+          setup-node: 'false'
       - name: Verify clone preserves the Alpine Node.js runtime
         run: |
           node -e "require('node:assert/strict').equal(process.execPath, process.env.ALPINE_NODE)"
@@ -291,7 +288,7 @@ jobs:
       - name: Run unit tests
         run: vp env exec --node ${{ matrix.test-node }} node packages/cli/dist/bin.js test run
         env:
-          RUST_BACKTRACE: "1"
+          RUST_BACKTRACE: '1'
           RUST_MIN_STACK: 8388608
       - name: Test global package install (powershell)
         if: ${{ matrix.os != 'namespace-profile-linux-x64-default' }}
@@ -798,7 +795,7 @@ jobs:
       - name: Run unit tests
         run: vp env exec --node ${{ matrix.test-node }} node packages/cli/dist/bin.js test run
         env:
-          RUST_BACKTRACE: "1"
+          RUST_BACKTRACE: '1'
           RUST_MIN_STACK: 8388608
       - name: Test global package install (powershell)
         if: ${{ matrix.os != 'namespace-profile-linux-x64-default' }}
@@ -1305,7 +1302,7 @@ jobs:
       - name: Run unit tests
         run: vp env exec --node ${{ matrix.test-node }} node packages/cli/dist/bin.js test run
         env:
-          RUST_BACKTRACE: "1"
+          RUST_BACKTRACE: '1'
           RUST_MIN_STACK: 8388608
       - name: Test global package install (powershell)
         if: ${{ matrix.os != 'namespace-profile-linux-x64-default' }}
@@ -1916,7 +1913,7 @@ jobs:
       - name: Install Nushell
         uses: hustcer/setup-nu@ccd5bb5426b05a32009c2ba967946231f3919c97
         with:
-          version: "*"
+          version: '*'
       - uses: ./.github/actions/benchmark-platform-setup-ci-node
       - uses: ./.github/actions/download-cli-test-binaries
         with:
@@ -1926,7 +1923,7 @@ jobs:
         background: true
         run: pnpm exec playwright install chromium
         env:
-          PLAYWRIGHT_BROWSERS_PATH: "0"
+          PLAYWRIGHT_BROWSERS_PATH: '0'
       - name: Build with upstream
         uses: ./.github/actions/benchmark-platform-build-upstream
         with:
@@ -1952,7 +1949,7 @@ jobs:
           VP_SNAP_NU_BIN="$(command -v nu)" \
           ./target/snapshot-tests/cli_snapshots --test-threads 8
         env:
-          RUST_BACKTRACE: "1"
+          RUST_BACKTRACE: '1'
           CARGO_MANIFEST_DIR: ${{ github.workspace }}/crates/vp_cli_snapshots
           CARGO_BIN_EXE_vpt: ${{ github.workspace }}/target/snapshot-tests/vpt
           VP_SNAP_SHARD: ${{ matrix.shard }}/3
@@ -2001,7 +1998,7 @@ jobs:
       - name: Install Nushell
         uses: hustcer/setup-nu@ccd5bb5426b05a32009c2ba967946231f3919c97
         with:
-          version: "*"
+          version: '*'
       - uses: ./.github/actions/benchmark-platform-setup-ci-node
       - uses: ./.github/actions/download-cli-test-binaries
         with:
@@ -2011,7 +2008,7 @@ jobs:
         background: true
         run: pnpm exec playwright install chromium
         env:
-          PLAYWRIGHT_BROWSERS_PATH: "0"
+          PLAYWRIGHT_BROWSERS_PATH: '0'
       - name: Build with upstream
         uses: ./.github/actions/benchmark-platform-build-upstream
         with:
@@ -2037,7 +2034,7 @@ jobs:
           VP_SNAP_NU_BIN="$(command -v nu)" \
           ./target/snapshot-tests/cli_snapshots --test-threads 8
         env:
-          RUST_BACKTRACE: "1"
+          RUST_BACKTRACE: '1'
           CARGO_MANIFEST_DIR: ${{ github.workspace }}/crates/vp_cli_snapshots
           CARGO_BIN_EXE_vpt: ${{ github.workspace }}/target/snapshot-tests/vpt
           VP_SNAP_SHARD: ${{ matrix.shard }}/3
@@ -2093,7 +2090,7 @@ jobs:
         background: true
         run: pnpm exec playwright install chromium
         env:
-          PLAYWRIGHT_BROWSERS_PATH: "0"
+          PLAYWRIGHT_BROWSERS_PATH: '0'
       - name: Build with upstream
         uses: ./.github/actions/benchmark-platform-build-upstream
         with:
@@ -2162,7 +2159,7 @@ jobs:
           fi
           exit "$test_exit"
         env:
-          RUST_BACKTRACE: "1"
+          RUST_BACKTRACE: '1'
           VP_SNAP_PACKAGES_DIR: ${{ runner.temp }}/snapshot-packages
           VP_SNAP_ARTIFACTS_DIR: ${{ runner.temp }}/snapshot-artifacts
           __COMPAT_LAYER: RunAsInvoker
@@ -2287,7 +2284,7 @@ jobs:
     needs:
       - build-cli-test-binaries-linux
     runs-on: namespace-profile-linux-x64-default
-    if: "false"
+    if: 'false'
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
       - uses: ./.github/actions/clone
@@ -2348,7 +2345,7 @@ jobs:
       VP_NODE_VERSION: 24.21.0
     needs:
       - build-cli-test-binaries-linux
-    if: "false"
+    if: 'false'
     strategy:
       fail-fast: false
       matrix:
@@ -2357,7 +2354,7 @@ jobs:
             target: x86_64-unknown-linux-gnu
             sfw_asset: sfw-free-linux-x86_64
             vp_bin: vp
-            vp_insecure_tls: "1"
+            vp_insecure_tls: '1'
     runs-on: ${{ matrix.os }}
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
@@ -2424,7 +2421,7 @@ jobs:
       VP_NODE_VERSION: 24.21.0
     needs:
       - build-cli-test-binaries-macos
-    if: "false"
+    if: 'false'
     strategy:
       fail-fast: false
       matrix:
@@ -2433,7 +2430,7 @@ jobs:
             target: aarch64-apple-darwin
             sfw_asset: sfw-free-macos-arm64
             vp_bin: vp
-            vp_insecure_tls: ""
+            vp_insecure_tls: ''
     runs-on: ${{ matrix.os }}
     steps:
       - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b

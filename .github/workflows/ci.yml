@@ -1,6 +1,6 @@
 name: CI platform dependency benchmark
-run-name: "Platform #3008 / ${{ inputs.variant }} / ${{ inputs.cache_state }} / ${{ inputs.sample }}"
-"on":
+run-name: 'Platform #3008 / ${{ inputs.variant }} / ${{ inputs.cache_state }} / ${{ inputs.sample }}'
+'on':
   workflow_dispatch:
     inputs:
       variant:
@@ -18,7 +18,7 @@ run-name: "Platform #3008 / ${{ inputs.variant }} / ${{ inputs.cache_state }} / 
           - warm
       sample:
         type: string
-        default: "1"
+        default: '1'
 permissions:
   contents: read
   packages: read

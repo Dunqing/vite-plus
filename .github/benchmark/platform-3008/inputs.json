@@ -1,0 +1,18 @@
+{
+  "pr": 3008,
+  "base": "bce9befb5d1f0f81a07bbb0422c4f50cb10105a2",
+  "head": "77b69fb28694283279f3e8cbc75e84a95c5b123d",
+  "branch": "bench/platform-3008-r1",
+  "prefix": "bench-platform-3008-20261015-r1",
+  "runs": [],
+  "scope": "Default PR CI; optional install and SFW jobs skipped as on unlabeled PRs.",
+  "controls": [
+    "Identical source, toolchain, dependency pins and runner labels.",
+    "Same branch and shared isolated cache namespace for both variants.",
+    "Cold: no Cargo, pnpm, SDK or native binary cache restore or save.",
+    "Prime: save isolated caches, excluded from timing.",
+    "Warm: exact cache hits required; all saves disabled.",
+    "Zig action cache disabled for all runs.",
+    "Hosted image/tool download caches and public network services are not controlled."
+  ]
+}

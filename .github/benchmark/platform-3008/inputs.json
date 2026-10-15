@@ -4,7 +4,13 @@
   "head": "77b69fb28694283279f3e8cbc75e84a95c5b123d",
   "branch": "bench/platform-3008-r1",
   "prefix": "bench-platform-3008-20261015-r1",
-  "runs": [
+  "benchmark_head": "a361a3d1e92af662da6dca11041ceace44969074",
+  "remaining": [
+    ["after", "warm"],
+    ["after", "cold"],
+    ["before", "cold"]
+  ],
+  "excluded_runs": [
     {
       "id": 38675234887,
       "variant": "before",
@@ -19,11 +25,13 @@
       "sample": 1
     }
   ],
-  "benchmark_head": "ce5eafb3ea9cfa800eb63e7402dd6a67029e4b31",
-  "remaining": [
-    ["after", "warm"],
-    ["after", "cold"],
-    ["before", "cold"]
+  "runs": [
+    {
+      "id": 38676967555,
+      "variant": "before",
+      "cache": "warm",
+      "sample": 1
+    }
   ],
   "scope": "Default PR CI; optional install and SFW jobs skipped as on unlabeled PRs.",
   "controls": [

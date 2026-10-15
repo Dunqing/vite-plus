@@ -31,14 +31,15 @@ runs:
         restore-cache: false
         target-dir: ${{ inputs.target-dir }}
     - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6
-      if: (inputs.restore-cache == 'true') && env.VP_PLATFORM_CACHE != 'cold'
+      if: inputs.restore-cache == 'true'
       with:
-        prefix-key: v1-rust
+        prefix-key: ${{ env.VP_PLATFORM_CACHE == 'cold' && 'bench-platform-3008-20261015-r1-cold-rust' || 'v1-rust' }}
         shared-key: ${{ inputs.cache-key }}
         save-if: ${{ env.VP_PLATFORM_CACHE == 'prime' }}
         cache-workspace-crates: ${{ inputs.cache-workspace-crates }}
         cache-targets: ${{ inputs.target-dir && 'false' || 'true' }}
         cache-directories: ${{ inputs.target-dir || '' }}
+        lookup-only: ${{ env.VP_PLATFORM_CACHE == 'cold' }}
       id: benchmark-cargo
     - name: Require exact Cargo cache hit
       if: env.VP_PLATFORM_CACHE == 'warm' && inputs.restore-cache == 'true'

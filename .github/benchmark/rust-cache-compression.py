@@ -16,13 +16,15 @@ subprocess.run([tar, '--posix', '-cf', str(raw), '-P', *paths], check=True)
 source_hash = hashlib.file_digest(raw.open('rb'), 'sha256').hexdigest()
 data = {
     'name': os.environ['BENCH_NAME'],
+    'cache_key': os.environ['BENCH_CACHE_KEY'],
+    'cache_id': int(os.environ['BENCH_CACHE_ID']),
     'source_bytes': raw.stat().st_size,
     'source_sha256': source_hash,
     'paths': paths,
     'zstd': subprocess.check_output(['zstd', '--version'], text=True).strip(),
     'samples': [],
 }
-for level in [3, 6, 9]:
+for level in [3, 9]:
     dest = out / f'cache-{level}.zst'
     env = dict(os.environ, ZSTD_CLEVEL=str(level))
     start = time.monotonic()

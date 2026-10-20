@@ -15,17 +15,29 @@ jobs:
       matrix:
         include:
           - runner: ubuntu-latest
-            name: linux-test
-            key: v1-rust-test-Linux-x64-57bfc019-a4379c1b
-          - runner: ubuntu-latest
-            name: linux-lint
-            key: v1-rust-lint-Linux-x64-57bfc019-a4379c1b
+            name: windows-tests
+            key: v1-rust-windows-cross-Linux-x64-bbaf89fc-a4379c1b
+            cache-id: 9227759935
           - runner: namespace-profile-mac-default
-            name: mac-test
-            key: v1-rust-test-Darwin-arm64-26c55cd9-a4379c1b
-          - runner: namespace-profile-linux-x64-default
-            name: namespace-test
-            key: v1-rust-test-Linux-x64-57bfc019-a4379c1b
+            name: mac-cli
+            key: v1-rust-cli-snapshot-test-aarch64-apple-darwin-ci-Darwin-arm64-26c55cd9-a4379c1b
+            cache-id: 9225128327
+          - runner: ubuntu-latest
+            name: windows-cli
+            key: v1-rust-windows-cli-cross-ci-Linux-x64-0cde8d0c-a4379c1b
+            cache-id: 9225255383
+          - runner: ubuntu-latest
+            name: linux-cli
+            key: v1-rust-cli-snapshot-test-x86_64-unknown-linux-gnu-ci-Linux-x64-d090994a-a4379c1b
+            cache-id: 9225551422
+          - runner: ubuntu-latest
+            name: musl-cli
+            key: v1-rust-cli-e2e-test-musl-ci-Linux-x64-57bfc019-a4379c1b
+            cache-id: 9225427827
+          - runner: ubuntu-latest
+            name: certless
+            key: v1-rust-certless-image-test-Linux-x64-57bfc019-a4379c1b
+            cache-id: 9224920375
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 20
     steps:
@@ -50,25 +62,15 @@ jobs:
           path: ${{ steps.paths.outputs.paths }}
           key: ${{ matrix.key }}
           fail-on-cache-miss: true
-      - name: Measure identical inputs at compression levels 3, 6, and 9
-        if: matrix.name != 'namespace-test'
+      - name: Measure identical inputs at compression levels 3 and 9
         shell: bash
         run: python3 .github/benchmark/rust-cache-compression.py
         env:
           BENCH_NAME: ${{ matrix.name }}
-      - uses: ./.github/actions/setup-rust
-        with:
-          cache-key: test
-          save-cache: false
-      - name: Record normalized environment
-        shell: bash
-        run: |
-          rustup toolchain list --quiet
-          rustc -vV
-          echo "CARGO_HOME=$CARGO_HOME"
-          echo "RUSTUP_HOME=$RUSTUP_HOME"
+          BENCH_CACHE_KEY: ${{ matrix.key }}
+          BENCH_CACHE_ID: ${{ matrix.cache-id }}
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
-        if: always() && matrix.name != 'namespace-test'
+        if: always()
         with:
           name: cache-compression-${{ matrix.name }}
           path: ${{ runner.temp }}/rust-cache-compression/results.json

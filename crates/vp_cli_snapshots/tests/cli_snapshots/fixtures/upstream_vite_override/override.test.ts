@@ -8,7 +8,10 @@ test('uses the replacement Vite through public API exports', async () => {
   if (process.env.LOCAL_VITE === '1') {
     expect(vp.ecosystemCiMarker).toBe('local-vite');
   }
-  const server = await vp.createServer({ configFile: false, server: { middlewareMode: true } });
+  const server = await vp.createServer({
+    configFile: false,
+    server: { middlewareMode: true, ws: false },
+  });
   try {
     expect(vite.isRunnableDevEnvironment(server.environments.ssr)).toBe(true);
   } finally {

@@ -1,0 +1,75 @@
+name: Benchmark Rust cache compression
+
+on:
+  push:
+    branches: [bench/rust-cache-compression]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  measure:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            name: linux-test
+            key: v1-rust-test-Linux-x64-57bfc019-a4379c1b
+          - runner: ubuntu-latest
+            name: linux-lint
+            key: v1-rust-lint-Linux-x64-57bfc019-a4379c1b
+          - runner: namespace-profile-mac-default
+            name: mac-test
+            key: v1-rust-test-Darwin-arm64-26c55cd9-a4379c1b
+          - runner: namespace-profile-linux-x64-default
+            name: namespace-test
+            key: v1-rust-test-Linux-x64-57bfc019-a4379c1b
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 20
+    steps:
+      - uses: taiki-e/checkout-action@7d1e50e93dc4fb3bba58f85018fadf77898aee8b
+      - uses: ./.github/actions/clone
+      - name: Cache paths
+        id: paths
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import os
+          from pathlib import Path
+          cargo = Path.home() / '.cargo'
+          paths = [str(cargo / name) for name in ['bin', '.crates.toml', '.crates2.json', 'registry', 'git']]
+          paths += [str(Path.cwd() / 'target')]
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write('paths<<EOF\n' + '\n'.join(paths) + '\nEOF\n')
+          PY
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        id: cache
+        with:
+          path: ${{ steps.paths.outputs.paths }}
+          key: ${{ matrix.key }}
+          fail-on-cache-miss: true
+      - name: Measure identical inputs at compression levels 3, 6, and 9
+        if: matrix.name != 'namespace-test'
+        shell: bash
+        run: python3 .github/benchmark/rust-cache-compression.py
+        env:
+          BENCH_NAME: ${{ matrix.name }}
+      - uses: ./.github/actions/setup-rust
+        with:
+          cache-key: test
+          save-cache: false
+      - name: Record normalized environment
+        shell: bash
+        run: |
+          rustup toolchain list --quiet
+          rustc -vV
+          echo "CARGO_HOME=$CARGO_HOME"
+          echo "RUSTUP_HOME=$RUSTUP_HOME"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        if: always() && matrix.name != 'namespace-test'
+        with:
+          name: cache-compression-${{ matrix.name }}
+          path: ${{ runner.temp }}/rust-cache-compression/results.json
+          retention-days: 7

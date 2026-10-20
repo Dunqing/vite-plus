@@ -4,8 +4,8 @@ import path from 'node:path';
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('vite/package.json', () => ({
-  default: { bundledVersions: { tsdown: '0.99.0' } },
+vi.mock('#pack-version', () => ({
+  tsdownVersion: '0.99.0',
 }));
 
 const { mockConfirm, mockInfo, mockWarn } = vi.hoisted(() => ({

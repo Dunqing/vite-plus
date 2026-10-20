@@ -76,9 +76,10 @@ export default defineConfig([
     fixedExtension: false,
     shims: true,
     dts: true,
-    clean: true,
+    // build.ts cleans dist before it installs the private pack runtime.
+    clean: false,
     // NAPI binding uses a relative path that tsdown can't auto-detect from package.json
-    deps: { neverBundle: [/\.\.\/binding\/index\.(js|cjs)/] },
+    deps: { neverBundle: [/\.\.\/binding\/index\.(js|cjs)/, /^#pack(?:-version)?$/] },
     inputOptions: {
       resolve: {
         // Prefer ESM entry (module field) over CJS/UMD (main field) for bundled deps.

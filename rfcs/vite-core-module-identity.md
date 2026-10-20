@@ -121,7 +121,7 @@ Change import specifiers that refer to the CLI's core dependency from
 | Source                                    | Required change                                                         |
 | ----------------------------------------- | ----------------------------------------------------------------------- |
 | `packages/cli/src/index.ts`, `index.cts`  | Re-export Vite APIs through `vite` in both module formats               |
-| `packages/cli/src/pack.ts`, `pack-bin.ts` | Import the bundled tsdown API through `vite/pack`                       |
+| `packages/cli/src/pack.ts`, `pack-bin.ts` | Import the private bundled tsdown API through `#pack`                   |
 | `packages/cli/build.ts`                   | Generate module-runner, internal, client, and type shims through `vite` |
 | `packages/cli/src/define-config.ts`       | Update type imports and review the module augmentation                  |
 | Migration and build metadata readers      | Resolve the declared alias when reading the CLI's core dependency       |
@@ -174,9 +174,50 @@ Use the command's execution directory for project validation, including
 positional root from that directory. Keep the selected CLI as the anchor for
 its required dependency.
 
-Apply these checks before the CLI starts Vite or loads its packaging entry.
+Apply these checks before the CLI starts Vite.
 Retain the distinction between pure `vite.defineConfig()` and the Vite+
 configuration helper, which injects Vite+ plugins.
+
+### Ecosystem CI and independent pack runtime
+
+Issue [#3135](https://github.com/voidzero-dev/vite-plus/issues/3135) requires
+replacing Vite for ecosystem CI, including projects that run `vp pack` during
+installation. Upstream Vite has no `vite/pack` export. Relaxing the version
+check alone cannot support this workflow.
+
+Keep the alias-only dependency graph. Bundle pack inside `vite-plus` through
+the private `#pack` import. Reuse the core build's branded tsdown, extensions,
+Rolldown, pluginutils, declarations, and ESM shims, with relative imports between
+copied files. Copy no Vite code. Declare pack's runtime dependencies and optional
+peers on the CLI. Release builds reuse its existing native platform packages.
+`vite-plus/pack/client` references the copied declarations, and migration uses
+bundled pack version metadata. Standalone core keeps its existing exports.
+
+Public Vite APIs and configuration loading continue to use `vite`. With
+`VP_USE_PROJECT_VITE=1`, allow an upstream package named `vite` instead of the
+exact core release. Still resolve commands from the CLI's own dependency and
+require its resolved package path to equal the project's declared Vite path.
+Version equality is insufficient: a second copy has different constructors.
+Reject partial overrides and separate copies before starting dev/build/preview.
+Read an upstream CLI entry from its public `package.json` `bin` field.
+Without the opt-in, retain the existing core name/version checks.
+
+```mermaid
+flowchart TD
+  project["Project vite"] --> selected["One selected Vite package"]
+  cli["vite-plus"] -->|"vite alias"| selected
+  cli -->|"private #pack"| pack["Bundled pack and Rolldown"]
+  commands["dev / build / preview"] -->|"CLI dependency"| selected
+  api["Vite APIs / config / module-runner"] --> selected
+  vitest["Bundled Vitest"] -->|"Vite peer"| selected
+```
+
+The ecosystem fixture checks both `isRunnableDevEnvironment` exports before
+installing SSR middleware, then requires HTTP 200 from that route. It also
+checks ESM/CJS exports, module-runner identity, Vitest's Vite peer, postinstall
+pack, published/local upstream builds, and rejection of mismatched layouts.
+The API-only server disables its unused WebSocket listener with `ws: false`.
+Keep the existing npm, pnpm, Yarn, Bun, and peer-context identity fixtures.
 
 ### Compatibility and installation
 

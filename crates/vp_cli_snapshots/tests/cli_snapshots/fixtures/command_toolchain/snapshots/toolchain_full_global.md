@@ -8,6 +8,10 @@ The global flag reads the manifest paired with the global binary.
 Vite+ toolchain (global)
 
 vite-plus@<version>
+├── bundles tsdown@<version>
+├── bundles rolldown@<version>
+│   ├── compiles oxc@<version>
+│   └── compiles oxc-resolver@<version>
 ├── depends on @voidzero-dev/vite-plus-core@<version>
 │   ├── bundles vite@<version>
 │   │   └── uses rolldown@<version>

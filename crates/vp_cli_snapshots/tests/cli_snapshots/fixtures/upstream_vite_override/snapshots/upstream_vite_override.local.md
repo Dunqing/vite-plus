@@ -1,6 +1,6 @@
 # upstream_vite_override
 
-A global Vite override replaces CLI/API/Vitest Vite, while postinstall pack keeps its matching internal core. Repeat with a local file dependency and a different public CLI entry.
+A global Vite override replaces CLI/API/Vitest Vite, while postinstall pack uses its private bundled runtime. Repeat with a local file dependency and a different public CLI entry.
 
 ## `vp install`
 
@@ -8,7 +8,15 @@ A global Vite override replaces CLI/API/Vitest Vite, while postinstall pack keep
 ## `node check-api.mjs`
 
 ```
-API exports and bundled Vitest use upstream Vite; pack uses the matching internal core
+API exports and bundled Vitest use upstream Vite; pack uses its private bundled runtime
+```
+
+## `node check-vite-identity-guard.mjs local`
+
+```
+Upstream Vite rejected without the opt-in before dev/build/preview
+Partial Vite override rejected before dev/build/preview
+Separate Vite copies with the same version rejected before dev/build/preview
 ```
 
 ## `vpt stat-file packed/entry.mjs --assert file`
@@ -23,13 +31,20 @@ packed/entry.mjs: file
 packed/entry.d.mts: file
 ```
 
+## `vpt stat-file packed/style.css --assert file`
+
+```
+packed/style.css: file
+```
+
 ## `node node_modules/vite-plus/bin/vp build`
 
 ```
-✓ 4 modules transformed.
+✓ 5 modules transformed.
 computing gzip size...
-dist/index.html                <size> kB │ gzip: <size> kB
-dist/assets/index-<hash>.js  <size> kB │ gzip: <size> kB
+dist/index.html                 <size> kB │ gzip: <size> kB
+dist/assets/index-<hash>.css  <size> kB │ gzip: <size> kB
+dist/assets/index-<hash>.js   <size> kB │ gzip: <size> kB
 
 ✓ built in <duration>
 ```
@@ -71,23 +86,32 @@ Upstream Vite preview served HTTP 200
 ## `node use-local-vite.mjs`
 
 
-## `EXPECT_INTERNAL_CONFIG=1 node node_modules/vite-plus/bin/vp install`
+## `EXPECT_PROJECT_CONFIG=1 node node_modules/vite-plus/bin/vp install`
 
 
 ## `LOCAL_VITE=1 node check-api.mjs`
 
 ```
-API exports and bundled Vitest use upstream Vite; pack uses the matching internal core
+API exports and bundled Vitest use upstream Vite; pack uses its private bundled runtime
+```
+
+## `node check-vite-identity-guard.mjs local`
+
+```
+Upstream Vite rejected without the opt-in before dev/build/preview
+Partial Vite override rejected before dev/build/preview
+Separate Vite copies with the same version rejected before dev/build/preview
 ```
 
 ## `node node_modules/vite-plus/bin/vp build`
 
 ```
 Local upstream Vite CLI entry
-✓ 4 modules transformed.
+✓ 5 modules transformed.
 computing gzip size...
-dist/index.html                <size> kB │ gzip: <size> kB
-dist/assets/index-<hash>.js  <size> kB │ gzip: <size> kB
+dist/index.html                 <size> kB │ gzip: <size> kB
+dist/assets/index-<hash>.css  <size> kB │ gzip: <size> kB
+dist/assets/index-<hash>.js   <size> kB │ gzip: <size> kB
 
 ✓ built in <duration>
 ```
@@ -126,10 +150,4 @@ Upstream Vite preview served HTTP 200
       Tests  1 passed (1)
    Start at  <time>
    Duration  <duration> (<timing>)
-```
-
-## `node check-core-guard.mjs local`
-
-```
-Pack and Vite commands still reject a mismatched internal core
 ```

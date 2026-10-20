@@ -35,6 +35,14 @@
   "sideEffects": false,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "imports": {
+    "#pack": {
+      "types": "./dist/pack-runtime/tsdown/index-types.d.ts",
+      "default": "./dist/pack-runtime/tsdown/index.js"
+    },
+    "#pack-version": "./dist/pack-runtime/version.js",
+    "#parallel-plugin-worker": "./dist/pack-runtime/rolldown/parallel-plugin-worker.mjs"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -356,12 +364,14 @@
     "@vitest/snapshot": "catalog:",
     "@vitest/spy": "catalog:",
     "@vitest/utils": "catalog:",
-    "@voidzero-dev/vite-plus-core": "workspace:*",
+    "lightningcss": "catalog:",
     "oxfmt": "catalog:",
     "oxlint": "catalog:",
     "oxlint-tsgolint": "catalog:",
+    "postcss": "^8.5.29",
     "vite": "workspace:@voidzero-dev/vite-plus-core@*",
-    "vitest": "catalog:"
+    "vitest": "catalog:",
+    "yuku-parser": "0.19.0"
   },
   "devDependencies": {
     "@emnapi/core": "catalog:",
@@ -370,6 +380,7 @@
     "@nkzw/safe-word-list": "catalog:",
     "@types/cross-spawn": "catalog:",
     "@types/validate-npm-package-name": "catalog:",
+    "@typescript/native-preview": "catalog:",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/browser-webdriverio": "catalog:",
     "@voidzero-dev/vite-plus-prompts": "workspace:*",
@@ -393,9 +404,20 @@
     "zod": "catalog:"
   },
   "peerDependencies": {
+    "@arethetypeswrong/core": "^0.18.1",
+    "@typescript/native-preview": "*",
+    "@vitejs/devtools": "*",
     "@vitest/browser-playwright": "catalog:",
     "@vitest/browser-webdriverio": "^5.0.0-beta.5 || >=5.0.0",
-    "playwright": "*"
+    "@volar/typescript": "~2.4.0",
+    "@vue/language-core": "~3.2.0 || ~3.3.0",
+    "playwright": "*",
+    "publint": "^0.3.8",
+    "tsx": "*",
+    "typescript": "^5.0.0 || ^6.0.0 || ^7.0.0",
+    "unplugin-unused": ">=0.5.0",
+    "unrun": "*",
+    "vue-tsc": "~3.2.0 || ~3.3.0"
   },
   "peerDependenciesMeta": {
     "@vitest/browser-playwright": {
@@ -406,7 +428,43 @@
     },
     "playwright": {
       "optional": true
+    },
+    "@typescript/native-preview": {
+      "optional": true
+    },
+    "@volar/typescript": {
+      "optional": true
+    },
+    "@vue/language-core": {
+      "optional": true
+    },
+    "typescript": {
+      "optional": true
+    },
+    "vue-tsc": {
+      "optional": true
+    },
+    "@arethetypeswrong/core": {
+      "optional": true
+    },
+    "@vitejs/devtools": {
+      "optional": true
+    },
+    "publint": {
+      "optional": true
+    },
+    "tsx": {
+      "optional": true
+    },
+    "unplugin-unused": {
+      "optional": true
+    },
+    "unrun": {
+      "optional": true
     }
+  },
+  "optionalDependencies": {
+    "fsevents": "~2.3.3"
   },
   "napi": {
     "binaryName": "vite-plus",

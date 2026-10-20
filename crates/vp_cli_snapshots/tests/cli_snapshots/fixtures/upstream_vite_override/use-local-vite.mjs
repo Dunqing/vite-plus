@@ -18,8 +18,8 @@ writeFileSync(
 import { resolveConfig as upstreamResolveConfig } from ${JSON.stringify(entry)};
 export const ecosystemCiMarker = 'local-vite';
 export function resolveConfig(...args) {
-  if (process.env.EXPECT_INTERNAL_CONFIG === '1') {
-    throw new Error('Pack must load configuration with its internal core');
+  if (process.env.EXPECT_PROJECT_CONFIG === '1') {
+    process.env.PROJECT_CONFIG_LOADED = '1';
   }
   return upstreamResolveConfig(...args);
 }

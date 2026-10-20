@@ -158,6 +158,16 @@
   "edges": [
     {
       "from": "vite-plus",
+      "to": "tsdown",
+      "relationship": "bundles"
+    },
+    {
+      "from": "vite-plus",
+      "to": "rolldown",
+      "relationship": "bundles"
+    },
+    {
+      "from": "vite-plus",
       "to": "vite-plus-core",
       "relationship": "depends-on"
     },

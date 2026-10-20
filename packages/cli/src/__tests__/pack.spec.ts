@@ -10,7 +10,7 @@ import {
   enableDebug,
 } from '../pack.js';
 
-test('should export all pack APIs from @voidzero-dev/vite-plus-core/pack', () => {
+test('should export all pack APIs from the private pack runtime', () => {
   expect(defineConfig).toBeTypeOf('function');
   expect(build).toBeTypeOf('function');
   expect(globalLogger).toBeDefined();

@@ -10,13 +10,33 @@ export default defineConfig({
     {
       name: 'verify-upstream-vite',
       configResolved() {
+        if (process.env.EXPECT_PROJECT_CONFIG === '1') {
+          assert.equal(process.env.PROJECT_CONFIG_LOADED, '1');
+        }
         assert.equal(version, '8.3.4');
         assert.equal(isRunnableDevEnvironment, fromVitePlus);
       },
       configureServer(server) {
         assert.ok(isRunnableDevEnvironment(server.environments.ssr));
+        assert.ok(fromVitePlus(server.environments.ssr));
         if (server.httpServer) {
           checkServer(server, 'dev');
+          // Model TanStack's SSR middleware: both API surfaces must recognize
+          // the environment created by the actual CLI before installing it.
+          return () => {
+            if (
+              isRunnableDevEnvironment(server.environments.ssr) &&
+              fromVitePlus(server.environments.ssr)
+            ) {
+              server.middlewares.use((req, res, next) => {
+                if (req.url === '/__ssr_identity') {
+                  res.end('Upstream Vite SSR middleware');
+                } else {
+                  next();
+                }
+              });
+            }
+          };
         }
       },
       configurePreviewServer(server) {
@@ -31,7 +51,8 @@ function checkServer(server, command) {
     try {
       const address = server.httpServer.address();
       assert.ok(address && typeof address === 'object');
-      const response = await fetch(`http://127.0.0.1:${address.port}/`, {
+      const path = command === 'dev' ? '/__ssr_identity' : '/';
+      const response = await fetch(`http://127.0.0.1:${address.port}${path}`, {
         signal: AbortSignal.timeout(10_000),
       });
       assert.equal(response.status, 200);

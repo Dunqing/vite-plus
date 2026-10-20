@@ -37,6 +37,10 @@ a package without a runnable local CLI uses the global toolchain
 Vite+ toolchain (global)
 
 vite-plus@<version>
+├── bundles tsdown@<version>
+├── bundles rolldown@<version>
+│   ├── compiles oxc@<version>
+│   └── compiles oxc-resolver@<version>
 ├── depends on @voidzero-dev/vite-plus-core@<version>
 │   ├── bundles vite@<version>
 │   │   └── uses rolldown@<version>
@@ -74,6 +78,10 @@ Run `vp toolchain vite` to show these versions and relationships.
 Vite+ toolchain (global)
 
 vite-plus@<version>
+├── bundles tsdown@<version>
+├── bundles rolldown@<version>
+│   ├── compiles oxc@<version>
+│   └── compiles oxc-resolver@<version>
 ├── depends on @voidzero-dev/vite-plus-core@<version>
 │   ├── bundles vite@<version>
 │   │   └── uses rolldown@<version>

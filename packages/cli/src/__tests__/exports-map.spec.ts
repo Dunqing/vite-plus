@@ -59,6 +59,54 @@ function typeDiagnostics(source: string, separator: string = path.sep): string[]
 }
 
 describe('package.json exports map', () => {
+  it('checks pack declarations without an installed Vite or core package', () => {
+    const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'vite-plus-pack-types-'));
+    try {
+      const installed = path.join(directory, 'node_modules/vite-plus');
+      fs.mkdirSync(installed, { recursive: true });
+      fs.copyFileSync(cliPkgJsonPath, path.join(installed, 'package.json'));
+      fs.cpSync(path.join(cliPkgDir, 'dist'), path.join(installed, 'dist'), {
+        recursive: true,
+        filter: (file) => fs.statSync(file).isDirectory() || /\.d\.[cm]?ts$/.test(file),
+      });
+      const filename = path.join(directory, 'pack.mts');
+      fs.writeFileSync(
+        filename,
+        `
+import type { PackUserConfig } from 'vite-plus/pack';
+import 'vite-plus/pack/client';
+const config: PackUserConfig = {
+  entry: ['src/index.ts'],
+  outputOptions: { format: 'esm' },
+};
+// @ts-expect-error Entry options must retain their types through #pack.
+config.entry = 42;
+// @ts-expect-error Copied Rolldown declarations must retain format constraints.
+config.outputOptions = { format: 'unknown-format' };
+const modules = import.meta.glob<number>('./*.ts');
+const value: Promise<number> = modules['./entry.ts']();
+// @ts-expect-error The pack/client declarations must retain their generic types.
+const invalid: Promise<string> = value;
+`,
+      );
+      const program = ts.createProgram([filename], {
+        noEmit: true,
+        strict: true,
+        skipLibCheck: true,
+        types: [],
+        module: ts.ModuleKind.NodeNext,
+        target: ts.ScriptTarget.ESNext,
+      });
+      expect(
+        ts
+          .getPreEmitDiagnostics(program)
+          .map((d) => ts.flattenDiagnosticMessageText(d.messageText, '\n')),
+      ).toEqual([]);
+    } finally {
+      fs.rmSync(directory, { recursive: true, force: true });
+    }
+  }, 15_000);
+
   // The first full type check in this file takes up to about 3 s on the Alpine musl
   // runner, so a slow runner pushes it past Vitest's 5 s default.
   it('checks Playwright options with only declared dependencies available', () => {
@@ -117,7 +165,7 @@ alias({ contextOptions: { reducedMotion: 'bogus' } });
   it('provides the bundled Vitest Vite peer without relying on project dependencies', () => {
     const pkg = JSON.parse(fs.readFileSync(cliPkgJsonPath, 'utf8'));
     expect(pkg.dependencies.vite).toBe('workspace:@voidzero-dev/vite-plus-core@*');
-    expect(pkg.dependencies['@voidzero-dev/vite-plus-core']).toBe('workspace:*');
+    expect(pkg.dependencies['@voidzero-dev/vite-plus-core']).toBeUndefined();
     expect(pkg.devDependencies.vite).toBeUndefined();
   });
 

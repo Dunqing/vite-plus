@@ -4,7 +4,7 @@
 // bundled tsdown loaded them as external top-level packages, so `vp pack --exe`
 // (and CSS bundling) failed with `Failed to import module "@tsdown/exe"`.
 //
-// They are now bundled into core, so this loads the bundled extension chunks
+// They now ship in the CLI's private pack runtime, so this loads the bundled extension chunks
 // directly to prove they resolve `tsdown/internal` against the bundled tsdown.
 // `vp pack --exe` itself needs Node >= 25.7 (SEA), so it cannot run end-to-end
 // in CI; this check is Node-version independent.
@@ -13,7 +13,8 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const require = createRequire(import.meta.url);
-const packEntry = require.resolve('@voidzero-dev/vite-plus-core/pack');
+const cliRequire = createRequire(require.resolve('vite-plus/package.json'));
+const packEntry = cliRequire.resolve('#pack');
 const tsdownDir = path.dirname(packEntry);
 
 for (const chunk of ['tsdown-exe.js', 'tsdown-css.js']) {

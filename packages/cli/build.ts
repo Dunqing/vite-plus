@@ -31,6 +31,7 @@ import { format } from 'oxfmt';
 
 import { generateLicenseFile } from '../../scripts/generate-license.js';
 import corePkg from '../core/package.json' with { type: 'json' };
+import { bundlePack } from './build-support/bundle-pack.ts';
 import { VITEST_VERSION } from './src/utils/constants.ts';
 
 const projectDir = dirname(fileURLToPath(import.meta.url));
@@ -115,6 +116,8 @@ const customFlags = new Set(['--skip-native', '--skip-ts', '--skip-format']);
 const napiArgs = process.argv.slice(2).filter((arg) => !customFlags.has(arg));
 
 if (!skipTs) {
+  await rm(join(projectDir, 'dist'), { recursive: true, force: true });
+  await bundlePack(projectDir);
   buildWithTsdown();
   generateLicenseFile({
     title: 'Vite-Plus CLI license',
@@ -122,7 +125,20 @@ if (!skipTs) {
     outputPath: join(projectDir, 'LICENSE'),
     coreLicensePath: join(projectDir, '..', '..', 'LICENSE'),
     bundledPaths: [join(projectDir, 'dist')],
-    resolveFrom: [projectDir],
+    resolveFrom: [projectDir, join(projectDir, '../core'), join(projectDir, '../..')],
+    extraPackages: [
+      {
+        packageDir: join(projectDir, '../../rolldown/packages/rolldown'),
+        licensePath: join(projectDir, '../../rolldown/LICENSE'),
+      },
+      {
+        packageDir: join(
+          projectDir,
+          '../../rolldown/packages/rolldown/node_modules/@rolldown/pluginutils',
+        ),
+      },
+      { packageDir: join(projectDir, '../core/node_modules/tsdown') },
+    ],
   });
   if (!existsSync(join(projectDir, 'LICENSE'))) {
     throw new Error('LICENSE was not generated during build');
@@ -241,7 +257,7 @@ async function syncCorePackageExports(): Promise<void> {
   console.log('  Creating ./pack/client');
   await writeFile(
     join(distDir, 'pack-client.d.ts'),
-    `/// <reference types="${CORE_PACKAGE_NAME}/pack/client" />\n`,
+    '/// <reference path="./pack-runtime/tsdown/client.d.ts" />\n',
   );
 
   for (const subpath of ['module-runner', 'internal']) {

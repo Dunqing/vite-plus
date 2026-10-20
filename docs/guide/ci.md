@@ -106,7 +106,7 @@ For advanced configuration and the complete parameter reference, see the [`setup
 
 ## Testing Upstream Vite
 
-Ecosystem CI can replace Vite while keeping `vp pack` on the matching Vite+ core.
+Ecosystem CI can replace Vite while `vp pack` uses the runtime bundled inside `vite-plus`.
 Declare `vite` in the project and override **all** `vite` dependencies with the
 version under test. For example, with pnpm:
 
@@ -137,13 +137,17 @@ vp build
 vp test run
 ```
 
-The variable makes `vp dev`, `vp build`, and `vp preview` use the target project's
-Vite CLI. The dependency override makes `vite-plus` API exports and Vitest use
-that same Vite. Keep the override on the CLI's `vite` dependency too.
+The variable permits upstream Vite for `vp dev`, `vp build`, and `vp preview`.
+These commands use the CLI's `vite` dependency, which must resolve to the same
+package as the project's declared `vite`. The override also makes `vite-plus`
+API exports and Vitest use that Vite. Apply it to the CLI's `vite` dependency
+too. A partial override or a separate copy of the same version fails the check.
 `vp test` and `vite-plus/test` continue to use the same bundled Vitest instance.
 
-Pack and internal configuration loading use `@voidzero-dev/vite-plus-core`.
-Do not override that package; it must match the installed `vite-plus` version.
+Pack's runtime and types ship inside `vite-plus`, so they do not depend on
+upstream Vite providing `vite/pack`. Configuration loading uses the same `vite`
+alias as the public APIs. No direct `@voidzero-dev/vite-plus-core` dependency
+is added.
 Without `VP_USE_PROJECT_VITE=1`, Vite commands retain their normal core alias
 checks. If these commands run in a cached task, include the variable in the
 task's [`cache.env`](/config/run#cache-env).

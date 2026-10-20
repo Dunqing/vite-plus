@@ -21,7 +21,6 @@ function checkCoreVersion(packageJsonPath: string, expectedVersion: string): voi
 
 function resolveProjectVitePackage(
   cwd: string,
-  corePackageJsonPath: string,
   expectedVersion: string,
   allowUpstream: boolean,
 ): string | undefined {
@@ -52,7 +51,7 @@ function resolveProjectVitePackage(
   }
   if (projectPackageJsonPath) {
     const pkg = JSON.parse(readFileSync(projectPackageJsonPath, 'utf8')) as { name?: string };
-    if (projectPackageJsonPath !== corePackageJsonPath && !(allowUpstream && pkg.name === 'vite')) {
+    if (!(allowUpstream && pkg.name === 'vite')) {
       checkCoreVersion(projectPackageJsonPath, expectedVersion);
     }
   } else if (allowUpstream) {
@@ -61,46 +60,36 @@ function resolveProjectVitePackage(
   return projectPackageJsonPath;
 }
 
-/** Resolve and validate the internal core independently of Vite overrides. */
-export function resolveCore(subpath = '', modulePath = import.meta.url): string {
-  const cliRequire = createRequire(modulePath);
-  // Read the selected CLI's installed manifest. A static JSON import is inlined
-  // during the build, before CI and preview packers can stamp a new version.
-  const { version: expectedVersion } = JSON.parse(
-    readFileSync(cliRequire.resolve('vite-plus/package.json'), 'utf8'),
-  ) as { version: string };
-  let corePackageJsonPath: string;
-  try {
-    corePackageJsonPath = cliRequire.resolve(`${CORE_PACKAGE_NAME}/package.json`);
-  } catch (cause) {
-    throw new Error('Could not resolve the bundled Vite dependency. Run `vp install`.', { cause });
-  }
-  checkCoreVersion(corePackageJsonPath, expectedVersion);
-
-  return cliRequire.resolve(`${CORE_PACKAGE_NAME}${subpath}`);
-}
-
-/** Resolve the Vite used for dev/build/preview, preserving normal alias checks. */
+/** Resolve Vite from the same dependency as the CLI's static public exports. */
 export function resolveVitePackage(
   cwd: string,
   modulePath = import.meta.url,
   useProjectVite = process.env.VP_USE_PROJECT_VITE === '1',
 ): string {
-  const corePackageJsonPath = resolveCore('/package.json', modulePath);
-  const { version } = JSON.parse(readFileSync(corePackageJsonPath, 'utf8')) as { version: string };
-  const projectPackageJsonPath = resolveProjectVitePackage(
-    cwd,
-    corePackageJsonPath,
-    version,
-    useProjectVite,
-  );
-  if (useProjectVite) {
-    return projectPackageJsonPath!;
+  const cliRequire = createRequire(modulePath);
+  // Read the installed version after preview/local packers have stamped it.
+  const { version } = JSON.parse(
+    readFileSync(cliRequire.resolve('vite-plus/package.json'), 'utf8'),
+  ) as { version: string };
+  let vitePackageJsonPath: string;
+  try {
+    vitePackageJsonPath = cliRequire.resolve('vite/package.json');
+  } catch (cause) {
+    throw new Error('Could not resolve the bundled Vite dependency. Run `vp install`.', { cause });
   }
-
-  // Public API re-exports still use `vite`. Validate that dependency as well,
-  // so normal commands cannot silently run a different Vite than API imports.
-  const vitePackageJsonPath = createRequire(modulePath).resolve('vite/package.json');
-  checkCoreVersion(vitePackageJsonPath, version);
+  const projectPackageJsonPath = resolveProjectVitePackage(cwd, version, useProjectVite);
+  if (useProjectVite) {
+    // Version equality does not establish module identity. Even the opt-in
+    // must keep the active server and public Vite APIs on the same package.
+    if (projectPackageJsonPath !== vitePackageJsonPath) {
+      throw new Error(
+        'VP_USE_PROJECT_VITE=1 requires the project and vite-plus to resolve the same Vite package. ' +
+          `Project: ${projectPackageJsonPath}. CLI: ${vitePackageJsonPath}. ` +
+          'Apply the same override to all `vite` dependencies, including `vite-plus>vite`, then run `vp install`.',
+      );
+    }
+  } else {
+    checkCoreVersion(vitePackageJsonPath, version);
+  }
   return vitePackageJsonPath;
 }

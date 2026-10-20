@@ -14,6 +14,7 @@ test('uses the replacement Vite through public API exports', async () => {
   });
   try {
     expect(vite.isRunnableDevEnvironment(server.environments.ssr)).toBe(true);
+    expect(vp.isRunnableDevEnvironment(server.environments.ssr)).toBe(true);
   } finally {
     await server.close();
   }

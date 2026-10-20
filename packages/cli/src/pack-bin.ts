@@ -10,7 +10,7 @@ import {
   type InlineConfig,
   type ResolvedConfig,
   type TsdownHandle,
-} from '@voidzero-dev/vite-plus-core/pack';
+} from '#pack';
 import { cac } from 'cac';
 
 import { resolveViteConfig } from './resolve-vite-config.ts';

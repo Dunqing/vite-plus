@@ -6,7 +6,7 @@ This document explains how `vite-plus` is built and how it re-exports from `@voi
 
 The CLI package uses a **4-step build process**:
 
-1. **tsdown Build** - Bundle all CLI entry points via tsdown
+1. **Pack and tsdown Build** - Copy the private pack runtime, then bundle CLI entry points
 2. **NAPI Binding Build** - Compile Rust code to native Node.js bindings
 3. **Core Package Export Sync** - Re-export `@voidzero-dev/vite-plus-core` under `./client`, `./types/*`, etc.
 4. **Test Package Export Sync** - Re-export upstream `vitest` under `./test/*`
@@ -15,44 +15,54 @@ This architecture allows users to import everything from a single package (`vite
 
 ## Core Dependency Identity
 
-The CLI declares `@voidzero-dev/vite-plus-core` as a direct dependency for pack
-and internal configuration loading. `resolve-core.ts` checks its identity and
-exact version against the installed CLI manifest. Pack does not validate the
-project's `vite` dependency.
-
-Public Vite API exports and generated Vite shims use a separate `vite` dependency:
+The CLI declares only the `vite` alias for core:
 `workspace:@voidzero-dev/vite-plus-core@*` in the workspace and an exact npm alias
-in packed releases. This also supplies Vitest's Vite peer. A package-manager
-override for `vite` can replace these APIs and Vitest's Vite without replacing
-the internal pack tools. Pack exports, including `pack/client`, use the direct core.
+in releases. Public Vite APIs, configuration loading, module-runner exports,
+and Vite commands resolve through this dependency. It also supplies Vitest's
+Vite peer. The CLI has no direct dependency on the canonical core package name.
 
-By default, dev/build/preview validate both the CLI's `vite` alias and any Vite
-dependency declared by the target project. An incidental hoisted peer does not
-trigger project validation. `VP_USE_PROJECT_VITE=1` selects the target project's
-declared Vite dependency and permits upstream Vite. Its CLI entry comes from
-`package.json`'s `bin` field, including for local `file:` installations. The
-internal core still requires an exact version match, and a stale core alias
-remains an error. See [ecosystem CI setup](../../docs/guide/ci.md#testing-upstream-vite).
+Pack uses the private `#pack` import, which points to `dist/pack-runtime/tsdown`.
+The build copies branded tsdown, its CSS/executable extensions, Rolldown,
+pluginutils, declarations, and ESM shims from the core build. It rewrites core
+self-imports to relative paths and copies no Vite runtime. `pack/client` points
+to the copied declarations. Runtime dependencies and optional pack peers belong
+to the CLI, and `#pack-version` supplies migration metadata without reading the
+replaceable Vite manifest. Release bindings use the existing CLI platform
+packages; development builds copy the local Rolldown binding.
+
+By default, dev/build/preview validate the CLI alias and any `vite` dependency
+declared by the target project against the installed CLI version. Incidental
+hoisted peers do not trigger project validation. `VP_USE_PROJECT_VITE=1` permits
+upstream Vite but requires the project and CLI to resolve the same package path.
+Commands always use the CLI dependency, matching the static exports. An upstream
+CLI entry comes from its public `bin` field, including local `file:` builds.
+Partial overrides and separate copies of the same version fail before Vite
+starts. See [ecosystem CI setup](../../docs/guide/ci.md#testing-upstream-vite).
 
 For npm projects without overrides, pin a declared `vite` alias to the exact
 installed `vite-plus` version. npm can replace a tagged alias such as
 `npm:@voidzero-dev/vite-plus-core@latest` with upstream Vite to satisfy Vitest's
 peer range. The CLI rejects that mismatch and directs users to `vp migrate`,
 which writes an exact alias and the package-manager overrides. The npm fixtures
-check shared core identity with an exact alias and rejection of the tagged layout.
+check shared core identity with an exact alias and validation of the installed tagged layout.
 
 ## Build Steps
 
 ### Step 1: tsdown Build (`buildWithTsdown`)
 
-Bundles all CLI entry points using tsdown (configured in `tsdown.config.ts`). The config defines two builds:
+`build.ts` cleans `dist/`, then `bundlePack()` copies pack into `dist/pack-runtime/`.
+The tsdown build preserves this directory and keeps `#pack` and `#pack-version`
+external. Package `imports` resolve them in both source builds and installed
+packages. License generation includes the copied runtime and its dependencies.
+
+The tsdown configuration bundles the CLI entries:
 
 **ESM build** — bundles all entry points to `dist/`:
 
 - Public API entries: `bin`, `index`, `define-config`, `fmt`, `lint`, `pack`, `pack-bin`
 - Global command entries: `create`, `migrate`, `version`, `config`, `hooks`, `mcp`, `staged`
 - All third-party dependencies are inlined at build time
-- Only packages that must be resolved at runtime stay external (NAPI binding, `@voidzero-dev/vite-plus-core`, `vite`, `vitest`, `oxfmt`, `oxlint`)
+- Only packages that must be resolved at runtime stay external (NAPI binding, `#pack`, `#pack-version`, `vite`, `vitest`, `oxfmt`, `oxlint`)
 - Code splitting creates shared chunks for code used by multiple entries
 - DTS (`.d.ts`) files are generated for all entries
 
@@ -188,7 +198,7 @@ packages/cli/
 │   ├── define-config.d.ts
 │   ├── fmt.js                # Re-exports oxfmt
 │   ├── lint.js               # Re-exports oxlint types
-│   ├── pack.js               # Re-exports vite-plus-core/pack
+│   ├── pack.js               # Re-exports the private #pack runtime
 │   ├── pack-bin.js           # tsdown CLI for `vp pack`
 │   ├── create.js             # Global command: vp create
 │   ├── migrate.js            # Global command: vp migrate
@@ -327,8 +337,8 @@ A binding built by `pnpm build` contains:
 
 ```
 User imports 'vite-plus/rolldown'
-  → packages/cli re-exports from @voidzero-dev/vite-plus-core/rolldown
-    → packages/core/dist/rolldown/index.mjs
+  → packages/cli/dist/pack-runtime/tsdown
+    → packages/cli/dist/pack-runtime/rolldown/index.mjs
       → Native binding: @voidzero-dev/vite-plus-darwin-arm64
         (rewritten from @rolldown/binding-darwin-arm64)
         → vite-plus.darwin-arm64.node (contains rolldown_binding)
@@ -425,10 +435,10 @@ Preview retries still require the same PR head, an open PR, and the
 
 ### Why Shim Files?
 
-The CLI package creates thin shim files that re-export from `@voidzero-dev/vite-plus-core` rather than bundling the actual code. This approach:
+For Vite APIs, the CLI creates thin shim files that re-export through `vite`. Pack ships its own runtime as described above. This approach:
 
 1. **Enables drop-in replacement** - Users can replace `vite` with `vite-plus` without changing imports
-2. **Keeps packages in sync** - No need to rebuild CLI when core package changes
+2. **Keeps Vite APIs in sync** - Vite shims resolve the installed alias; pack changes require a CLI rebuild
 3. **Reduces duplication** - No file copying, just re-exports
 4. **Preserves module resolution** - Node.js resolves to the actual core package
 

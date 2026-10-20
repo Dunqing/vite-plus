@@ -8,6 +8,10 @@ The local CLI reads the manifest shipped in its vite-plus package.
 Vite+ toolchain (local)
 
 vite-plus@<version>
+├── bundles tsdown@<version>
+├── bundles rolldown@<version>
+│   ├── compiles oxc@<version>
+│   └── compiles oxc-resolver@<version>
 ├── depends on @voidzero-dev/vite-plus-core@<version>
 │   ├── bundles vite@<version>
 │   │   └── uses rolldown@<version>

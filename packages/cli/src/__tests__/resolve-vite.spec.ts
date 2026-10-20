@@ -1,8 +1,33 @@
-import { resolve } from 'node:path';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join, resolve } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-import { resolveViteRoot } from '../resolve-vite.ts';
+import { resolveViteBin, resolveViteRoot } from '../resolve-vite.ts';
+
+describe('resolveViteBin', () => {
+  it.each([
+    { name: 'vite', bin: { vite: './custom/cli.js' }, entry: 'custom/cli.js' },
+    { name: 'vite', bin: './custom/cli.js', entry: 'custom/cli.js' },
+    { name: '@voidzero-dev/vite-plus-core', entry: 'dist/vite/bin/vite.js' },
+  ])('resolves the CLI for $name with $entry', ({ name, bin, entry }) => {
+    const root = mkdtempSync(join(tmpdir(), 'vp-vite-bin-'));
+    try {
+      const manifest = join(root, 'package.json');
+      writeFileSync(manifest, JSON.stringify({ name, bin }));
+      mkdirSync(join(root, entry, '..'), { recursive: true });
+      writeFileSync(join(root, entry), '');
+      expect(resolveViteBin(manifest)).toBe(join(root, entry));
+      rmSync(join(root, entry));
+      expect(() => resolveViteBin(manifest)).toThrow('Could not find the Vite CLI');
+      writeFileSync(manifest, JSON.stringify({ name: 'vite' }));
+      expect(() => resolveViteBin(manifest)).toThrow("Could not find 'vite' bin entry");
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+});
 
 describe('resolveViteRoot', () => {
   const cwd = resolve('workspace');

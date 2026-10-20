@@ -12,13 +12,16 @@ assert.equal(require('vite/package.json').name, 'vite');
 assert.equal(cliRequire('vite/package.json').name, '@voidzero-dev/vite-plus-core');
 assert.notEqual(require.resolve('vite/package.json'), cliRequire.resolve('vite/package.json'));
 
-for (const args of [['dev'], ['pack', 'entry.js']]) {
-  const result = spawnSync('vp', args, { encoding: 'utf8', timeout: 30_000 });
-  assert.ifError(result.error);
-  const output = result.stdout + result.stderr;
-  assert.equal(result.status, 1, output);
-  assert.match(output, /Expected @voidzero-dev\/vite-plus-core@/);
-  assert.match(output, /but found vite@/);
-  assert.match(output, /Run `vp migrate` to align the Vite alias, then run `vp install`\./);
-  console.log(`vp ${args[0]} rejects the replaced npm alias and reports the repair command`);
-}
+const dev = spawnSync('vp', ['dev'], { encoding: 'utf8', timeout: 30_000 });
+assert.ifError(dev.error);
+const output = dev.stdout + dev.stderr;
+assert.equal(dev.status, 1, output);
+assert.match(output, /Expected @voidzero-dev\/vite-plus-core@/);
+assert.match(output, /but found vite@/);
+assert.match(output, /Run `vp migrate` to align the Vite alias, then run `vp install`\./);
+console.log('vp dev rejects the replaced npm alias and reports the repair command');
+
+const pack = spawnSync('vp', ['pack', 'entry.js'], { encoding: 'utf8', timeout: 30_000 });
+assert.ifError(pack.error);
+assert.equal(pack.status, 0, pack.stdout + pack.stderr);
+console.log('vp pack uses its internal core despite the replaced npm alias');

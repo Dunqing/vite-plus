@@ -517,6 +517,9 @@ importers:
       '@vitest/utils':
         specifier: 'catalog:'
         version: 5.0.5
+      '@voidzero-dev/vite-plus-core':
+        specifier: workspace:*
+        version: link:../core
       oxfmt:
         specifier: 'catalog:'
         version: 0.74.0(vite-plus@packages+cli)

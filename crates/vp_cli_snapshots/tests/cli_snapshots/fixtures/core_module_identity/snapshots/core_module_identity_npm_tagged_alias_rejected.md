@@ -11,5 +11,5 @@
 
 ```
 vp dev rejects the replaced npm alias and reports the repair command
-vp pack rejects the replaced npm alias and reports the repair command
+vp pack uses its internal core despite the replaced npm alias
 ```

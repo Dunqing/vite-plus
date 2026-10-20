@@ -25,5 +25,5 @@ assert.equal(ModuleRunner, VpModuleRunner);
 const config = {};
 assert.equal(vite.defineConfig(config), config);
 assert.equal(pkg.dependencies.vite, `npm:@voidzero-dev/vite-plus-core@${pkg.version}`);
-assert.equal(pkg.dependencies['@voidzero-dev/vite-plus-core'], undefined);
+assert.equal(pkg.dependencies['@voidzero-dev/vite-plus-core'], pkg.version);
 console.log('Packed alias, ESM, CommonJS, and module-runner identity passed');

@@ -15,17 +15,24 @@ This architecture allows users to import everything from a single package (`vite
 
 ## Core Dependency Identity
 
-The CLI declares its core dependency as `vite`, using
-`workspace:@voidzero-dev/vite-plus-core@*` in the workspace and an exact npm
-alias in packed releases. Runtime imports and generated shims use `vite` and
-its subpaths. This gives the CLI and plugins the same dependency name and
-avoids separate core instances under the alias and canonical package name.
+The CLI declares `@voidzero-dev/vite-plus-core` as a direct dependency for pack
+and internal configuration loading. `resolve-core.ts` checks its identity and
+exact version against the installed CLI manifest. Pack does not validate the
+project's `vite` dependency.
 
-`resolve-core.ts` resolves the alias from the selected CLI package and checks
-its core version. It also checks any Vite dependency declared by the command's
-target project. An incidental hoisted peer does not trigger project validation.
-These checks run before Vite or packaging commands start. Keep the canonical
-name in release metadata and alias targets to identify the published package.
+Public Vite API exports and generated Vite shims use a separate `vite` dependency:
+`workspace:@voidzero-dev/vite-plus-core@*` in the workspace and an exact npm alias
+in packed releases. This also supplies Vitest's Vite peer. A package-manager
+override for `vite` can replace these APIs and Vitest's Vite without replacing
+the internal pack tools. Pack exports, including `pack/client`, use the direct core.
+
+By default, dev/build/preview validate both the CLI's `vite` alias and any Vite
+dependency declared by the target project. An incidental hoisted peer does not
+trigger project validation. `VP_USE_PROJECT_VITE=1` selects the target project's
+declared Vite dependency and permits upstream Vite. Its CLI entry comes from
+`package.json`'s `bin` field, including for local `file:` installations. The
+internal core still requires an exact version match, and a stale core alias
+remains an error. See [ecosystem CI setup](../../docs/guide/ci.md#testing-upstream-vite).
 
 For npm projects without overrides, pin a declared `vite` alias to the exact
 installed `vite-plus` version. npm can replace a tagged alias such as
@@ -45,7 +52,7 @@ Bundles all CLI entry points using tsdown (configured in `tsdown.config.ts`). Th
 - Public API entries: `bin`, `index`, `define-config`, `fmt`, `lint`, `pack`, `pack-bin`
 - Global command entries: `create`, `migrate`, `version`, `config`, `hooks`, `mcp`, `staged`
 - All third-party dependencies are inlined at build time
-- Only packages that must be resolved at runtime stay external (NAPI binding, `vite`, `vitest`, `oxfmt`, `oxlint`)
+- Only packages that must be resolved at runtime stay external (NAPI binding, `@voidzero-dev/vite-plus-core`, `vite`, `vitest`, `oxfmt`, `oxlint`)
 - Code splitting creates shared chunks for code used by multiple entries
 - DTS (`.d.ts`) files are generated for all entries
 

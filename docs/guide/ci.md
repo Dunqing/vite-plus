@@ -104,6 +104,50 @@ The Azure Pipelines template supports Microsoft-hosted Linux, macOS, and Windows
 
 For advanced configuration and the complete parameter reference, see the [`setup-vp` Azure Pipelines documentation](https://github.com/voidzero-dev/setup-vp#azure-pipelines).
 
+## Testing Upstream Vite
+
+Ecosystem CI can replace Vite while keeping `vp pack` on the matching Vite+ core.
+Declare `vite` in the project and override **all** `vite` dependencies with the
+version under test. For example, with pnpm:
+
+```json [package.json]
+{
+  "devDependencies": {
+    "vite": "file:../vite/packages/vite",
+    "vite-plus": "<vite-plus-version>"
+  }
+}
+```
+
+```yaml [pnpm-workspace.yaml]
+overrides:
+  vite: file:../vite/packages/vite
+```
+
+Build the local Vite package before installing dependencies. A published Vite
+version can replace the `file:` value in both files.
+
+Set `VP_USE_PROJECT_VITE=1` in the CI job environment, then run the usual commands:
+
+```bash
+export VP_USE_PROJECT_VITE=1
+vp install
+vp pack
+vp build
+vp test run
+```
+
+The variable makes `vp dev`, `vp build`, and `vp preview` use the target project's
+Vite CLI. The dependency override makes `vite-plus` API exports and Vitest use
+that same Vite. Keep the override on the CLI's `vite` dependency too.
+`vp test` and `vite-plus/test` continue to use the same bundled Vitest instance.
+
+Pack and internal configuration loading use `@voidzero-dev/vite-plus-core`.
+Do not override that package; it must match the installed `vite-plus` version.
+Without `VP_USE_PROJECT_VITE=1`, Vite commands retain their normal core alias
+checks. If these commands run in a cached task, include the variable in the
+task's [`cache.env`](/config/run#cache-env).
+
 ## Automatic Version Updates
 
 Dependabot and Renovate can update exact versions in GitHub Actions workflows.

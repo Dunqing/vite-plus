@@ -5,13 +5,7 @@ CI can stamp the package version after building the CLI. The resolver must compa
 ## `vp install --ignore-scripts`
 
 
-## `vpt json-edit node_modules/vite-plus/package.json version 0.0.0`
-
-
-## `vpt json-edit node_modules/vite-plus/package.json dependencies.vite npm:@voidzero-dev/vite-plus-core@0.0.0`
-
-
-## `vpt json-edit node_modules/vite/package.json version 0.0.0`
+## `node stamp-version.mjs`
 
 
 ## `node check-api.mjs`

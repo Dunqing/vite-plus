@@ -1,0 +1,55 @@
+[[case]]
+name = "upstream_vite_override"
+vp = ["global"]
+# Use pinned upstream Vite through the runner's registry to exercise its real
+# CLI, API exports, and Vitest peer layout instead of a mock Vite package.
+local-registry = true
+comment = "A global Vite override replaces CLI/API/Vitest Vite, while postinstall pack keeps its matching internal core. Repeat with a local file dependency and a different public CLI entry."
+env = { VP_USE_PROJECT_VITE = "1" }
+steps = [
+  { argv = ["vp", "install"], snapshot = false },
+  ["node", "check-api.mjs"],
+  ["vpt", "stat-file", "packed/entry.mjs", "--assert", "file"],
+  ["vpt", "stat-file", "packed/entry.d.mts", "--assert", "file"],
+  ["vp", "build"],
+  ["vp", "dev"],
+  ["vp", "preview"],
+  ["vp", "test", "run"],
+  { argv = ["node", "use-local-vite.mjs"], snapshot = false },
+  { argv = ["vp", "install"], envs = [["EXPECT_INTERNAL_CONFIG", "1"]], snapshot = false },
+  { argv = ["node", "check-api.mjs"], envs = [["LOCAL_VITE", "1"]] },
+  ["vp", "build"],
+  ["vp", "dev"],
+  ["vp", "preview"],
+  { argv = ["vp", "test", "run"], envs = [["LOCAL_VITE", "1"]] },
+  ["node", "check-core-guard.mjs"],
+]
+
+# The registry installation owns the runtime dependencies. Invoke its public
+# local bin instead of the runner's bootstrap CLI, which has separate Vitest peers.
+[[case]]
+name = "upstream_vite_override"
+vp = ["local"]
+# Use pinned upstream Vite through the runner's registry to exercise its real
+# CLI, API exports, and Vitest peer layout instead of a mock Vite package.
+local-registry = true
+comment = "A global Vite override replaces CLI/API/Vitest Vite, while postinstall pack keeps its matching internal core. Repeat with a local file dependency and a different public CLI entry."
+env = { VP_USE_PROJECT_VITE = "1" }
+steps = [
+  { argv = ["vp", "install"], snapshot = false },
+  ["node", "check-api.mjs"],
+  ["vpt", "stat-file", "packed/entry.mjs", "--assert", "file"],
+  ["vpt", "stat-file", "packed/entry.d.mts", "--assert", "file"],
+  ["node", "node_modules/vite-plus/bin/vp", "build"],
+  ["node", "node_modules/vite-plus/bin/vp", "dev"],
+  ["node", "node_modules/vite-plus/bin/vp", "preview"],
+  ["node", "node_modules/vite-plus/bin/vp", "test", "run"],
+  { argv = ["node", "use-local-vite.mjs"], snapshot = false },
+  { argv = ["node", "node_modules/vite-plus/bin/vp", "install"], envs = [["EXPECT_INTERNAL_CONFIG", "1"]], snapshot = false },
+  { argv = ["node", "check-api.mjs"], envs = [["LOCAL_VITE", "1"]] },
+  ["node", "node_modules/vite-plus/bin/vp", "build"],
+  ["node", "node_modules/vite-plus/bin/vp", "dev"],
+  ["node", "node_modules/vite-plus/bin/vp", "preview"],
+  { argv = ["node", "node_modules/vite-plus/bin/vp", "test", "run"], envs = [["LOCAL_VITE", "1"]] },
+  ["node", "check-core-guard.mjs", "local"],
+]

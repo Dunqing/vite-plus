@@ -4,7 +4,7 @@ vp = "local"
 steps = [
   { argv = ["vpt", "write-file", "node_modules/vite/package.json", "{\"name\":\"vite\",\"version\":\"8.2.2\"}\n"], snapshot = false },
   { argv = ["vp", "dev"], continue-on-failure = true },
-  ["vp", "pack", "index.ts"],
+  ["vp", "pack", "--no-config", "index.ts"],
 ]
 
 [[case]]
@@ -13,5 +13,5 @@ vp = "local"
 steps = [
   { argv = ["vpt", "write-file", "node_modules/vite/package.json", "{\"name\":\"@voidzero-dev/vite-plus-core\",\"version\":\"0.0.0-stale\"}\n"], snapshot = false },
   { argv = ["vp", "dev"], continue-on-failure = true },
-  ["vp", "pack", "index.ts"],
+  ["vp", "pack", "--no-config", "index.ts"],
 ]

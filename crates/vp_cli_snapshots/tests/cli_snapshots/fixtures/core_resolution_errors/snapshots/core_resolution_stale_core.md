@@ -12,10 +12,12 @@
 error: Failed to resolve vite command: GenericFailure, Expected @voidzero-dev/vite-plus-core@<version>, but found @voidzero-dev/vite-plus-core@<version> at <workspace>/node_modules/vite/package.json. Run `vp migrate` to align the Vite alias, then run `vp install`.
 ```
 
-## `vp pack index.ts`
-
-**Exit code:** 1
+## `vp pack --no-config index.ts`
 
 ```
-error: Failed to resolve pack command: GenericFailure, Expected @voidzero-dev/vite-plus-core@<version>, but found @voidzero-dev/vite-plus-core@<version> at <workspace>/node_modules/vite/package.json. Run `vp migrate` to align the Vite alias, then run `vp install`.
+ℹ entry: index.ts
+ℹ Build start
+ℹ dist/index.mjs  <size> kB │ gzip: <size> kB
+ℹ 1 files, total: <size> kB
+✔ Build complete in <duration>
 ```

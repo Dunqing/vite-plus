@@ -1,0 +1,13 @@
+{
+  "name": "upstream-vite-override",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.24.0",
+  "devDependencies": {
+    "vite": "8.3.4",
+    "vite-plus": "latest"
+  },
+  "scripts": {
+    "postinstall": "vp pack"
+  }
+}

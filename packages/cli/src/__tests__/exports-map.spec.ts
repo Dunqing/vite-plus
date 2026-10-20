@@ -117,6 +117,7 @@ alias({ contextOptions: { reducedMotion: 'bogus' } });
   it('provides the bundled Vitest Vite peer without relying on project dependencies', () => {
     const pkg = JSON.parse(fs.readFileSync(cliPkgJsonPath, 'utf8'));
     expect(pkg.dependencies.vite).toBe('workspace:@voidzero-dev/vite-plus-core@*');
+    expect(pkg.dependencies['@voidzero-dev/vite-plus-core']).toBe('workspace:*');
     expect(pkg.devDependencies.vite).toBeUndefined();
   });
 

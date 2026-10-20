@@ -1,10 +1,10 @@
-import { existsSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 
 import { cac } from 'cac';
 
 import type { JsCommandContext, JsCommandResolvedResult } from '../binding/index.js';
-import { resolveCore } from './resolve-core.ts';
+import { resolveVitePackage } from './resolve-core.ts';
 import { DEFAULT_ENVS } from './utils/constants.ts';
 
 export function resolveViteRoot({ cwd, args }: JsCommandContext): string {
@@ -30,7 +30,29 @@ export function resolveViteRoot({ cwd, args }: JsCommandContext): string {
   return resolve(cwd, parsed.args[0] ?? '.');
 }
 
-/** Resolve the bundled CLI for dev, build, and preview from the selected project root. */
+/** Use the core's bundled entry or upstream Vite's public bin entry. */
+export function resolveViteBin(packageJsonPath: string): string {
+  const pkg = JSON.parse(readFileSync(packageJsonPath, 'utf8')) as {
+    name?: string;
+    bin?: string | { vite?: string };
+  };
+  const bin =
+    pkg.name === '@voidzero-dev/vite-plus-core'
+      ? 'dist/vite/bin/vite.js'
+      : typeof pkg.bin === 'string'
+        ? pkg.bin
+        : pkg.bin?.vite;
+  if (!bin) {
+    throw new Error(`Could not find 'vite' bin entry in ${packageJsonPath}`);
+  }
+  const binPath = resolve(dirname(packageJsonPath), bin);
+  if (!existsSync(binPath)) {
+    throw new Error(`Could not find the Vite CLI at ${binPath}. Run \`vp install\`.`);
+  }
+  return binPath;
+}
+
+/** Resolve the CLI for dev, build, and preview from the selected project root. */
 export async function vite(
   err: Error | null,
   context: JsCommandContext,
@@ -38,12 +60,7 @@ export async function vite(
   if (err) {
     throw err;
   }
-  // Start through Vite's bin script, as `vite` does; see packages/core/BUNDLING.md.
-  const viteDistDir = dirname(dirname(resolveCore('', resolveViteRoot(context))));
-  const binPath = join(viteDistDir, 'bin', 'vite.js');
-  if (!existsSync(binPath)) {
-    throw new Error(`Could not find the bundled Vite CLI at ${binPath}. Run \`vp install\`.`);
-  }
+  const binPath = resolveViteBin(resolveVitePackage(resolveViteRoot(context)));
 
   const envs: Record<string, string> = { ...DEFAULT_ENVS };
   if (process.env.DEBUG_DISABLE_SOURCE_MAP) {

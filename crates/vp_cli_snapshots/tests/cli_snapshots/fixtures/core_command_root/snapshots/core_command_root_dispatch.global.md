@@ -137,10 +137,12 @@ error: Failed to resolve vite command: GenericFailure, Expected @voidzero-dev/vi
 
 ## `vp -C . pack packages/app/src/index.ts`
 
-**Exit code:** 1
-
 ```
 VITE+ - The Unified Toolchain for the Web
 
-error: Failed to resolve pack command: GenericFailure, Expected @voidzero-dev/vite-plus-core@<version>, but found vite@8.2.2 at <workspace>/node_modules/.pnpm/vite@8.2.2/node_modules/vite/package.json. Run `vp migrate` to align the Vite alias, then run `vp install`.
+ℹ entry: packages/app/src/index.ts
+ℹ Build start
+ℹ dist/index.mjs  <size> kB │ gzip: <size> kB
+ℹ 1 files, total: <size> kB
+✔ Build complete in <duration>
 ```

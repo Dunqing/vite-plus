@@ -56,7 +56,7 @@ export interface ResolveViteConfigOptions {
  * Resolve vite.config.ts and return the config object.
  */
 export async function resolveViteConfig(cwd: string, options?: ResolveViteConfigOptions) {
-  const { resolveConfig } = await import('./index.js');
+  const { resolveConfig } = await import('@voidzero-dev/vite-plus-core');
 
   // This loads the config purely to read a non-plugin block (lint/fmt/pack/run/
   // staged/create…), so skip the user's plugin factory while it evaluates.

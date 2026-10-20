@@ -241,7 +241,7 @@ async function syncCorePackageExports(): Promise<void> {
   console.log('  Creating ./pack/client');
   await writeFile(
     join(distDir, 'pack-client.d.ts'),
-    `/// <reference types="${CORE_IMPORT_SPECIFIER}/pack/client" />\n`,
+    `/// <reference types="${CORE_PACKAGE_NAME}/pack/client" />\n`,
   );
 
   for (const subpath of ['module-runner', 'internal']) {

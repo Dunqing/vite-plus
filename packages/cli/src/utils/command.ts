@@ -25,13 +25,17 @@ export interface RunCommandResult extends ExecutionResult {
 }
 
 /** Run this CLI version even when a package-manager launcher does not expose `vp` on PATH. */
-export function getVpCommand(args: string[], command = process.env.VP_CLI_BIN) {
-  return command !== undefined
-    ? { command, args }
-    : {
-        command: process.execPath,
-        args: [fileURLToPath(import.meta.resolve('vite-plus/bin')), ...args],
-      };
+export function getVpCommand(
+  args: string[],
+  command = process.env.VP_CLI_BIN,
+): Pick<RunCommandOptions, 'command' | 'args'> {
+  if (command !== undefined) {
+    return { command, args };
+  }
+  return {
+    command: process.execPath,
+    args: [fileURLToPath(import.meta.resolve('vite-plus/bin')), ...args],
+  };
 }
 
 export function exitCodeFromClose(code: number | null, signal: NodeJS.Signals | null) {

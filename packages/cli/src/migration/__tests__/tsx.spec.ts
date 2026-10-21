@@ -192,6 +192,10 @@ describe('rewriteTsxCommand', () => {
         path.join(dir, 'tests/dirname.test.ts'),
         "import fs from 'node:fs';\nfs.readdirSync(__dirname);\n",
       );
+      fs.writeFileSync(
+        path.join(dir, 'banner.ts'),
+        "/* banner */ import fs from 'node:fs'; fs.readdirSync(__dirname);\n",
+      );
     });
 
     afterEach(() => {
@@ -215,6 +219,7 @@ describe('rewriteTsxCommand', () => {
       ['tsx compact.ts', '`compact.ts` mixes import or export with CommonJS globals'],
       ['tsx commented.ts', '`commented.ts` mixes import or export with CommonJS globals'],
       ['tsx bracket.ts', '`bracket.ts` mixes import or export with CommonJS globals'],
+      ['tsx banner.ts', '`banner.ts` mixes import or export with CommonJS globals'],
       ['tsx inner.ts', '`inner.ts` mixes import or export with CommonJS globals'],
       [
         'tsx --test tests/*.test.ts',
@@ -249,6 +254,16 @@ describe('rewriteTsxCommand', () => {
       fs.writeFileSync(path.join(dir, 'package.json'), '{ "type": "module" }\n');
       // `"type": "module"` already ran it as an ES module under tsx.
       expect(rewriteTsxCommand('tsx dirname.ts', dir).command).toBe('vpx dirname.ts');
+    });
+
+    it('keeps a glob with more files than it checks', () => {
+      fs.mkdirSync(path.join(dir, 'many'));
+      for (let index = 0; index <= 200; index++) {
+        fs.writeFileSync(path.join(dir, `many/${index}.test.ts`), 'export {};\n');
+      }
+      expect(rewriteTsxCommand('tsx --test many/*.test.ts', dir).kept).toEqual([
+        '`many/*.test.ts` matches more than 200 files, too many for vp migrate to check',
+      ]);
     });
 
     it('checks a script under the home directory', () => {
@@ -393,6 +408,18 @@ describe('migrateTsxToVpx', () => {
       'src/repl.ts',
       "import { spawn } from 'node:child_process';\nspawn('tsx');\n",
       'src/repl.ts still uses tsx',
+    ],
+    [
+      'a process call with an argv array',
+      'src/job.ts',
+      "Bun.spawn(['tsx', 'job.ts']);\n",
+      'src/job.ts still uses tsx',
+    ],
+    [
+      'a TOML config',
+      'netlify.toml',
+      '[build]\ncommand = "tsx scripts/build.ts"\n',
+      'netlify.toml still uses tsx',
     ],
     [
       'a tool config that names tsx as its command',

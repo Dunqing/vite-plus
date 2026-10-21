@@ -88,14 +88,14 @@ const TSX_SHEBANG = /^#![^\n]*[\s/]tsx(?=\s|$)/;
 const TSX_LOADER_FLAG =
   /(?:--import|--loader|--experimental-loader|--require|-r)[= \t]+['"]?tsx(?:\/(?:esm|cjs))?(?![\w./-])/;
 // In code: an import of tsx or a subpath such as `tsx/esm/api`, a string that starts a
-// tsx command, tsx as the program of a process call or config, as in `spawn('tsx')` or
-// `{ command: 'tsx' }`, or a loader flag, as in `nodeArguments: ['--import=tsx']` or
-// `['--import', 'tsx']`.
+// tsx command, tsx as the program of a process call or config, as in `spawn('tsx')`,
+// `Bun.spawn(['tsx', ...])`, or `{ command: 'tsx' }`, or a loader flag, as in
+// `nodeArguments: ['--import=tsx']` or `['--import', 'tsx']`.
 const TSX_CODE_REFERENCE = new RegExp(
   [
     /(?:\bfrom|\bimport|\brequire(?:\.resolve)?)\s*\(?\s*['"]tsx(?:\/[^'"]*)?['"]/.source,
     /['"`](?:npx |pnpm (?:exec )?|yarn |bunx )?tsx\s/.source,
-    /\(\s*['"`]tsx['"`]\s*[,)]/.source,
+    /\(\s*\[?\s*['"`]tsx['"`]\s*[,)\]]/.source,
     /\b(?:command|cmd|executable|program|runtimeExecutable)\s*:\s*['"`]tsx['"`]/.source,
     TSX_LOADER_FLAG.source,
     /['"`](?:--import|--loader|--experimental-loader|--require|-r)['"`]\s*,\s*['"`]tsx(?:\/(?:esm|cjs))?['"`]/
@@ -138,6 +138,7 @@ const REFERENCE_EXTENSIONS: ReadonlySet<string> = new Set([
   ...CODE_EXTENSIONS,
   '.json',
   '.jsonc',
+  '.toml',
   '.yml',
   '.yaml',
   '.sh',
@@ -172,7 +173,7 @@ const COMMONJS_GLOBALS = [
 ] as const;
 // A relative `require()` of a JavaScript path, which tsx also resolves to TypeScript.
 const RELATIVE_REQUIRE = /(?<![.\w$])require\s*\(\s*['"](\.{1,2}\/[^'"]+?)\.(js|cjs|mjs|jsx)['"]/g;
-// How many files of a glob in a command the script check reads.
+// How many files of a glob in a command the script check reads; more keep tsx.
 const MAX_GLOB_FILES = 200;
 const TYPESCRIPT_EXTENSIONS: Record<string, readonly string[]> = {
   js: ['ts', 'tsx'],
@@ -373,14 +374,16 @@ function scriptKeepReason(cwd: string | undefined, script: string): string | und
       return `\`${script}\` requires \`${base}.${extension}\`, which only tsx resolves to \`${base}.${typescript}\`; write the TypeScript extension`;
     }
   }
-  if (!/\.(?:c?ts|tsx|jsx?)$/.test(script) || !ESM_SYNTAX.test(source)) {
+  // A comment can start a line before ES module syntax, as in `/* banner */ import ...`.
+  const code = stripComments(source);
+  if (!/\.(?:c?ts|tsx|jsx?)$/.test(script) || !(ESM_SYNTAX.test(source) || ESM_SYNTAX.test(code))) {
     return undefined;
   }
   if (script.endsWith('.cts')) {
     return `\`${script}\` uses import or export, which \`vpx\` does not compile to CommonJS; rename it to .mts`;
   }
   if (
-    usesCommonJsGlobals(source) &&
+    usesCommonJsGlobals(source, code) &&
     readNearestPackageJson(path.dirname(file))?.type !== 'module'
   ) {
     return `\`${script}\` mixes import or export with CommonJS globals such as __dirname, require, or module.exports, and \`vpx\` runs it as an ES module; use import.meta.dirname, import.meta.filename, createRequire(), or export`;
@@ -388,14 +391,17 @@ function scriptKeepReason(cwd: string | undefined, script: string): string | und
   return undefined;
 }
 
+function stripComments(source: string): string {
+  return source.replaceAll(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, '');
+}
+
 /**
  * Whether `source` uses a CommonJS global it does not declare at module level, as in
  * `const require = createRequire(import.meta.url)`. A declaration inside a function,
  * which an unindented line does not start, covers only that function, and one in a
- * comment covers nothing.
+ * comment (absent from `code`) covers nothing.
  */
-function usesCommonJsGlobals(source: string): boolean {
-  const code = source.replaceAll(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, '');
+function usesCommonJsGlobals(source: string, code: string): boolean {
   return COMMONJS_GLOBALS.some(
     ([name, use]) =>
       use.test(source) &&
@@ -427,8 +433,11 @@ function runKeepReason(
     // The shell, or Node.js for a quoted `--test` glob, runs the files a glob matches.
     const files =
       cwd !== undefined && /[*?[{]/.test(script)
-        ? globSync(script, { cwd, ignore: ['**/node_modules/**'] }).slice(0, MAX_GLOB_FILES)
+        ? globSync(script, { cwd, ignore: ['**/node_modules/**'] })
         : [script];
+    if (files.length > MAX_GLOB_FILES) {
+      return `\`${script}\` matches more than ${MAX_GLOB_FILES} files, too many for vp migrate to check`;
+    }
     for (const file of files) {
       const reason = scriptKeepReason(cwd, file);
       if (reason) {

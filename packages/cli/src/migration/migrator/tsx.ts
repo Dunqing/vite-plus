@@ -235,7 +235,7 @@ export function rewriteTsxCommand(command: string, cwd?: string | null): TsxComm
     ) {
       rewrite.cwd = null;
     }
-    end = tokens[tokens.length - 1].end;
+    end = tokens.at(-1)!.end;
     const [name, ...args] = tokens.map(({ value }) => value);
     if (SHELL_STATE_COMMANDS.includes(name)) {
       // Follow `cd <dir>`; after another directory change, scripts cannot be found.

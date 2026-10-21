@@ -96,6 +96,7 @@ describe('rewriteTsxCommand', () => {
     ['cross-env-shell TSX_TSCONFIG_PATH=cli.json "tsx ./a.ts"', 'TSX_TSCONFIG_PATH'],
     ['TSX_TSCONFIG_PATH=cli.json concurrently "tsx ./a.ts"', 'TSX_TSCONFIG_PATH'],
     ['TSX_TSCONFIG_PATH=cli.json; tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
+    ['NODE_OPTIONS=--import=tsx tsx ./a.ts', 'NODE_OPTIONS'],
     ['export TSX_TSCONFIG_PATH=cli.json && tsx ./a.ts', 'shell syntax'],
     ['tsx watch --test ./a.test.ts', '`vpx --watch` does not run `--test`'],
     ['tsx --watch --test ./a.test.ts', '`vpx --watch` does not run `--test`'],
@@ -168,6 +169,29 @@ describe('rewriteTsxCommand', () => {
         path.join(dir, 'commented.ts'),
         "import fs from 'node:fs';\n// const require = createRequire(import.meta.url);\nrequire('./x');\n",
       );
+      fs.writeFileSync(
+        path.join(dir, 'bracket.ts'),
+        "import fs from 'node:fs';\nexports['result'] = fs.statSync('.');\n",
+      );
+      // The declaration covers only the function, not the module-level `require`.
+      fs.writeFileSync(
+        path.join(dir, 'inner.ts'),
+        [
+          "import { createRequire } from 'node:module';",
+          'function load() {',
+          '  const require = createRequire(import.meta.url);',
+          "  return require('./x');",
+          '}',
+          "require('./setup');",
+          '',
+        ].join('\n'),
+      );
+      fs.mkdirSync(path.join(dir, 'tests'));
+      fs.writeFileSync(path.join(dir, 'tests/ok.test.ts'), 'export {};\n');
+      fs.writeFileSync(
+        path.join(dir, 'tests/dirname.test.ts'),
+        "import fs from 'node:fs';\nfs.readdirSync(__dirname);\n",
+      );
     });
 
     afterEach(() => {
@@ -190,6 +214,12 @@ describe('rewriteTsxCommand', () => {
       ['tsx exports.ts', '`exports.ts` mixes import or export with CommonJS globals'],
       ['tsx compact.ts', '`compact.ts` mixes import or export with CommonJS globals'],
       ['tsx commented.ts', '`commented.ts` mixes import or export with CommonJS globals'],
+      ['tsx bracket.ts', '`bracket.ts` mixes import or export with CommonJS globals'],
+      ['tsx inner.ts', '`inner.ts` mixes import or export with CommonJS globals'],
+      [
+        'tsx --test tests/*.test.ts',
+        '`tests/dirname.test.ts` mixes import or export with CommonJS globals',
+      ],
       ['tsx require-js.cts', 'requires `./helper.js`, which only tsx resolves to `./helper.ts`'],
       ['pushd tools && tsx plain.ts', 'changes the directory'],
       // The fallback runs in the package directory, or after a later `cd`.
@@ -209,6 +239,7 @@ describe('rewriteTsxCommand', () => {
       ['tsx import-equals.cts', 'vpx import-equals.cts'],
       ['tsx importer.ts', 'vpx importer.ts'],
       ['tsx --test plain.ts', 'vpx --test plain.ts'],
+      ['tsx --test tests/ok.*.ts', 'vpx --test tests/ok.*.ts'],
       ['cd tools && tsx plain.ts', 'cd tools && vpx plain.ts'],
     ])('rewrites %s', (command, expected) => {
       expect(rewriteTsxCommand(command, dir)).toEqual({ command: expected, kept: [] });
@@ -356,6 +387,18 @@ describe('migrateTsxToVpx', () => {
       'src/run.ts',
       "import { spawn } from 'node:child_process';\nspawn('tsx', ['job.ts']);\n",
       'src/run.ts still uses tsx',
+    ],
+    [
+      'a process call without arguments',
+      'src/repl.ts',
+      "import { spawn } from 'node:child_process';\nspawn('tsx');\n",
+      'src/repl.ts still uses tsx',
+    ],
+    [
+      'a tool config that names tsx as its command',
+      'tasks.config.ts',
+      "export default { command: 'tsx', args: ['job.ts'] };\n",
+      'tasks.config.ts still uses tsx',
     ],
     [
       'a shell pipe into tsx',

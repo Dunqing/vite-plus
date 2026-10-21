@@ -5,6 +5,7 @@ import { styleText } from 'node:util';
 
 import * as prompts from '@voidzero-dev/vite-plus-prompts';
 import { parse as parseJsonc } from 'jsonc-parser';
+import { globSync } from 'tinyglobby';
 
 import { type LiteralCommandToken, parseLiteralCommands } from '../../../binding/index.js';
 import { type WorkspacePackage } from '../../types/index.ts';
@@ -58,6 +59,8 @@ const KEEP_OTHER = 'vp migrate does not rewrite this use of tsx';
 const KEEP_CWD = 'an earlier command changes the directory in a way vp migrate does not follow';
 const KEEP_TSX_TSCONFIG =
   '`TSX_TSCONFIG_PATH` selects the tsconfig for tsx only; pass it to `vpx` as `--tsconfig`';
+const KEEP_NODE_OPTIONS =
+  '`NODE_OPTIONS` loads tsx, whose hooks would compete with those of `vpx`; remove it first';
 const KEEP_WATCH_TEST = '`vpx --watch` does not run `--test`';
 
 // Options that `vpx` does not run as tsx does. `-c` is Node.js' `--check`, but `vpx -c`
@@ -85,13 +88,15 @@ const TSX_SHEBANG = /^#![^\n]*[\s/]tsx(?=\s|$)/;
 const TSX_LOADER_FLAG =
   /(?:--import|--loader|--experimental-loader|--require|-r)[= \t]+['"]?tsx(?:\/(?:esm|cjs))?(?![\w./-])/;
 // In code: an import of tsx or a subpath such as `tsx/esm/api`, a string that starts a
-// tsx command, tsx as the program of a process call, as in `spawn('tsx', [...])`, or a
-// loader flag, as in `nodeArguments: ['--import=tsx']` or `['--import', 'tsx']`.
+// tsx command, tsx as the program of a process call or config, as in `spawn('tsx')` or
+// `{ command: 'tsx' }`, or a loader flag, as in `nodeArguments: ['--import=tsx']` or
+// `['--import', 'tsx']`.
 const TSX_CODE_REFERENCE = new RegExp(
   [
     /(?:\bfrom|\bimport|\brequire(?:\.resolve)?)\s*\(?\s*['"]tsx(?:\/[^'"]*)?['"]/.source,
     /['"`](?:npx |pnpm (?:exec )?|yarn |bunx )?tsx\s/.source,
-    /\(\s*['"`]tsx['"`]\s*,/.source,
+    /\(\s*['"`]tsx['"`]\s*[,)]/.source,
+    /\b(?:command|cmd|executable|program|runtimeExecutable)\s*:\s*['"`]tsx['"`]/.source,
     TSX_LOADER_FLAG.source,
     /['"`](?:--import|--loader|--experimental-loader|--require|-r)['"`]\s*,\s*['"`]tsx(?:\/(?:esm|cjs))?['"`]/
       .source,
@@ -157,14 +162,18 @@ const LOCKFILES = new Set([
 // have. TypeScript's `import x = require()` and `export =` stay CommonJS.
 const ESM_SYNTAX =
   /(?:^|;)\s*(?:import(?![\w$])\s*(?![\w$]+\s*=)[\w*{'"]|export(?![\w$])\s*[\w*{])|\bimport\.meta\b/m;
-const MODULE_EXPORTS = /(?<![.\w$])(?:module\.exports|exports\.\w)/;
 const COMMONJS_GLOBALS = [
   ['__dirname', /(?<![.\w$])__dirname\b/],
   ['__filename', /(?<![.\w$])__filename\b/],
   ['require', /(?<![.\w$])require\s*(?:\(|\.resolve\b)/],
+  // `exports.x`, `exports['x']`, `Object.assign(exports, ...)`; not `pkg.exports` or a key.
+  ['exports', /(?<![.\w$'"`])exports(?![\w$'"`]|\s*:)/],
+  ['module', /(?<![.\w$])module\s*(?:\.\s*exports\b|\[\s*['"]exports['"]\s*\])/],
 ] as const;
 // A relative `require()` of a JavaScript path, which tsx also resolves to TypeScript.
 const RELATIVE_REQUIRE = /(?<![.\w$])require\s*\(\s*['"](\.{1,2}\/[^'"]+?)\.(js|cjs|mjs|jsx)['"]/g;
+// How many files of a glob in a command the script check reads.
+const MAX_GLOB_FILES = 200;
 const TYPESCRIPT_EXTENSIONS: Record<string, readonly string[]> = {
   js: ['ts', 'tsx'],
   cjs: ['cts'],
@@ -202,8 +211,8 @@ interface Rewrite {
   command: string;
   /** The directory the next segment runs in; null once a command moved it out of sight. */
   cwd?: string | null;
-  /** Set once a segment assigns TSX_TSCONFIG_PATH, which later commands can inherit. */
-  tsconfigReason?: string;
+  /** Set once a segment assigns tsx settings, which later commands can inherit. */
+  envReason?: string;
   edits: Edit[];
   kept: string[];
 }
@@ -277,36 +286,48 @@ function rewriteSegment(rewrite: Rewrite, tokens: LiteralCommandToken[]): void {
     first++;
     skipAssignments();
   }
-  const assignsTsconfig = values
-    .slice(0, first)
-    .some((value) => value.startsWith('TSX_TSCONFIG_PATH='));
+  // tsx reads TSX_TSCONFIG_PATH, where `vpx` takes `--tsconfig`, and tsx hooks loaded
+  // through NODE_OPTIONS would compete with those of `vpx`. Both reach the commands a
+  // launcher runs.
+  const envReason = envKeepReason(values.slice(0, first));
   if (first >= values.length) {
     // A bare assignment can update an exported variable that later commands inherit.
-    if (assignsTsconfig) {
-      rewrite.tsconfigReason = KEEP_TSX_TSCONFIG;
-    }
+    rewrite.envReason ??= envReason;
     return;
   }
-  // tsx reads TSX_TSCONFIG_PATH, also in the commands a launcher runs; `vpx` takes
-  // `--tsconfig` instead.
-  const tsconfigReason = assignsTsconfig ? KEEP_TSX_TSCONFIG : rewrite.tsconfigReason;
+  const inheritedReason = envReason ?? rewrite.envReason;
   const start = first + getCommandStartIndex(values.slice(first));
   const launcher = COMMAND_LAUNCHERS.get(values[start]);
   if (values[start] === 'tsx') {
-    rewriteTsx(rewrite, tokens, first, start, tsconfigReason);
+    rewriteTsx(rewrite, tokens, first, start, inheritedReason);
   } else if (values[start] === 'node') {
-    rewriteNodeLoader(rewrite, tokens, first, start, tsconfigReason);
+    rewriteNodeLoader(rewrite, tokens, first, start, inheritedReason);
   } else if (shell) {
     for (const token of tokens.slice(start)) {
-      rewriteQuotedCommand(rewrite, token, tsconfigReason);
+      rewriteQuotedCommand(rewrite, token, inheritedReason);
     }
   } else if (launcher) {
     for (let index = start + 1; index < tokens.length; index++) {
       if (launcher(values[index - 1])) {
-        rewriteQuotedCommand(rewrite, tokens[index], tsconfigReason);
+        rewriteQuotedCommand(rewrite, tokens[index], inheritedReason);
       }
     }
   }
+}
+
+/** Why environment assignments keep tsx for the command they apply to, or undefined. */
+function envKeepReason(assignments: readonly string[]): string | undefined {
+  if (assignments.some((value) => value.startsWith('TSX_TSCONFIG_PATH='))) {
+    return KEEP_TSX_TSCONFIG;
+  }
+  if (
+    assignments.some(
+      (value) => value.startsWith('NODE_OPTIONS=') && TSX_COMMAND.test(value.slice(13)),
+    )
+  ) {
+    return KEEP_NODE_OPTIONS;
+  }
+  return undefined;
 }
 
 /**
@@ -368,18 +389,17 @@ function scriptKeepReason(cwd: string | undefined, script: string): string | und
 }
 
 /**
- * Whether `source` uses `module.exports`, `exports`, or a CommonJS global it does not
- * declare itself, as in `const require = createRequire(import.meta.url)`.
+ * Whether `source` uses a CommonJS global it does not declare at module level, as in
+ * `const require = createRequire(import.meta.url)`. A declaration inside a function,
+ * which an unindented line does not start, covers only that function, and one in a
+ * comment covers nothing.
  */
 function usesCommonJsGlobals(source: string): boolean {
-  // A declaration in a comment does not count.
   const code = source.replaceAll(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, '');
-  return (
-    MODULE_EXPORTS.test(source) ||
-    COMMONJS_GLOBALS.some(
-      ([name, use]) =>
-        use.test(source) && !new RegExp(`\\b(?:const|let|var|function)\\s+${name}\\b`).test(code),
-    )
+  return COMMONJS_GLOBALS.some(
+    ([name, use]) =>
+      use.test(source) &&
+      !new RegExp(`^(?:export\\s+)?(?:const|let|var|function)\\s+${name}\\b`, 'm').test(code),
   );
 }
 
@@ -404,9 +424,16 @@ function runKeepReason(
     return KEEP_CWD;
   }
   for (const script of test ? positionals.filter((value) => !value.startsWith('-')) : [entry]) {
-    const reason = scriptKeepReason(cwd, script);
-    if (reason) {
-      return reason;
+    // The shell, or Node.js for a quoted `--test` glob, runs the files a glob matches.
+    const files =
+      cwd !== undefined && /[*?[{]/.test(script)
+        ? globSync(script, { cwd, ignore: ['**/node_modules/**'] }).slice(0, MAX_GLOB_FILES)
+        : [script];
+    for (const file of files) {
+      const reason = scriptKeepReason(cwd, file);
+      if (reason) {
+        return reason;
+      }
     }
   }
   return undefined;

@@ -380,6 +380,72 @@ function looksLikeConstructorMock(editor: SourceEditor, node: t.CallExpression):
   return false;
 }
 
+/** Recognize a local promise consumed by a later statement without crossing
+ * control flow or function boundaries. Ambiguous paths still need review. */
+function isAssertionBindingHandled(editor: SourceEditor, node: t.CallExpression): boolean {
+  const declarator = editor.parent(node);
+  if (
+    declarator?.type !== 'VariableDeclarator' ||
+    declarator.init !== node ||
+    declarator.id.type !== 'Identifier'
+  ) {
+    return false;
+  }
+  const binding = editor.binding(declarator.id);
+  const declaration = editor.parent(declarator);
+  const block = declaration && editor.parent(declaration);
+  const fn = editor.functionParent(node);
+  if (
+    !binding?.constant ||
+    declaration?.type !== 'VariableDeclaration' ||
+    declaration.kind !== 'const' ||
+    block?.type !== 'BlockStatement' ||
+    !fn ||
+    fn.generator
+  ) {
+    return false;
+  }
+  for (const statement of block.body.slice(block.body.indexOf(declaration) + 1)) {
+    const expression =
+      statement.type === 'ReturnStatement'
+        ? statement.argument
+        : statement.type === 'ExpressionStatement'
+          ? statement.expression
+          : undefined;
+    if (expression?.type === 'AwaitExpression' && editor.binding(expression.argument) === binding) {
+      return true;
+    }
+    if (
+      statement.type === 'ReturnStatement' &&
+      expression &&
+      editor.binding(expression) === binding
+    ) {
+      // A finally block can replace the return before the caller receives the promise.
+      for (
+        let ancestor = editor.parent(block);
+        ancestor && ancestor !== fn;
+        ancestor = editor.parent(ancestor)
+      ) {
+        if (ancestor.type === 'TryStatement' && ancestor.finalizer) {
+          return false;
+        }
+      }
+      return true;
+    }
+    // These statements cannot return, break, or conditionally skip the consumer.
+    // Keep intervening branches, loops, and try blocks for manual review.
+    if (
+      statement.type !== 'ExpressionStatement' &&
+      statement.type !== 'VariableDeclaration' &&
+      statement.type !== 'FunctionDeclaration' &&
+      statement.type !== 'EmptyStatement'
+    ) {
+      return false;
+    }
+  }
+  return false;
+}
+
 function chain(
   node: t.Node,
   isApi: (node: t.Node) => boolean,
@@ -849,7 +915,8 @@ function rewriteSource(file: string, source: string, options: SourceOptions): Re
           asynchronous &&
           parent?.type !== 'MemberExpression' &&
           parent?.type !== 'AwaitExpression' &&
-          parent?.type !== 'ReturnStatement'
+          parent?.type !== 'ReturnStatement' &&
+          !isAssertionBindingHandled(editor, node)
         ) {
           editor.report(
             node,

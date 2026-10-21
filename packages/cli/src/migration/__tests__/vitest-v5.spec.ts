@@ -1872,6 +1872,118 @@ function publicSync() { return { screen: mount(Component) }; }`);
     expect(result.findings.filter((finding) => finding.code === 'async-render')).toHaveLength(2);
   });
 
+  it.each([true, false])(
+    'recognizes an assertion awaited after a type check (preserveV4: %s)',
+    (preserveV4) => {
+      const input = `import { expect, expectTypeOf, it } from 'vite-plus/test';
+it('checks an asynchronous matcher return type', async () => {
+  const assertion = expect(Promise.resolve(1)).resolves.toBe(1);
+  expectTypeOf(assertion).toEqualTypeOf<Promise<void>>();
+  await assertion;
+});`;
+      const result = source(input, { preserveV4, browser: false });
+      expect(result).toEqual({ content: input, findings: [] });
+      expect(source(result.content, { preserveV4: false, browser: false })).toEqual(result);
+    },
+  );
+
+  it.each([
+    ['expect(Promise.resolve(1)).resolves.toBe(1)', 'await assertion;'],
+    ['expect(Promise.reject(1)).rejects.toBe(1)', 'return assertion;'],
+    ['expect.poll(() => 1).toBe(1)', 'return await assertion;'],
+    ['expect.element(element).toBeVisible()', 'await assertion;'],
+    ["expect('value').toMatchFileSnapshot('snapshot.txt')", 'return assertion;'],
+    ['expect.element(element).toMatchScreenshot()', 'return await assertion;'],
+  ])('recognizes a local promise from %s consumed by %s', (assertion, consume) => {
+    const input = `import { expect, it } from 'vite-plus/test';
+it('assertion', async function () {
+  const assertion = ${assertion};
+  const description = 'assertion result';
+  function unrelated() { return description; }
+  ;
+  ${consume}
+});`;
+    expect(source(input, { preserveV4: false, browser: true })).toEqual({
+      content: input,
+      findings: [],
+    });
+  });
+
+  it('recognizes an assertion returned from a synchronous helper and awaited in a nested block', () => {
+    const input = `import { expect, it } from 'vite-plus/test';
+function helper() {
+  const assertion = expect(Promise.resolve(1)).resolves.toBe(1);
+  return assertion;
+}
+it('nested', async () => {
+  if (enabled) {
+    const assertion = expect(Promise.resolve(1)).resolves.toBe(1);
+    await assertion;
+  }
+});`;
+    expect(source(input)).toEqual({ content: input, findings: [] });
+  });
+
+  it.each([
+    ['unused', 'const assertion = ASSERTION;'],
+    ['mutable binding', 'let assertion = ASSERTION; await assertion;'],
+    ['reassigned binding', 'let assertion = ASSERTION; assertion = other; await assertion;'],
+    ['reassigned const', 'const assertion = ASSERTION; assertion = other; await assertion;'],
+    ['destructured binding', 'const { assertion } = ASSERTION; await assertion;'],
+    ['conditional await', 'const assertion = ASSERTION; if (enabled) await assertion;'],
+    ['conditional return', 'const assertion = ASSERTION; if (enabled) return assertion;'],
+    ['short-circuit await', 'const assertion = ASSERTION; enabled && await assertion;'],
+    ['loop', 'const assertion = ASSERTION; while (enabled) { await assertion; }'],
+    ['early return', 'const assertion = ASSERTION; return; await assertion;'],
+    [
+      'conditional early return',
+      'const assertion = ASSERTION; if (enabled) return; await assertion;',
+    ],
+    ['throw', 'const assertion = ASSERTION; throw new Error(); await assertion;'],
+    ['try block', 'const assertion = ASSERTION; try { await assertion; } catch {}'],
+    [
+      'overridden return',
+      'try { const assertion = ASSERTION; return assertion; } finally { return; }',
+    ],
+    ['break before await', 'label: { const assertion = ASSERTION; break label; await assertion; }'],
+    [
+      'nested callback',
+      'const assertion = ASSERTION; const callback = async () => await assertion;',
+    ],
+    ['nested return', 'const assertion = ASSERTION; function helper() { return assertion; }'],
+    [
+      'shadowed binding',
+      'const assertion = ASSERTION; { const assertion = other; await assertion; }',
+    ],
+    [
+      'different binding',
+      'const assertion = ASSERTION; const other = Promise.resolve(); await other;',
+    ],
+    ['await before declaration', 'await assertion; const assertion = ASSERTION;'],
+  ])('keeps the assertion review for %s', (_name, body) => {
+    const input = `import { expect, it } from 'vite-plus/test';
+it('assertion', async () => {
+  ${body.replace('ASSERTION', 'expect(Promise.resolve(1)).resolves.toBe(1)')}
+});`;
+    const result = source(input);
+    expect(result.content).toBe(input);
+    expect(result.findings).toEqual([
+      expect.objectContaining({ code: 'unawaited-assertion', severity: 'review' }),
+    ]);
+  });
+
+  it('keeps the assertion review when a generator can suspend before awaiting it', () => {
+    const input = `import { expect } from 'vite-plus/test';
+async function* helper() {
+  const assertion = expect(Promise.resolve(1)).resolves.toBe(1);
+  yield;
+  await assertion;
+}`;
+    expect(source(input).findings).toEqual([
+      expect.objectContaining({ code: 'unawaited-assertion' }),
+    ]);
+  });
+
   it('migrates runner aliases and preserves unsupported type-only imports for review', () => {
     const result =
       source(`import { test as check, getFn as lookup, type File as MyFile, type SuiteHooks } from '@vitest/runner';

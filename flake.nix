@@ -47,6 +47,8 @@
               pnpm_12
               just
               cmake
+              git
+              curl
               mbx
 
               (rust-bin.fromRustupToolchainFile ./rust-toolchain.toml)

@@ -148,8 +148,11 @@ const LOCKFILES = new Set([
   'yarn.lock',
 ]);
 
-// ES module syntax, and uses of the CommonJS globals an ES module does not have.
-const ESM_SYNTAX = /^\s*(?:import\s*[\w*{'"]|export\s)|\bimport\.meta\b/m;
+// ES module syntax at the start of a statement, including compact forms such as
+// `export{}` and `export*from`, and uses of the CommonJS globals an ES module does not
+// have. TypeScript's `import x = require()` and `export =` stay CommonJS.
+const ESM_SYNTAX =
+  /(?:^|;)\s*(?:import(?![\w$])\s*(?![\w$]+\s*=)[\w*{'"]|export(?![\w$])\s*[\w*{])|\bimport\.meta\b/m;
 const MODULE_EXPORTS = /(?<![.\w$])(?:module\.exports|exports\.\w)/;
 const COMMONJS_GLOBALS = [
   ['__dirname', /(?<![.\w$])__dirname\b/],
@@ -195,6 +198,8 @@ interface Rewrite {
   command: string;
   /** The directory the next segment runs in; null once a command moved it out of sight. */
   cwd?: string | null;
+  /** Set once a segment assigns TSX_TSCONFIG_PATH, which later commands can inherit. */
+  tsconfigReason?: string;
   edits: Edit[];
   kept: string[];
 }
@@ -255,16 +260,19 @@ function rewriteSegment(rewrite: Rewrite, tokens: LiteralCommandToken[]): void {
     first++;
     skipAssignments();
   }
+  const assignsTsconfig = values
+    .slice(0, first)
+    .some((value) => value.startsWith('TSX_TSCONFIG_PATH='));
   if (first >= values.length) {
+    // A bare assignment can update an exported variable that later commands inherit.
+    if (assignsTsconfig) {
+      rewrite.tsconfigReason = KEEP_TSX_TSCONFIG;
+    }
     return;
   }
   // tsx reads TSX_TSCONFIG_PATH, also in the commands a launcher runs; `vpx` takes
   // `--tsconfig` instead.
-  const tsconfigReason = values
-    .slice(0, first)
-    .some((value) => value.startsWith('TSX_TSCONFIG_PATH='))
-    ? KEEP_TSX_TSCONFIG
-    : undefined;
+  const tsconfigReason = assignsTsconfig ? KEEP_TSX_TSCONFIG : rewrite.tsconfigReason;
   const start = first + getCommandStartIndex(values.slice(first));
   const launcher = COMMAND_LAUNCHERS.get(values[start]);
   if (values[start] === 'tsx') {
@@ -335,7 +343,7 @@ function scriptKeepReason(cwd: string | undefined, script: string): string | und
     usesCommonJsGlobals(source) &&
     readNearestPackageJson(path.dirname(file))?.type !== 'module'
   ) {
-    return `\`${script}\` mixes import with CommonJS globals such as __dirname, require, or module.exports, and \`vpx\` runs it as an ES module; use import.meta.dirname, import.meta.filename, createRequire(), or export`;
+    return `\`${script}\` mixes import or export with CommonJS globals such as __dirname, require, or module.exports, and \`vpx\` runs it as an ES module; use import.meta.dirname, import.meta.filename, createRequire(), or export`;
   }
   return undefined;
 }

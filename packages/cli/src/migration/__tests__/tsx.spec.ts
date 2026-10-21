@@ -93,6 +93,8 @@ describe('rewriteTsxCommand', () => {
     ['TSX_TSCONFIG_PATH=cli.json node --import tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
     ['cross-env-shell TSX_TSCONFIG_PATH=cli.json "tsx ./a.ts"', 'TSX_TSCONFIG_PATH'],
     ['TSX_TSCONFIG_PATH=cli.json concurrently "tsx ./a.ts"', 'TSX_TSCONFIG_PATH'],
+    ['TSX_TSCONFIG_PATH=cli.json; tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
+    ['export TSX_TSCONFIG_PATH=cli.json && tsx ./a.ts', 'shell syntax'],
     ['tsx watch --test ./a.test.ts', '`vpx --watch` does not run `--test`'],
     ['tsx --watch --test ./a.test.ts', '`vpx --watch` does not run `--test`'],
     ['node --import tsx --watch --test ./a.test.ts', '`vpx --watch` does not run `--test`'],
@@ -153,6 +155,13 @@ describe('rewriteTsxCommand', () => {
       fs.writeFileSync(path.join(dir, 'helper.ts'), 'exports.x = 1;\n');
       fs.writeFileSync(path.join(dir, 'require-js.cts'), "const { x } = require('./helper.js');\n");
       fs.writeFileSync(path.join(dir, 'require-bare.cts'), "const { x } = require('./helper');\n");
+      // Compact ES module syntax, and CommonJS that only looks like it.
+      fs.writeFileSync(path.join(dir, 'compact.ts'), 'export{};console.log(__dirname);\n');
+      fs.writeFileSync(
+        path.join(dir, 'import-equals.cts'),
+        "import fs = require('node:fs');\nexport = fs.readdirSync(__dirname);\n",
+      );
+      fs.writeFileSync(path.join(dir, 'importer.ts'), 'importer.run(__dirname);\n');
     });
 
     afterEach(() => {
@@ -162,11 +171,18 @@ describe('rewriteTsxCommand', () => {
     it.each([
       ['tsx esm.cts', '`esm.cts` uses import or export'],
       ['node --import tsx ./esm.cts', '`./esm.cts` uses import or export'],
-      ['tsx watch dirname.ts', '`dirname.ts` mixes import with CommonJS globals'],
-      ['tsx --test plain.ts dirname.ts', '`dirname.ts` mixes import with CommonJS globals'],
-      ['concurrently "tsx dirname.ts"', '`dirname.ts` mixes import with CommonJS globals'],
-      ['cd tools && tsx only.ts', '`only.ts` mixes import with CommonJS globals'],
-      ['tsx exports.ts', '`exports.ts` mixes import with CommonJS globals'],
+      ['tsx watch dirname.ts', '`dirname.ts` mixes import or export with CommonJS globals'],
+      [
+        'tsx --test plain.ts dirname.ts',
+        '`dirname.ts` mixes import or export with CommonJS globals',
+      ],
+      [
+        'concurrently "tsx dirname.ts"',
+        '`dirname.ts` mixes import or export with CommonJS globals',
+      ],
+      ['cd tools && tsx only.ts', '`only.ts` mixes import or export with CommonJS globals'],
+      ['tsx exports.ts', '`exports.ts` mixes import or export with CommonJS globals'],
+      ['tsx compact.ts', '`compact.ts` mixes import or export with CommonJS globals'],
       ['tsx require-js.cts', 'requires `./helper.js`, which only tsx resolves to `./helper.ts`'],
       ['pushd tools && tsx plain.ts', 'changes the directory'],
     ])('keeps %s', (command, reason) => {
@@ -181,6 +197,8 @@ describe('rewriteTsxCommand', () => {
       ['tsx plain.ts', 'vpx plain.ts'],
       ['tsx esm-idioms.ts', 'vpx esm-idioms.ts'],
       ['tsx require-bare.cts', 'vpx require-bare.cts'],
+      ['tsx import-equals.cts', 'vpx import-equals.cts'],
+      ['tsx importer.ts', 'vpx importer.ts'],
       ['tsx --test plain.ts', 'vpx --test plain.ts'],
       ['cd tools && tsx plain.ts', 'cd tools && vpx plain.ts'],
     ])('rewrites %s', (command, expected) => {
@@ -461,10 +479,10 @@ describe('migrateTsxToVpx', () => {
     expect(read('scripts/release.ts')).toMatch(/^#!\/usr\/bin\/env tsx\n/);
     expect(report.warnings).toEqual([
       expect.stringContaining(
-        'Kept tsx in package.json scripts "build": `scripts/build.ts` mixes import with CommonJS globals',
+        'Kept tsx in package.json scripts "build": `scripts/build.ts` mixes import or export with CommonJS globals',
       ),
       expect.stringContaining(
-        'Kept tsx in the shebang of scripts/release.ts: `./release.ts` mixes import with CommonJS globals',
+        'Kept tsx in the shebang of scripts/release.ts: `./release.ts` mixes import or export with CommonJS globals',
       ),
     ]);
   });

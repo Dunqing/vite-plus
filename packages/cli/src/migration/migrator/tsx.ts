@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { styleText } from 'node:util';
 
@@ -131,6 +132,7 @@ const CODE_EXTENSIONS: ReadonlySet<string> = new Set([
 const REFERENCE_EXTENSIONS: ReadonlySet<string> = new Set([
   ...CODE_EXTENSIONS,
   '.json',
+  '.jsonc',
   '.yml',
   '.yaml',
   '.sh',
@@ -332,7 +334,9 @@ function scriptKeepReason(cwd: string | undefined, script: string): string | und
   if (cwd === undefined || !SCRIPT_EXTENSIONS.some((extension) => script.endsWith(extension))) {
     return undefined;
   }
-  const file = path.resolve(cwd, script);
+  const file = script.startsWith('~/')
+    ? path.join(os.homedir(), script.slice(2))
+    : path.resolve(cwd, script);
   let source: string;
   try {
     source = fs.readFileSync(file, 'utf8');
@@ -368,11 +372,13 @@ function scriptKeepReason(cwd: string | undefined, script: string): string | und
  * declare itself, as in `const require = createRequire(import.meta.url)`.
  */
 function usesCommonJsGlobals(source: string): boolean {
+  // A declaration in a comment does not count.
+  const code = source.replaceAll(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, '');
   return (
     MODULE_EXPORTS.test(source) ||
     COMMONJS_GLOBALS.some(
       ([name, use]) =>
-        use.test(source) && !new RegExp(`\\b(?:const|let|var|function)\\s+${name}\\b`).test(source),
+        use.test(source) && !new RegExp(`\\b(?:const|let|var|function)\\s+${name}\\b`).test(code),
     )
   );
 }
@@ -608,7 +614,10 @@ function packageDirs(rootDir: string, packages?: readonly WorkspacePackage[]): s
   return [rootDir, ...(packages ?? []).map((pkg) => path.join(rootDir, pkg.path))];
 }
 
-/** Whether a script or lint-staged task runs tsx in a form `vpx` replaces. */
+/**
+ * Whether a script, lint-staged task, or `#!/usr/bin/env tsx` shebang runs tsx in a form
+ * `vpx` replaces.
+ */
 export function detectTsxProject(rootDir: string, packages?: readonly WorkspacePackage[]): boolean {
   return packageDirs(rootDir, packages).some((dir) => {
     const pkg = readPackageJsonIfExists(path.join(dir, 'package.json'));
@@ -619,7 +628,13 @@ export function detectTsxProject(rootDir: string, packages?: readonly WorkspaceP
       ...packageCommands(pkg),
       ...lintStagedJsonFiles(dir).flatMap((file) => recordCommands(readJsonFile(file))),
     ];
-    return commands.some((command) => rewriteTsxCommand(command, dir).command !== command);
+    return (
+      commands.some((command) => rewriteTsxCommand(command, dir).command !== command) ||
+      sourceTreeMatches(dir, (content, file) => {
+        const result = rewriteTsxShebang(content, file);
+        return result !== undefined && 'content' in result;
+      })
+    );
   });
 }
 
@@ -651,27 +666,44 @@ function rewriteCommandRecord(
   return edited;
 }
 
+/**
+ * The `vpx` version of a script file's tsx shebang, or why it keeps tsx; undefined when
+ * the file has no `#!/usr/bin/env tsx` shebang.
+ */
+function rewriteTsxShebang(
+  content: string,
+  file: string,
+): { content: string } | { reason: string } | undefined {
+  const match = TSX_ENV_SHEBANG.exec(content);
+  if (!match) {
+    return undefined;
+  }
+  const [line, prefix, command] = match;
+  // The kernel runs the shebang's command with the file appended.
+  const result = rewriteTsxCommand(`${command.trimEnd()} ${SHEBANG_ENTRY}`);
+  const reason = result.kept[0] ?? scriptKeepReason(path.dirname(file), `./${path.basename(file)}`);
+  if (reason) {
+    return { reason };
+  }
+  const vpxCommand = result.command.slice(0, -` ${SHEBANG_ENTRY}`.length);
+  return { content: `${prefix}${vpxCommand}${content.slice(line.length)}` };
+}
+
 /** Point `#!/usr/bin/env tsx` shebangs of a package's script files at `vpx`. */
 function rewriteTsxShebangs(dir: string, report?: MigrationReport): boolean {
   let changed = false;
   // The callback never reports a match, so the walk visits every file.
   sourceTreeMatches(dir, (content, file) => {
-    const match = TSX_ENV_SHEBANG.exec(content);
-    if (!match) {
-      return false;
+    const result = rewriteTsxShebang(content, file);
+    if (result && 'reason' in result) {
+      warnMigration(
+        `Kept tsx in the shebang of ${displayRelative(file)}: ${result.reason}.`,
+        report,
+      );
+    } else if (result) {
+      fs.writeFileSync(file, result.content);
+      changed = true;
     }
-    const [line, prefix, command] = match;
-    // The kernel runs the shebang's command with the file appended.
-    const result = rewriteTsxCommand(`${command.trimEnd()} ${SHEBANG_ENTRY}`);
-    const reason =
-      result.kept[0] ?? scriptKeepReason(path.dirname(file), `./${path.basename(file)}`);
-    if (reason) {
-      warnMigration(`Kept tsx in the shebang of ${displayRelative(file)}: ${reason}.`, report);
-      return false;
-    }
-    const vpxCommand = result.command.slice(0, -` ${SHEBANG_ENTRY}`.length);
-    fs.writeFileSync(file, `${prefix}${vpxCommand}${content.slice(line.length)}`);
-    changed = true;
     return false;
   });
   return changed;
@@ -693,7 +725,7 @@ function findTsxUse(dir: string): string | undefined {
       const extension = path.extname(file);
       const uses =
         TSX_SHEBANG.test(content) ||
-        (extension === '.json'
+        (extension === '.json' || extension === '.jsonc'
           ? jsonUsesTsx(parseJsonc(content))
           : (CODE_EXTENSIONS.has(extension) ? TSX_CODE_REFERENCE : TSX_TEXT_REFERENCE).test(
               content,

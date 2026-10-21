@@ -276,7 +276,7 @@ Unrelated `bunx` commands and other package-executor forms remain unchanged.
 
 ### tsx to `vpx`
 
-When a `package.json` script or lint-staged task runs [tsx](https://tsx.is), migration offers to move it to [`vpx`](/guide/vpx), Vite+'s TypeScript script runner. It rewrites scripts and lint-staged tasks in `package.json` and JSON lint-staged files, and `#!/usr/bin/env tsx` shebangs in script files:
+When a `package.json` script, a lint-staged task, or a `#!/usr/bin/env tsx` shebang runs [tsx](https://tsx.is), migration offers to move it to [`vpx`](/guide/vpx), Vite+'s TypeScript script runner. It rewrites scripts and lint-staged tasks in `package.json` and JSON lint-staged files, and `#!/usr/bin/env tsx` shebangs in script files:
 
 | Before                                                | After                                      |
 | ----------------------------------------------------- | ------------------------------------------ |

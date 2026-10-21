@@ -164,6 +164,10 @@ describe('rewriteTsxCommand', () => {
         "import fs = require('node:fs');\nexport = fs.readdirSync(__dirname);\n",
       );
       fs.writeFileSync(path.join(dir, 'importer.ts'), 'importer.run(__dirname);\n');
+      fs.writeFileSync(
+        path.join(dir, 'commented.ts'),
+        "import fs from 'node:fs';\n// const require = createRequire(import.meta.url);\nrequire('./x');\n",
+      );
     });
 
     afterEach(() => {
@@ -185,6 +189,7 @@ describe('rewriteTsxCommand', () => {
       ['cd tools && tsx only.ts', '`only.ts` mixes import or export with CommonJS globals'],
       ['tsx exports.ts', '`exports.ts` mixes import or export with CommonJS globals'],
       ['tsx compact.ts', '`compact.ts` mixes import or export with CommonJS globals'],
+      ['tsx commented.ts', '`commented.ts` mixes import or export with CommonJS globals'],
       ['tsx require-js.cts', 'requires `./helper.js`, which only tsx resolves to `./helper.ts`'],
       ['pushd tools && tsx plain.ts', 'changes the directory'],
       // The fallback runs in the package directory, or after a later `cd`.
@@ -213,6 +218,17 @@ describe('rewriteTsxCommand', () => {
       fs.writeFileSync(path.join(dir, 'package.json'), '{ "type": "module" }\n');
       // `"type": "module"` already ran it as an ES module under tsx.
       expect(rewriteTsxCommand('tsx dirname.ts', dir).command).toBe('vpx dirname.ts');
+    });
+
+    it('checks a script under the home directory', () => {
+      vi.spyOn(os, 'homedir').mockReturnValue(dir);
+      try {
+        expect(rewriteTsxCommand('tsx ~/dirname.ts', path.join(dir, 'tools')).kept).toEqual([
+          expect.stringContaining('mixes import or export with CommonJS globals'),
+        ]);
+      } finally {
+        vi.restoreAllMocks();
+      }
     });
 
     it('keeps a package-manager shorthand that runs a script named tsx', () => {
@@ -360,6 +376,12 @@ describe('migrateTsxToVpx', () => {
       '.mocharc.json still uses tsx',
     ],
     [
+      'a JSONC tool config',
+      'wrangler.jsonc',
+      '{\n  // Build step\n  "build": { "command": "tsx scripts/build.ts" },\n}\n',
+      'wrangler.jsonc still uses tsx',
+    ],
+    [
       'a JavaScript tool config',
       'ava.config.js',
       "export default { nodeArguments: ['--import=tsx'] };\n",
@@ -449,6 +471,20 @@ describe('migrateTsxToVpx', () => {
     expect(report.warnings).toEqual([
       `Kept the tsx devDependency in package.json: \`${field}\` in package.json still uses tsx.`,
     ]);
+  });
+
+  it('detects a project that runs tsx only through shebangs', () => {
+    write('package.json', {
+      type: 'module',
+      scripts: { release: './scripts/release.ts' },
+      devDependencies: { tsx: '^4.20.0' },
+    });
+    write('scripts/release.ts', '#!/usr/bin/env tsx\nexport {};\n');
+
+    expect(detectTsxProject(root)).toBe(true);
+    expect(migrateTsxToVpx(root)).toEqual({ changed: true, dependencyRemoved: true });
+    expect(read('scripts/release.ts')).toBe('#!/usr/bin/env vpx\nexport {};\n');
+    expect(detectTsxProject(root)).toBe(false);
   });
 
   it('detects tsx tasks in a lint-staged JSON file', () => {

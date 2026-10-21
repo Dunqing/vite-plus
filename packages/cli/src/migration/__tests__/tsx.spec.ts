@@ -196,6 +196,13 @@ describe('rewriteTsxCommand', () => {
         path.join(dir, 'banner.ts'),
         "/* banner */ import fs from 'node:fs'; fs.readdirSync(__dirname);\n",
       );
+      fs.writeFileSync(
+        path.join(dir, 'cli-guard.ts'),
+        "import fs from 'node:fs';\nif (require.main === module) fs.readdirSync('.');\n",
+      );
+      // tsx maps `@app/job` through tsconfig `paths`; Node.js does not.
+      fs.writeFileSync(path.join(dir, 'alias.cts'), "const job = require('@app/job');\n");
+      fs.writeFileSync(path.join(dir, 'builtin.cts'), "const fs = require('node:fs');\n");
     });
 
     afterEach(() => {
@@ -220,6 +227,9 @@ describe('rewriteTsxCommand', () => {
       ['tsx commented.ts', '`commented.ts` mixes import or export with CommonJS globals'],
       ['tsx bracket.ts', '`bracket.ts` mixes import or export with CommonJS globals'],
       ['tsx banner.ts', '`banner.ts` mixes import or export with CommonJS globals'],
+      ['tsx cli-guard.ts', '`cli-guard.ts` mixes import or export with CommonJS globals'],
+      ['tsx alias.cts', 'requires `@app/job`, which Node.js cannot resolve'],
+      ['generate && tsx generated.ts', '`generated.ts` does not exist yet'],
       ['tsx inner.ts', '`inner.ts` mixes import or export with CommonJS globals'],
       [
         'tsx --test tests/*.test.ts',
@@ -241,6 +251,7 @@ describe('rewriteTsxCommand', () => {
       ['tsx plain.ts', 'vpx plain.ts'],
       ['tsx esm-idioms.ts', 'vpx esm-idioms.ts'],
       ['tsx require-bare.cts', 'vpx require-bare.cts'],
+      ['tsx builtin.cts', 'vpx builtin.cts'],
       ['tsx import-equals.cts', 'vpx import-equals.cts'],
       ['tsx importer.ts', 'vpx importer.ts'],
       ['tsx --test plain.ts', 'vpx --test plain.ts'],
@@ -306,6 +317,16 @@ describe('migrateTsxToVpx', () => {
   beforeEach(() => {
     root = fs.mkdtempSync(path.join(os.tmpdir(), 'vp-test-tsx-'));
     vi.spyOn(process, 'cwd').mockReturnValue(root);
+    // The scripts the commands below run; migration reads them before rewriting.
+    for (const file of [
+      'src/server.ts',
+      'scripts/seed.ts',
+      'scripts/check.ts',
+      'scripts/docs.ts',
+      'packages/a/gen.ts',
+    ]) {
+      write(file, 'export {};\n');
+    }
   });
 
   afterEach(() => {
@@ -432,6 +453,12 @@ describe('migrateTsxToVpx', () => {
       'scripts/run.sh',
       'cat job.ts | tsx\n',
       'scripts/run.sh still uses tsx',
+    ],
+    [
+      'a quoted tsx in a shell script',
+      'scripts/job.sh',
+      '"tsx" scripts/job.ts\n',
+      'scripts/job.sh still uses tsx',
     ],
     [
       'a Windows batch file',
@@ -585,7 +612,10 @@ describe('migrateTsxToVpx', () => {
   it('keeps tsx for a script that would lose CommonJS globals under vpx', () => {
     write('package.json', { scripts: { build: 'tsx scripts/build.ts' } });
     write('scripts/build.ts', "import fs from 'node:fs';\nfs.readdirSync(__dirname);\n");
-    write('scripts/release.ts', '#!/usr/bin/env tsx\nimport fs from "node:fs";\nrequire("x");\n');
+    write(
+      'scripts/release.ts',
+      '#!/usr/bin/env tsx\nimport fs from "node:fs";\nrequire("node:path");\n',
+    );
     const report = createMigrationReport();
 
     expect(detectTsxProject(root)).toBe(false);

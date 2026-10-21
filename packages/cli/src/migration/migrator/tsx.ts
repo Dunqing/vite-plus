@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import os from 'node:os';
 import path from 'node:path';
 import { styleText } from 'node:util';
@@ -106,7 +107,8 @@ const TSX_CODE_REFERENCE = new RegExp(
 // without arguments, or a loader flag.
 const TSX_TEXT_REFERENCE = new RegExp(
   [
-    /(?:^|[\s;&|("'=/\\`])tsx(?:\.(?:cmd|exe|ps1))?(?:\/(?:esm|cjs))?(?:[ \t]+\S|[ \t]*$)/.source,
+    /(?:^|[\s;&|("'=/\\`])tsx(?:\.(?:cmd|exe|ps1))?(?:\/(?:esm|cjs))?['"]?(?:[ \t]+\S|[ \t]*$)/
+      .source,
     TSX_LOADER_FLAG.source,
   ].join('|'),
   'm',
@@ -166,13 +168,16 @@ const ESM_SYNTAX =
 const COMMONJS_GLOBALS = [
   ['__dirname', /(?<![.\w$])__dirname\b/],
   ['__filename', /(?<![.\w$])__filename\b/],
-  ['require', /(?<![.\w$])require\s*(?:\(|\.resolve\b)/],
+  // `require('x')`, `require.resolve()`, `require.main === module`.
+  ['require', /(?<![.\w$])require\s*(?:\(|\.\s*[\w$])/],
   // `exports.x`, `exports['x']`, `Object.assign(exports, ...)`; not `pkg.exports` or a key.
   ['exports', /(?<![.\w$'"`])exports(?![\w$'"`]|\s*:)/],
   ['module', /(?<![.\w$])module\s*(?:\.\s*exports\b|\[\s*['"]exports['"]\s*\])/],
 ] as const;
 // A relative `require()` of a JavaScript path, which tsx also resolves to TypeScript.
 const RELATIVE_REQUIRE = /(?<![.\w$])require\s*\(\s*['"](\.{1,2}\/[^'"]+?)\.(js|cjs|mjs|jsx)['"]/g;
+// A `require()` of a package or alias, such as `require('@app/job')`.
+const BARE_REQUIRE = /(?<![.\w$])require\s*\(\s*['"]([^'"./][^'"]*)['"]\s*\)/g;
 // How many files of a glob in a command the script check reads; more keep tsx.
 const MAX_GLOB_FILES = 200;
 const TYPESCRIPT_EXTENSIONS: Record<string, readonly string[]> = {
@@ -362,8 +367,11 @@ function scriptKeepReason(cwd: string | undefined, script: string): string | und
   let source: string;
   try {
     source = fs.readFileSync(file, 'utf8');
-  } catch {
-    return undefined;
+  } catch (error) {
+    // A file that an earlier command generates cannot be checked yet.
+    return (error as NodeJS.ErrnoException).code === 'ENOENT'
+      ? `\`${script}\` does not exist yet, so vp migrate cannot check it`
+      : undefined;
   }
   for (const [, base, extension] of source.matchAll(RELATIVE_REQUIRE)) {
     const resolve = (ext: string) => path.resolve(path.dirname(file), `${base}.${ext}`);
@@ -372,6 +380,14 @@ function scriptKeepReason(cwd: string | undefined, script: string): string | und
       : TYPESCRIPT_EXTENSIONS[extension].find((ext) => fs.existsSync(resolve(ext)));
     if (typescript) {
       return `\`${script}\` requires \`${base}.${extension}\`, which only tsx resolves to \`${base}.${typescript}\`; write the TypeScript extension`;
+    }
+  }
+  // tsx applies tsconfig `paths` to `require()`; `vpx` resolves it as Node.js does.
+  for (const [, specifier] of source.matchAll(BARE_REQUIRE)) {
+    try {
+      createRequire(file).resolve(specifier);
+    } catch {
+      return `\`${script}\` requires \`${specifier}\`, which Node.js cannot resolve; tsx can map it through tsconfig \`paths\``;
     }
   }
   // A comment can start a line before ES module syntax, as in `/* banner */ import ...`.

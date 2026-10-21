@@ -435,35 +435,34 @@ function isAssertionBindingHandled(editor: SourceEditor, node: t.CallExpression)
     }
   }
   for (const statement of block.body.slice(block.body.indexOf(declaration) + 1)) {
-    const value =
-      statement.type === 'ReturnStatement'
-        ? statement.argument
-        : statement.type === 'ExpressionStatement'
-          ? statement.expression
-          : undefined;
-    const expression = value && unwrapTypeExpression(value);
-    if (
-      expression?.type === 'AwaitExpression' &&
-      editor.binding(unwrapTypeExpression(expression.argument)) === binding
-    ) {
-      return true;
-    }
-    if (
-      statement.type === 'ReturnStatement' &&
-      expression &&
-      editor.binding(expression) === binding
-    ) {
-      return true;
-    }
-    // These statements have no explicit return, break, or conditional exit.
-    // Keep intervening branches, loops, and try blocks for manual review.
-    if (
-      statement.type !== 'ExpressionStatement' &&
-      statement.type !== 'VariableDeclaration' &&
-      statement.type !== 'FunctionDeclaration' &&
-      statement.type !== 'EmptyStatement'
-    ) {
-      return false;
+    switch (statement.type) {
+      case 'ReturnStatement': {
+        if (!statement.argument) {
+          return false;
+        }
+        let expression = unwrapTypeExpression(statement.argument);
+        if (expression.type === 'AwaitExpression') {
+          expression = unwrapTypeExpression(expression.argument);
+        }
+        return editor.binding(expression) === binding;
+      }
+      case 'ExpressionStatement': {
+        const expression = unwrapTypeExpression(statement.expression);
+        if (
+          expression.type === 'AwaitExpression' &&
+          editor.binding(unwrapTypeExpression(expression.argument)) === binding
+        ) {
+          return true;
+        }
+        break;
+      }
+      case 'VariableDeclaration':
+      case 'FunctionDeclaration':
+      case 'EmptyStatement':
+        break;
+      default:
+        // Keep intervening branches, loops, and try blocks for manual review.
+        return false;
     }
   }
   return false;

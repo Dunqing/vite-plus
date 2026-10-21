@@ -55,6 +55,7 @@ const KEEP_OTHER = 'vp migrate does not rewrite this use of tsx';
 const KEEP_CWD = 'an earlier command changes the directory in a way vp migrate does not follow';
 const KEEP_TSX_TSCONFIG =
   '`TSX_TSCONFIG_PATH` selects the tsconfig for tsx only; pass it to `vpx` as `--tsconfig`';
+const KEEP_WATCH_TEST = '`vpx --watch` does not run `--test`';
 
 // Options that `vpx` does not run as tsx does. `-c` is Node.js' `--check`, but `vpx -c`
 // is `--shell-mode`.
@@ -82,13 +83,15 @@ const TSX_LOADER_FLAG =
   /(?:--import|--loader|--experimental-loader|--require|-r)[= \t]+['"]?tsx(?:\/(?:esm|cjs))?(?![\w./-])/;
 // In code: an import of tsx or a subpath such as `tsx/esm/api`, a string that starts a
 // tsx command, tsx as the program of a process call, as in `spawn('tsx', [...])`, or a
-// loader flag, as in `nodeArguments: ['--import=tsx']`.
+// loader flag, as in `nodeArguments: ['--import=tsx']` or `['--import', 'tsx']`.
 const TSX_CODE_REFERENCE = new RegExp(
   [
     /(?:\bfrom|\bimport|\brequire(?:\.resolve)?)\s*\(?\s*['"]tsx(?:\/[^'"]*)?['"]/.source,
     /['"`](?:npx |pnpm (?:exec )?|yarn |bunx )?tsx\s/.source,
     /\(\s*['"`]tsx['"`]\s*,/.source,
     TSX_LOADER_FLAG.source,
+    /['"`](?:--import|--loader|--experimental-loader|--require|-r)['"`]\s*,\s*['"`]tsx(?:\/(?:esm|cjs))?['"`]/
+      .source,
   ].join('|'),
 );
 // In shell scripts, CI workflows, and git hooks: tsx in command position, with or
@@ -116,9 +119,15 @@ const IGNORED_FIELDS = new Set([
   'pnpm',
   'resolutions',
 ]);
-const CODE_EXTENSIONS: ReadonlySet<string> = new Set(SCRIPT_EXTENSIONS);
-const REFERENCE_EXTENSIONS: ReadonlySet<string> = new Set([
+// Script files and framework components whose code can import tsx.
+const CODE_EXTENSIONS: ReadonlySet<string> = new Set([
   ...SCRIPT_EXTENSIONS,
+  '.astro',
+  '.svelte',
+  '.vue',
+]);
+const REFERENCE_EXTENSIONS: ReadonlySet<string> = new Set([
+  ...CODE_EXTENSIONS,
   '.json',
   '.yml',
   '.yaml',
@@ -249,7 +258,8 @@ function rewriteSegment(rewrite: Rewrite, tokens: LiteralCommandToken[]): void {
   if (first >= values.length) {
     return;
   }
-  // tsx reads TSX_TSCONFIG_PATH; `vpx` takes `--tsconfig` instead.
+  // tsx reads TSX_TSCONFIG_PATH, also in the commands a launcher runs; `vpx` takes
+  // `--tsconfig` instead.
   const tsconfigReason = values
     .slice(0, first)
     .some((value) => value.startsWith('TSX_TSCONFIG_PATH='))
@@ -263,12 +273,12 @@ function rewriteSegment(rewrite: Rewrite, tokens: LiteralCommandToken[]): void {
     rewriteNodeLoader(rewrite, tokens, first, start, tsconfigReason);
   } else if (shell) {
     for (const token of tokens.slice(start)) {
-      rewriteQuotedCommand(rewrite, token);
+      rewriteQuotedCommand(rewrite, token, tsconfigReason);
     }
   } else if (launcher) {
     for (let index = start + 1; index < tokens.length; index++) {
       if (launcher(values[index - 1])) {
-        rewriteQuotedCommand(rewrite, tokens[index]);
+        rewriteQuotedCommand(rewrite, tokens[index], tsconfigReason);
       }
     }
   }
@@ -405,6 +415,7 @@ function rewriteTsx(
   ];
   let entryIndex = tokens.length;
   let test = false;
+  let nodeWatch = false;
   for (; index < tokens.length; index++) {
     const { value } = tokens[index];
     if (value === '--' || !value.startsWith('-')) {
@@ -423,6 +434,7 @@ function rewriteTsx(
       return;
     }
     test ||= name === '--test';
+    nodeWatch ||= name === '--watch';
     if (
       !value.includes('=') &&
       (NODE_OPTIONS_WITH_VALUE.has(name) ||
@@ -432,11 +444,14 @@ function rewriteTsx(
       index++;
     }
   }
-  const reason = runKeepReason(
-    rewrite.cwd,
-    test,
-    tokens.slice(entryIndex).map(({ value }) => value),
-  );
+  const reason =
+    (watch || nodeWatch) && test
+      ? KEEP_WATCH_TEST
+      : runKeepReason(
+          rewrite.cwd,
+          test,
+          tokens.slice(entryIndex).map(({ value }) => value),
+        );
   if (reason) {
     rewrite.kept.push(reason);
     return;
@@ -455,6 +470,7 @@ function rewriteNodeLoader(
   let entryIndex = tokens.length;
   let optionReason = keepReason;
   let test = false;
+  let watch = false;
   for (let index = start + 1; index < tokens.length; index++) {
     const { value } = tokens[index];
     if (value === '--' || !value.startsWith('-')) {
@@ -475,6 +491,7 @@ function rewriteNodeLoader(
     }
     optionReason ??= KEEP_OPTIONS.get(name);
     test ||= name === '--test';
+    watch ||= name === '--watch';
     if (!inline && NODE_OPTIONS_WITH_VALUE.has(name)) {
       index++;
     }
@@ -484,11 +501,13 @@ function rewriteNodeLoader(
   }
   const reason =
     optionReason ??
-    runKeepReason(
-      rewrite.cwd,
-      test,
-      tokens.slice(entryIndex).map(({ value }) => value),
-    );
+    (watch && test
+      ? KEEP_WATCH_TEST
+      : runKeepReason(
+          rewrite.cwd,
+          test,
+          tokens.slice(entryIndex).map(({ value }) => value),
+        ));
   if (reason) {
     rewrite.kept.push(reason);
     return;
@@ -499,7 +518,15 @@ function rewriteNodeLoader(
   );
 }
 
-function rewriteQuotedCommand(rewrite: Rewrite, token: LiteralCommandToken): void {
+/**
+ * Rewrite a command that a launcher runs, given as one quoted argument. `inherited` keeps
+ * tsx for it, as when the launcher passes on `TSX_TSCONFIG_PATH`.
+ */
+function rewriteQuotedCommand(
+  rewrite: Rewrite,
+  token: LiteralCommandToken,
+  inherited: string | undefined,
+): void {
   const raw = rewrite.command.slice(token.start, token.end);
   const quote = raw[0];
   if ((quote !== '"' && quote !== "'") || raw.length < 2 || !raw.endsWith(quote)) {
@@ -507,7 +534,12 @@ function rewriteQuotedCommand(rewrite: Rewrite, token: LiteralCommandToken): voi
   }
   const inner = rewriteTsxCommand(token.value, rewrite.cwd);
   rewrite.kept.push(...inner.kept);
-  if (inner.command !== token.value && !inner.command.includes(quote)) {
+  if (inner.command === token.value) {
+    return;
+  }
+  if (inherited) {
+    rewrite.kept.push(inherited);
+  } else if (!inner.command.includes(quote)) {
     rewrite.edits.push({
       start: token.start,
       end: token.end,

@@ -91,6 +91,11 @@ describe('rewriteTsxCommand', () => {
     [`sh -c 'echo "$0"' 'tsx a.ts'`, 'does not rewrite this use of tsx'],
     ['TSX_TSCONFIG_PATH=cli.json tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
     ['TSX_TSCONFIG_PATH=cli.json node --import tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
+    ['cross-env-shell TSX_TSCONFIG_PATH=cli.json "tsx ./a.ts"', 'TSX_TSCONFIG_PATH'],
+    ['TSX_TSCONFIG_PATH=cli.json concurrently "tsx ./a.ts"', 'TSX_TSCONFIG_PATH'],
+    ['tsx watch --test ./a.test.ts', '`vpx --watch` does not run `--test`'],
+    ['tsx --watch --test ./a.test.ts', '`vpx --watch` does not run `--test`'],
+    ['node --import tsx --watch --test ./a.test.ts', '`vpx --watch` does not run `--test`'],
   ])('keeps %s', (command, reason) => {
     const result = rewriteTsxCommand(command);
     expect(result.command).toBe(command);
@@ -236,6 +241,7 @@ describe('migrateTsxToVpx', () => {
     write('src/server.ts', 'export {};\n');
     // File extensions are not uses of tsx.
     write('vite.config.ts', "export default { resolve: { extensions: ['ts', 'tsx'] } };\n");
+    write('src/App.vue', '<script lang="tsx">\nexport default {};\n</script>\n');
     const report = createMigrationReport();
 
     expect(detectTsxProject(root)).toBe(true);
@@ -330,6 +336,18 @@ describe('migrateTsxToVpx', () => {
       'ava.config.js',
       "export default { nodeArguments: ['--import=tsx'] };\n",
       'ava.config.js still uses tsx',
+    ],
+    [
+      'a JavaScript tool config with split loader arguments',
+      'ava.config.mjs',
+      "export default { nodeArguments: ['--import', 'tsx'] };\n",
+      'ava.config.mjs still uses tsx',
+    ],
+    [
+      'a framework component',
+      'src/pages/index.astro',
+      "---\nimport { tsImport } from 'tsx/esm/api';\n---\n",
+      'src/pages/index.astro still uses tsx',
     ],
   ])('keeps the tsx dependency used by %s', (_, file, content, user) => {
     write('package.json', {

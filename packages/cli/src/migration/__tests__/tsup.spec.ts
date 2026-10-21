@@ -24,7 +24,8 @@ vi.mock('@voidzero-dev/vite-plus-prompts', () => ({
   },
 }));
 
-vi.mock('../../utils/command.ts', () => ({
+vi.mock(import('../../utils/command.ts'), async (importOriginal) => ({
+  ...(await importOriginal()),
   runCommandSilently: vi.fn(),
 }));
 vi.mock('../../utils/prompts.ts', () => ({
@@ -96,7 +97,16 @@ describe('tsup migration', () => {
 
     expect(mockRunCommandSilently).toHaveBeenCalledWith(
       expect.objectContaining({
-        args: ['dlx', 'tsdown-migrate@0.99.0', '--yes', '--package-manager', 'npm', '--no-install'],
+        command: process.execPath,
+        args: [
+          expect.any(String),
+          'dlx',
+          'tsdown-migrate@0.99.0',
+          '--yes',
+          '--package-manager',
+          'npm',
+          '--no-install',
+        ],
       }),
     );
   });

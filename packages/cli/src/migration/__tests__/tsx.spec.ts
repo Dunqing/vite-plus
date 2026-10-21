@@ -105,6 +105,7 @@ describe('rewriteTsxCommand', () => {
     ['cross-env-shell TSX_TSCONFIG_PATH=cli.json "tsx ./a.ts"', 'TSX_TSCONFIG_PATH'],
     ['TSX_TSCONFIG_PATH=cli.json concurrently "tsx ./a.ts"', 'TSX_TSCONFIG_PATH'],
     ['TSX_TSCONFIG_PATH=cli.json; tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
+    ['set "TSX_TSCONFIG_PATH=cli.json" && tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
     ['NODE_OPTIONS=--import=tsx tsx ./a.ts', 'NODE_OPTIONS'],
     ['export TSX_TSCONFIG_PATH=cli.json && tsx ./a.ts', 'shell syntax'],
     ['tsx watch --test ./a.test.ts', '`vpx --watch` does not run `--test`'],
@@ -220,6 +221,24 @@ describe('rewriteTsxCommand', () => {
         path.join(dir, 'node-module.ts'),
         "import module from 'node:module';\nconst require = module.createRequire(import.meta.url);\nrequire('node:fs');\n",
       );
+      fs.writeFileSync(
+        path.join(dir, 'template-require.cts'),
+        'const { x } = require(`./helper.js`);\n',
+      );
+      // Syntax `vpx` does not compile yet, unless a tsconfig enables legacy decorators.
+      const decorated = '@sealed\nclass Job {}\nfunction sealed(target: unknown) {}\n';
+      fs.writeFileSync(path.join(dir, 'decorated.ts'), decorated);
+      fs.writeFileSync(path.join(dir, 'accessor.ts'), 'class Job {\n  accessor count = 0;\n}\n');
+      fs.mkdirSync(path.join(dir, 'legacy'));
+      fs.writeFileSync(
+        path.join(dir, 'legacy/tsconfig.json'),
+        '{\n  // Inherits experimentalDecorators.\n  "extends": "../base.json"\n}\n',
+      );
+      fs.writeFileSync(
+        path.join(dir, 'base.json'),
+        '{ "compilerOptions": { "experimentalDecorators": true } }\n',
+      );
+      fs.writeFileSync(path.join(dir, 'legacy/decorated.ts'), decorated);
     });
 
     afterEach(() => {
@@ -250,6 +269,10 @@ describe('rewriteTsxCommand', () => {
         '`module-filename.ts` mixes import or export with CommonJS globals',
       ],
       ['tsx alias.cts', 'requires `@app/job`, which Node.js cannot resolve'],
+      ['tsx template-require.cts', 'requires `./helper.js`, which only tsx resolves'],
+      ['tsx decorated.ts', '`decorated.ts` uses standard decorators'],
+      ['tsx accessor.ts', '`accessor.ts` declares an `accessor` field'],
+      ['generate && tsx --test generated/*.test.ts', '`generated/*.test.ts` matches no files yet'],
       ['generate && tsx generated.ts', '`generated.ts` does not exist yet'],
       ['tsx inner.ts', '`inner.ts` mixes import or export with CommonJS globals'],
       [
@@ -274,6 +297,7 @@ describe('rewriteTsxCommand', () => {
       ['tsx require-bare.cts', 'vpx require-bare.cts'],
       ['tsx builtin.cts', 'vpx builtin.cts'],
       ['tsx node-module.ts', 'vpx node-module.ts'],
+      ['tsx legacy/decorated.ts', 'vpx legacy/decorated.ts'],
       ['tsx import-equals.cts', 'vpx import-equals.cts'],
       ['tsx importer.ts', 'vpx importer.ts'],
       ['tsx --test plain.ts', 'vpx --test plain.ts'],
@@ -451,6 +475,12 @@ describe('migrateTsxToVpx', () => {
       'bin/release',
       '#!/usr/bin/env tsx\nexport {};\n',
       'bin/release still uses tsx',
+    ],
+    [
+      'an extensionless JavaScript file',
+      'bin/cli',
+      "import { tsImport } from 'tsx/esm/api';\n",
+      'bin/cli still uses tsx',
     ],
     [
       'a nested package',

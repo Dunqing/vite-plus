@@ -178,9 +178,15 @@ const COMMONJS_GLOBALS = [
   ['module', /(?<![.\w$])module\s*(?:\.\s*[\w$]|\[)/],
 ] as const;
 // A relative `require()` of a JavaScript path, which tsx also resolves to TypeScript.
-const RELATIVE_REQUIRE = /(?<![.\w$])require\s*\(\s*['"](\.{1,2}\/[^'"]+?)\.(js|cjs|mjs|jsx)['"]/g;
+const RELATIVE_REQUIRE =
+  /(?<![.\w$])require\s*\(\s*['"`](\.{1,2}\/[^'"`]+?)\.(js|cjs|mjs|jsx)['"`]/g;
 // A `require()` of a package or alias, such as `require('@app/job')`.
-const BARE_REQUIRE = /(?<![.\w$])require\s*\(\s*['"]([^'"./][^'"]*)['"]\s*\)/g;
+const BARE_REQUIRE = /(?<![.\w$])require\s*\(\s*['"`]([^'"`./$][^'"`$]*)['"`]\s*\)/g;
+// Syntax `vpx` does not compile yet: a decorator line, unless the tsconfig enables
+// legacy `experimentalDecorators`, and an `accessor` field. tsx lowers both.
+const DECORATOR = /^\s*@[A-Za-z_$]/m;
+const ACCESSOR_FIELD =
+  /^\s*(?:(?:static|declare|override|public|private|protected)\s+)*accessor\s+[\w$#[]/m;
 // How many files of a glob in a command the script check reads; more keep tsx.
 const MAX_GLOB_FILES = 200;
 const TYPESCRIPT_EXTENSIONS: Record<string, readonly string[]> = {
@@ -282,7 +288,10 @@ export function rewriteTsxCommand(command: string, cwd?: string | null): TsxComm
       if (name === 'cd' && args.length === 1 && !/^[-~]/.test(args[0])) {
         rewrite.cwd &&= path.resolve(rewrite.cwd, args[0]);
         changedDirectory = true;
-      } else if (!['export', 'set', 'unset'].includes(name) && rewrite.cwd !== undefined) {
+      } else if (name === 'set') {
+        // cmd.exe's `set "TSX_TSCONFIG_PATH=x"` reaches later commands.
+        rewrite.envReason ??= envKeepReason(args);
+      } else if (!['export', 'unset'].includes(name) && rewrite.cwd !== undefined) {
         rewrite.cwd = null;
       }
       continue;
@@ -415,6 +424,12 @@ function scriptKeepReason(cwd: string | undefined, script: string): string | und
   }
   // A comment can start a line before ES module syntax, as in `/* banner */ import ...`.
   const code = stripComments(source);
+  if (ACCESSOR_FIELD.test(code)) {
+    return `\`${script}\` declares an \`accessor\` field, which \`vpx\` does not compile yet`;
+  }
+  if (DECORATOR.test(code) && !experimentalDecorators(file)) {
+    return `\`${script}\` uses standard decorators, which \`vpx\` does not compile yet; it supports decorators with \`experimentalDecorators\``;
+  }
   if (!/\.(?:c?ts|tsx|jsx?)$/.test(script) || !(ESM_SYNTAX.test(source) || ESM_SYNTAX.test(code))) {
     return undefined;
   }
@@ -432,6 +447,68 @@ function scriptKeepReason(cwd: string | undefined, script: string): string | und
 
 function stripComments(source: string): string {
   return source.replaceAll(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, '');
+}
+
+/**
+ * Whether the tsconfig nearest to `file`, which `vpx` applies, enables
+ * `experimentalDecorators`, directly or through `extends`.
+ */
+function experimentalDecorators(file: string): boolean {
+  for (let dir = path.dirname(file); ; dir = path.dirname(dir)) {
+    const tsconfig = path.join(dir, 'tsconfig.json');
+    if (fs.existsSync(tsconfig)) {
+      return tsconfigOption(tsconfig, 'experimentalDecorators', new Set()) === true;
+    }
+    if (path.dirname(dir) === dir) {
+      return false;
+    }
+  }
+}
+
+/** A `compilerOptions` value of a tsconfig, following `extends` (later entries win). */
+function tsconfigOption(tsconfig: string, name: string, seen: Set<string>): unknown {
+  if (seen.has(tsconfig)) {
+    return undefined;
+  }
+  seen.add(tsconfig);
+  let config: unknown;
+  try {
+    config = parseJsonc(fs.readFileSync(tsconfig, 'utf8'));
+  } catch {
+    return undefined;
+  }
+  if (!isPlainRecord(config)) {
+    return undefined;
+  }
+  if (isPlainRecord(config.compilerOptions) && config.compilerOptions[name] !== undefined) {
+    return config.compilerOptions[name];
+  }
+  const parents = Array.isArray(config.extends) ? config.extends : [config.extends];
+  for (const parent of parents.toReversed()) {
+    if (typeof parent !== 'string') {
+      continue;
+    }
+    const resolved = resolveTsconfig(tsconfig, parent);
+    const value = resolved === undefined ? undefined : tsconfigOption(resolved, name, seen);
+    if (value !== undefined) {
+      return value;
+    }
+  }
+  return undefined;
+}
+
+function resolveTsconfig(from: string, specifier: string): string | undefined {
+  if (specifier.startsWith('.') || path.isAbsolute(specifier)) {
+    const file = path.resolve(path.dirname(from), specifier);
+    return [file, `${file}.json`].find((candidate) => fs.existsSync(candidate));
+  }
+  const require = createRequire(from);
+  for (const candidate of [specifier, `${specifier}/tsconfig.json`]) {
+    try {
+      return require.resolve(candidate);
+    } catch {}
+  }
+  return undefined;
 }
 
 /**
@@ -480,6 +557,10 @@ function runKeepReason(
         : [script];
     if (files.length > MAX_GLOB_FILES) {
       return `\`${script}\` matches more than ${MAX_GLOB_FILES} files, too many for vp migrate to check`;
+    }
+    // The files can come from an earlier command, as for a missing entry.
+    if (!files.length) {
+      return `\`${script}\` matches no files yet, so vp migrate cannot check them`;
     }
     for (const file of files) {
       const reason = scriptKeepReason(cwd, file);
@@ -813,14 +894,7 @@ function findTsxUse(dir: string): string | undefined {
       if (LOCKFILES.has(path.basename(file))) {
         return false;
       }
-      const extension = path.extname(file);
-      const uses =
-        TSX_SHEBANG.test(content) ||
-        (extension === '.json' || extension === '.jsonc'
-          ? jsonUsesTsx(parseJsonc(content))
-          : (CODE_EXTENSIONS.has(extension) ? TSX_CODE_REFERENCE : TSX_TEXT_REFERENCE).test(
-              content,
-            ));
+      const uses = fileUsesTsx(content, path.extname(file));
       if (uses) {
         found = `${displayRelative(file)} still uses tsx`;
       }
@@ -845,6 +919,21 @@ function findTsxUse(dir: string): string | undefined {
     },
   );
   return found;
+}
+
+/** Whether a file with `extension` runs, imports, or loads tsx. */
+function fileUsesTsx(content: string, extension: string): boolean {
+  if (TSX_SHEBANG.test(content)) {
+    return true;
+  }
+  if (extension === '.json' || extension === '.jsonc') {
+    return jsonUsesTsx(parseJsonc(content));
+  }
+  if (CODE_EXTENSIONS.has(extension)) {
+    return TSX_CODE_REFERENCE.test(content);
+  }
+  // An extensionless file can be JavaScript, such as an executable, as well as shell.
+  return TSX_TEXT_REFERENCE.test(content) || (extension === '' && TSX_CODE_REFERENCE.test(content));
 }
 
 /**

@@ -10,6 +10,7 @@ You'll need the following tools installed on your system:
 - CMake
 - Rust and Cargo
 - cargo-binstall
+- [mbx](#shared-rust-build-cache) for shared Rust build artifacts
 
 If you haven't installed Node.js and pnpm, we recommend using Vite+ to manage them. See [environment management](https://viteplus.dev/guide/env) for details.
 
@@ -36,7 +37,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 cargo install cargo-binstall
 ```
 
-Initial setup to install dependencies for Vite+:
+Set up [mbx](#shared-rust-build-cache), then install dependencies for Vite+:
 
 ```bash
 just init
@@ -50,6 +51,8 @@ If you use [Nix](https://nixos.org/) with flakes enabled, you can use the dev sh
 nix develop
 just init
 ```
+
+The dev shell includes mbx and routes Cargo through it. Skip the Cargo installation and `mbx setup` steps below.
 
 Known limitation: on NixOS, the browser-mode cases of `just snapshot-test` do not run because the Chromium binary downloaded by `playwright install` cannot start without its system libraries. These cases are covered by CI; every other check works in the dev shell.
 
@@ -77,13 +80,45 @@ Install Rust & Cargo from [rustup.rs](https://rustup.rs/), then install `cargo-b
 cargo install cargo-binstall
 ```
 
-Initial setup to install dependencies for Vite+:
+Set up [mbx](#shared-rust-build-cache), then install dependencies for Vite+:
 
 ```powershell
 just init
 ```
 
 **Note:** Run commands in PowerShell or Windows Terminal. Some commands may require elevated permissions.
+
+### Shared Rust build cache
+
+The contributor setup uses [mbx](https://mr-boxington.jdx.dev/) to reuse Rust build artifacts across checkouts and worktrees. Install the pinned version with Cargo and set up its Cargo shim once per machine:
+
+```sh
+cargo install mbx --locked --version 1.26.0
+mbx setup
+```
+
+Apply the `PATH` change printed by `mbx setup`, and save it in your shell profile or user `PATH`. The shim directory must come before the Rust toolchain's Cargo directory. This makes ordinary Cargo commands use mbx, including calls from Just, pnpm, and native binding builds. The setup also configures rust-analyzer's user-level check command when no check settings exist. Restart terminals and editors after changing `PATH`.
+
+Check that `command -v cargo` on macOS/Linux, or `(Get-Command cargo).Path` in PowerShell, points to the shim. Then check the installation:
+
+```bash
+mbx setup --status
+mbx doctor
+```
+
+If you use `sccache`, remove its local Rust wrapper configuration before using mbx; see the [migration instructions](https://mr-boxington.jdx.dev/cookbook/migrate#from-sccache). The Nix shell clears inherited `RUSTC_WRAPPER` and `CARGO_BUILD_RUSTC_WRAPPER` values automatically. Keep the existing CI cache configuration unchanged.
+
+Run the build commands below normally, including in new worktrees. Each worktree keeps a separate managed target directory; mbx shares cached artifacts between them. Do not point multiple worktrees at one `CARGO_TARGET_DIR`. The Rust toolchain stays pinned by [`rust-toolchain.toml`](rust-toolchain.toml).
+
+To set a shared cache budget, for example `30GiB`, run:
+
+```sh
+mbx settings set gc.max_total_size 30GiB
+```
+
+This user-level setting is a garbage-collection target based on logical size, not a hard limit on physical disk use. `MBX_GC_MAX_TOTAL_SIZE` can override it for a command. Use `mbx stats` to inspect reuse and `mbx gc --dry-run` to preview collection. The first build normally moves an existing `target` directory under mbx management and preserves its contents; [`mbx adopt --dry-run`](https://mr-boxington.jdx.dev/cli/adopt) previews adoption.
+
+To bypass mbx for troubleshooting, set `MBX_DISABLE=1` for the command. See the [upstream setup guide](https://mr-boxington.jdx.dev/setup) for editor configuration and removal.
 
 ## Build Vite+ and upstream dependencies
 

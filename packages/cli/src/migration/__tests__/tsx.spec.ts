@@ -107,6 +107,10 @@ describe('rewriteTsxCommand', () => {
     ['TSX_TSCONFIG_PATH=cli.json; tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
     ['set "TSX_TSCONFIG_PATH=cli.json" && tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
     ['NODE_OPTIONS=--import=tsx tsx ./a.ts', 'NODE_OPTIONS'],
+    // Windows reads environment variable names in any case.
+    ['cross-env node_options=--import=tsx tsx ./a.ts', 'NODE_OPTIONS'],
+    // Windows also finds the tsx bin as `TSX`.
+    ['TSX ./a.ts', 'does not rewrite this use of tsx'],
     ['export TSX_TSCONFIG_PATH=cli.json && tsx ./a.ts', 'shell syntax'],
     ['tsx watch --test ./a.test.ts', '`vpx --watch` does not run `--test`'],
     ['tsx --watch --test ./a.test.ts', '`vpx --watch` does not run `--test`'],
@@ -239,6 +243,14 @@ describe('rewriteTsxCommand', () => {
         '{ "compilerOptions": { "experimentalDecorators": true } }\n',
       );
       fs.writeFileSync(path.join(dir, 'legacy/decorated.ts'), decorated);
+      fs.writeFileSync(path.join(dir, 'standard.json'), '{}\n');
+      fs.writeFileSync(
+        path.join(dir, 'inline-decorator.ts'),
+        'class Job { @logged run() {} }\nfunction logged() {}\n',
+      );
+      fs.writeFileSync(path.join(dir, 'inline-accessor.ts'), 'class Job { accessor count = 0 }\n');
+      // An env file that loads tsx, which would compete with vpx.
+      fs.writeFileSync(path.join(dir, '.env.tsx'), 'NODE_OPTIONS="--import=tsx"\n');
     });
 
     afterEach(() => {
@@ -271,6 +283,19 @@ describe('rewriteTsxCommand', () => {
       ['tsx alias.cts', 'requires `@app/job`, which Node.js cannot resolve'],
       ['tsx template-require.cts', 'requires `./helper.js`, which only tsx resolves'],
       ['tsx decorated.ts', '`decorated.ts` uses standard decorators'],
+      // `--tsconfig` replaces the nearest tsconfig, which enables legacy decorators.
+      [
+        'tsx --tsconfig standard.json legacy/decorated.ts',
+        '`legacy/decorated.ts` uses standard decorators',
+      ],
+      ['tsx inline-decorator.ts', '`inline-decorator.ts` uses standard decorators'],
+      ['tsx inline-accessor.ts', '`inline-accessor.ts` declares an `accessor` field'],
+      [
+        'node --require tsx/cjs --require ./require-js.cts ./builtin.cts',
+        '`./require-js.cts` requires `./helper.js`',
+      ],
+      ['tsx --env-file=.env.tsx plain.ts', '`.env.tsx`: `NODE_OPTIONS` loads tsx'],
+      ['chdir tools && tsx only.ts', '`only.ts` mixes import or export with CommonJS globals'],
       ['tsx accessor.ts', '`accessor.ts` declares an `accessor` field'],
       ['generate && tsx --test generated/*.test.ts', '`generated/*.test.ts` matches no files yet'],
       ['generate && tsx generated.ts', '`generated.ts` does not exist yet'],
@@ -298,6 +323,7 @@ describe('rewriteTsxCommand', () => {
       ['tsx builtin.cts', 'vpx builtin.cts'],
       ['tsx node-module.ts', 'vpx node-module.ts'],
       ['tsx legacy/decorated.ts', 'vpx legacy/decorated.ts'],
+      ['tsx --tsconfig base.json decorated.ts', 'vpx --tsconfig base.json decorated.ts'],
       ['tsx import-equals.cts', 'vpx import-equals.cts'],
       ['tsx importer.ts', 'vpx importer.ts'],
       ['tsx --test plain.ts', 'vpx --test plain.ts'],
@@ -523,6 +549,12 @@ describe('migrateTsxToVpx', () => {
       'tasks.config.ts',
       "export default { command: 'tsx', args: ['job.ts'] };\n",
       'tasks.config.ts still uses tsx',
+    ],
+    [
+      'a tool config that names tsx through a variable',
+      'tasks.config.mjs',
+      "const command = 'tsx';\nexport default { command, args: ['job.ts'] };\n",
+      'tasks.config.mjs still uses tsx',
     ],
     [
       'a shell pipe into tsx',

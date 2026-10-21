@@ -27,6 +27,9 @@ describe('rewriteTsxCommand', () => {
     ['tsx --env-file=.env --inspect ./a.ts', 'vpx --env-file=.env --inspect ./a.ts'],
     ['tsx --env-file .env ./a.ts arg', 'vpx --env-file .env ./a.ts arg'],
     ['tsx --test ./a.test.ts', 'vpx --test ./a.test.ts'],
+    // tsx loading itself again is redundant, and would compete with vpx.
+    ['tsx --import tsx ./a.ts', 'vpx ./a.ts'],
+    ['tsx -r tsx/cjs --import ./setup.ts ./a.cts', 'vpx --import ./setup.ts ./a.cts'],
     ["tsx 'my script.ts'", "vpx 'my script.ts'"],
     ['npx tsx ./a.ts', 'vpx ./a.ts'],
     ['pnpm exec tsx ./a.ts', 'vpx ./a.ts'],
@@ -406,6 +409,24 @@ describe('migrateTsxToVpx', () => {
       'src/lazy.ts',
       'const { tsImport } = await import(`tsx/esm/api`);\n',
       'src/lazy.ts still uses tsx',
+    ],
+    [
+      'a resolved tsx subpath',
+      'src/register.ts',
+      "const loader = import.meta.resolve('tsx/esm');\n",
+      'src/register.ts still uses tsx',
+    ],
+    [
+      'a Mocha YAML config',
+      '.mocharc.yml',
+      'node-option:\n  - import=tsx\n',
+      '.mocharc.yml still uses tsx',
+    ],
+    [
+      'a Mocha JavaScript config',
+      '.mocharc.cjs',
+      "module.exports = { 'node-option': ['import=tsx'] };\n",
+      '.mocharc.cjs still uses tsx',
     ],
     [
       'a CI workflow',

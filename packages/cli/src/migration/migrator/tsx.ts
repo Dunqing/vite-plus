@@ -85,16 +85,18 @@ const TSX_ENV_SHEBANG = /^(#!\s*\S*\benv\s+(?:-S\s+)?)(tsx(?=[ \t\r\n]|$)[^\r\n]
 const SHEBANG_ENTRY = './shebang.ts';
 // Any first line that runs tsx, including `#!/usr/local/bin/tsx`.
 const TSX_SHEBANG = /^#![^\n]*[\s/]tsx(?=\s|$)/;
-// tsx loaded into Node.js by a flag, as in `--import=tsx` or `-r tsx/cjs`.
+// tsx loaded into Node.js by a flag, as in `--import=tsx` or `-r tsx/cjs`, or by Mocha's
+// dashless `node-option` value `import=tsx`.
 const TSX_LOADER_FLAG =
-  /(?:--import|--loader|--experimental-loader|--require|-r)[= \t]+['"]?tsx(?:\/(?:esm|cjs))?(?![\w./-])/;
+  /(?:(?:--import|--loader|--experimental-loader|--require|-r)[= \t]+|(?<![\w-])(?:import|loader|experimental-loader|require)=)['"]?tsx(?:\/(?:esm|cjs))?(?![\w./-])/;
 // In code: an import of tsx or a subpath such as `tsx/esm/api`, a string that starts a
 // tsx command, tsx as the program of a process call or config, as in `spawn('tsx')`,
 // `Bun.spawn(['tsx', ...])`, or `{ command: 'tsx' }`, or a loader flag, as in
 // `nodeArguments: ['--import=tsx']` or `['--import', 'tsx']`.
 const TSX_CODE_REFERENCE = new RegExp(
   [
-    /(?:\bfrom|\bimport|\brequire(?:\.resolve)?)\s*\(?\s*['"`]tsx(?:\/[^'"`]*)?['"`]/.source,
+    /(?:\bfrom|\bimport|\bimport\.meta\.resolve|\brequire(?:\.resolve)?)\s*\(?\s*['"`]tsx(?:\/[^'"`]*)?['"`]/
+      .source,
     /['"`](?:npx |pnpm (?:exec )?|yarn |bunx )?tsx\s/.source,
     /\(\s*\[?\s*['"`]tsx['"`]\s*[,)\]]/.source,
     /\b(?:command|cmd|executable|program|runtimeExecutable)\s*:\s*['"`]tsx['"`]/.source,
@@ -534,6 +536,18 @@ function rewriteTsx(
       edits.push(removal(tokens, index));
       continue;
     }
+    const inline = value.includes('=');
+    if (LOADER_OPTIONS.has(name)) {
+      const loader = inline ? value.slice(value.indexOf('=') + 1) : tokens[index + 1]?.value;
+      // tsx loading itself again would compete with the hooks of `vpx`.
+      if (loader !== undefined && TSX_LOADER.test(loader)) {
+        edits.push({ ...removal(tokens, index), end: tokens[inline ? index : index + 1].end });
+      }
+      if (!inline) {
+        index++;
+      }
+      continue;
+    }
     const keep = KEEP_OPTIONS.get(name);
     if (keep) {
       rewrite.kept.push(keep);
@@ -542,7 +556,7 @@ function rewriteTsx(
     test ||= name === '--test';
     nodeWatch ||= name === '--watch';
     if (
-      !value.includes('=') &&
+      !inline &&
       (NODE_OPTIONS_WITH_VALUE.has(name) ||
         WATCH_OPTIONS_WITH_VALUE.has(name) ||
         name === '--tsconfig')

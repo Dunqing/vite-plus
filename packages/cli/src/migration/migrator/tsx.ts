@@ -30,8 +30,10 @@ import {
 } from './shared.ts';
 
 // tsx in command position: `tsx a.ts`, `npx tsx`, `--import tsx`, `--import=tsx`,
-// `-r tsx/cjs`, or inside a quoted command. Not `.tsx` files or packages such as `tsx-foo`.
-const TSX_COMMAND = /(?:^|[\s;&|("'=/`])tsx(?:\/(?:esm|cjs))?(?=$|[\s;&|)"'`])/;
+// `-r tsx/cjs`, `node_modules\.bin\tsx.cmd`, or inside a quoted command. Not `.tsx`
+// files or packages such as `tsx-foo`.
+const TSX_COMMAND =
+  /(?:^|[\s;&|("'=/\\`])tsx(?:\.(?:cmd|exe|ps1))?(?:\/(?:esm|cjs))?(?=$|[\s;&|)"'`])/;
 
 // Node.js options that load tsx's hooks, as in `node --import tsx ./a.ts`.
 const LOADER_OPTIONS = new Set([
@@ -98,7 +100,7 @@ const TSX_CODE_REFERENCE = new RegExp(
 // without arguments, or a loader flag.
 const TSX_TEXT_REFERENCE = new RegExp(
   [
-    /(?:^|[\s;&|("'=/`])tsx(?:\/(?:esm|cjs))?(?:[ \t]+\S|[ \t]*$)/.source,
+    /(?:^|[\s;&|("'=/\\`])tsx(?:\.(?:cmd|exe|ps1))?(?:\/(?:esm|cjs))?(?:[ \t]+\S|[ \t]*$)/.source,
     TSX_LOADER_FLAG.source,
   ].join('|'),
   'm',
@@ -217,16 +219,29 @@ export function rewriteTsxCommand(command: string, cwd?: string | null): TsxComm
     return { command, kept: [] };
   }
   const segments = parseLiteralCommands(command, true);
-  if (!segments) {
+  // The parser rejects `$VAR`; cmd.exe expands `%VAR%` too.
+  if (!segments || /%\w+%/.test(command)) {
     return { command, kept: [KEEP_SHELL] };
   }
   const rewrite: Rewrite = { command, cwd, edits: [], kept: [] };
+  let changedDirectory = false;
+  let end = 0;
   for (const tokens of segments) {
+    // After `||`, a command runs because an earlier one failed, maybe a `cd`.
+    if (
+      changedDirectory &&
+      command.slice(end, tokens[0].start).includes('||') &&
+      rewrite.cwd !== undefined
+    ) {
+      rewrite.cwd = null;
+    }
+    end = tokens[tokens.length - 1].end;
     const [name, ...args] = tokens.map(({ value }) => value);
     if (SHELL_STATE_COMMANDS.includes(name)) {
       // Follow `cd <dir>`; after another directory change, scripts cannot be found.
       if (name === 'cd' && args.length === 1 && !/^[-~]/.test(args[0])) {
         rewrite.cwd &&= path.resolve(rewrite.cwd, args[0]);
+        changedDirectory = true;
       } else if (!['export', 'set', 'unset'].includes(name) && rewrite.cwd !== undefined) {
         rewrite.cwd = null;
       }

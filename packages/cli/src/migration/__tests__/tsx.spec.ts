@@ -80,6 +80,8 @@ describe('rewriteTsxCommand', () => {
     ['tsx --watch_path=src ./a.ts', '--watch-path'],
     ['tsx ./a.ts | tee log', 'shell syntax'],
     ['tsx $ENTRY', 'shell syntax'],
+    ['tsx %ENTRY%.ts', 'shell syntax'],
+    ['.\\node_modules\\.bin\\tsx.cmd scripts/a.ts', 'shell syntax'],
     ['node --import tsx', 'REPL'],
     ['node --import tsx -e 1', '--eval or --print'],
     ['node --import tsx --watch-path src ./a.ts', '--watch-path'],
@@ -185,6 +187,8 @@ describe('rewriteTsxCommand', () => {
       ['tsx compact.ts', '`compact.ts` mixes import or export with CommonJS globals'],
       ['tsx require-js.cts', 'requires `./helper.js`, which only tsx resolves to `./helper.ts`'],
       ['pushd tools && tsx plain.ts', 'changes the directory'],
+      // The fallback runs in the package directory, or after a later `cd`.
+      ['cd tools || tsx plain.ts', 'changes the directory'],
     ])('keeps %s', (command, reason) => {
       expect(rewriteTsxCommand(command, dir)).toEqual({
         command,
@@ -342,6 +346,12 @@ describe('migrateTsxToVpx', () => {
       'scripts/run.sh',
       'cat job.ts | tsx\n',
       'scripts/run.sh still uses tsx',
+    ],
+    [
+      'a Windows batch file',
+      'scripts/run.cmd',
+      '@node_modules\\.bin\\tsx.cmd scripts\\a.ts\r\n',
+      'scripts/run.cmd still uses tsx',
     ],
     [
       'a JSON tool config',

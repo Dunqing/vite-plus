@@ -380,13 +380,30 @@ function looksLikeConstructorMock(editor: SourceEditor, node: t.CallExpression):
   return false;
 }
 
+function unwrapTypeExpression(node: t.Node): t.Node {
+  while (
+    node.type === 'TSAsExpression' ||
+    node.type === 'TSSatisfiesExpression' ||
+    node.type === 'TSNonNullExpression' ||
+    node.type === 'TSTypeAssertion'
+  ) {
+    node = node.expression;
+  }
+  return node;
+}
+
 /** Recognize a local promise consumed by a later statement without crossing
  * control flow or function boundaries. Ambiguous paths still need review. */
 function isAssertionBindingHandled(editor: SourceEditor, node: t.CallExpression): boolean {
-  const declarator = editor.parent(node);
+  let initializer: t.Node = node;
+  let declarator = editor.parent(initializer);
+  while (declarator && unwrapTypeExpression(declarator) === node) {
+    initializer = declarator;
+    declarator = editor.parent(initializer);
+  }
   if (
     declarator?.type !== 'VariableDeclarator' ||
-    declarator.init !== node ||
+    declarator.init !== initializer ||
     declarator.id.type !== 'Identifier'
   ) {
     return false;
@@ -405,14 +422,30 @@ function isAssertionBindingHandled(editor: SourceEditor, node: t.CallExpression)
   ) {
     return false;
   }
+  // A catch can swallow an error before the consumer, and a finally can replace
+  // a returned promise. Keep these paths for review rather than assuming calls
+  // and initializers between the declaration and consumer cannot throw.
+  for (
+    let ancestor = editor.parent(block);
+    ancestor && ancestor !== fn;
+    ancestor = editor.parent(ancestor)
+  ) {
+    if (ancestor.type === 'TryStatement') {
+      return false;
+    }
+  }
   for (const statement of block.body.slice(block.body.indexOf(declaration) + 1)) {
-    const expression =
+    const value =
       statement.type === 'ReturnStatement'
         ? statement.argument
         : statement.type === 'ExpressionStatement'
           ? statement.expression
           : undefined;
-    if (expression?.type === 'AwaitExpression' && editor.binding(expression.argument) === binding) {
+    const expression = value && unwrapTypeExpression(value);
+    if (
+      expression?.type === 'AwaitExpression' &&
+      editor.binding(unwrapTypeExpression(expression.argument)) === binding
+    ) {
       return true;
     }
     if (
@@ -420,19 +453,9 @@ function isAssertionBindingHandled(editor: SourceEditor, node: t.CallExpression)
       expression &&
       editor.binding(expression) === binding
     ) {
-      // A finally block can replace the return before the caller receives the promise.
-      for (
-        let ancestor = editor.parent(block);
-        ancestor && ancestor !== fn;
-        ancestor = editor.parent(ancestor)
-      ) {
-        if (ancestor.type === 'TryStatement' && ancestor.finalizer) {
-          return false;
-        }
-      }
       return true;
     }
-    // These statements cannot return, break, or conditionally skip the consumer.
+    // These statements have no explicit return, break, or conditional exit.
     // Keep intervening branches, loops, and try blocks for manual review.
     if (
       statement.type !== 'ExpressionStatement' &&

@@ -1925,6 +1925,36 @@ it('nested', async () => {
   });
 
   it.each([
+    ['ASSERTION as Promise<void>', 'await assertion;'],
+    ['ASSERTION satisfies Promise<void>', 'return assertion;'],
+    ['ASSERTION!', 'return await assertion;'],
+    ['<Promise<void>>ASSERTION', 'await assertion;'],
+    ['(ASSERTION as Promise<void>)!', 'await (assertion as Promise<void>);'],
+    ['ASSERTION', 'return assertion satisfies Promise<void>;'],
+    ['ASSERTION', 'await assertion!;'],
+    ['ASSERTION', 'return <Promise<void>>assertion;'],
+    ['ASSERTION', 'return (await assertion) as void;'],
+  ])('recognizes transparent wrappers in %s and %s', (initializer, consume) => {
+    const input = `import { expect, it } from 'vite-plus/test';
+it('wrapped assertion', async () => {
+  const assertion = ${initializer.replace('ASSERTION', 'expect(Promise.resolve(1)).resolves.toBe(1)')};
+  ${consume}
+});`;
+    expect(source(input)).toEqual({ content: input, findings: [] });
+  });
+
+  it('does not cross a function boundary when checking enclosing try blocks', () => {
+    const input = `import { expect, it } from 'vite-plus/test';
+try {
+  it('assertion', async () => {
+    const assertion = expect(Promise.resolve(1)).resolves.toBe(1);
+    await assertion;
+  });
+} catch {}`;
+    expect(source(input)).toEqual({ content: input, findings: [] });
+  });
+
+  it.each([
     ['unused', 'const assertion = ASSERTION;'],
     ['mutable binding', 'let assertion = ASSERTION; await assertion;'],
     ['reassigned binding', 'let assertion = ASSERTION; assertion = other; await assertion;'],
@@ -1941,6 +1971,34 @@ it('nested', async () => {
     ],
     ['throw', 'const assertion = ASSERTION; throw new Error(); await assertion;'],
     ['try block', 'const assertion = ASSERTION; try { await assertion; } catch {}'],
+    [
+      'caught call error',
+      'try { const assertion = ASSERTION; mayThrow(); await assertion; } catch {}',
+    ],
+    [
+      'caught initializer error',
+      'try { const assertion = ASSERTION; const value = mayThrow(); return assertion; } catch {}',
+    ],
+    [
+      'caught error in the same declaration',
+      'try { const assertion = ASSERTION, value = mayThrow(); await assertion; } catch {}',
+    ],
+    [
+      'caught rejection',
+      'try { const assertion = ASSERTION; await mayReject(); await assertion; } catch {}',
+    ],
+    [
+      'nested try block',
+      'try { try { const assertion = ASSERTION; mayThrow(); await assertion; } finally {} } catch {}',
+    ],
+    [
+      'wrapped conditional await',
+      'const assertion = ASSERTION as Promise<void>; if (enabled) await assertion!;',
+    ],
+    [
+      'wrapped different binding',
+      'const assertion = ASSERTION as Promise<void>; const other = Promise.resolve(); await other!;',
+    ],
     [
       'overridden return',
       'try { const assertion = ASSERTION; return assertion; } finally { return; }',

@@ -9,9 +9,9 @@ it('\''awaits an assertion'\'', async () => {
   await assertion;
 });
 it('\''returns an assertion'\'', () => {
-  const assertion = expect(Promise.resolve(2)).resolves.toBe(2);
+  const assertion = (expect(Promise.resolve(2)).resolves.toBe(2) as Promise<void>) satisfies Promise<void>;
   expectTypeOf(assertion).toEqualTypeOf<Promise<void>>();
-  return assertion;
+  return assertion'\!';
 });
 '`
 
@@ -36,9 +36,9 @@ it('awaits an assertion', async () => {
   await assertion;
 });
 it('returns an assertion', () => {
-  const assertion = expect(Promise.resolve(2)).resolves.toBe(2);
+  const assertion = (expect(Promise.resolve(2)).resolves.toBe(2) as Promise<void>) satisfies Promise<void>;
   expectTypeOf(assertion).toEqualTypeOf<Promise<void>>();
-  return assertion;
+  return assertion!;
 });
 ```
 

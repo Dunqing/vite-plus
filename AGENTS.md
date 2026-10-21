@@ -57,3 +57,11 @@ Write new CLI tests, including interactive flows, in `crates/vp_cli_snapshots/te
 ## Pull Requests
 
 Prefer a stack of small PRs for work with separable layers. Use the `gh-stack` extension or github.com; stacks require branches in this repository, so use standalone PRs from forks. Follow [CONTRIBUTING.md](CONTRIBUTING.md#submitting-pull-requests) for submission and commit-signing requirements.
+
+## Cursor Cloud specific instructions
+
+The Cloud Agent install checks out `rolldown`, `vite`, and `oxc-node` at the hashes in `packages/tools/.upstream-versions.json`, then runs `node packages/tools/src/patch-oxc-node.ts` and `node packages/tools/src/vendored-vitest.ts` before `pnpm install --frozen-lockfile` and `pnpm -C docs install --frozen-lockfile`. Rust comes from `rust-toolchain.toml` (nightly, with `rust-src`, `clippy`, and `rustfmt`). `just`, `cargo-binstall`, `watchexec`, `cargo-insta`, `typos`, `cargo-shear`, `dprint`, and `taplo` are on `PATH`.
+
+`just init` also runs `sync-remote`, which rewrites `pnpm-workspace.yaml` from the upstream catalogs and can edit `Cargo.toml`. Run `just init` when intentionally refreshing those pins.
+
+`cargo build -p vp_global_cli` writes `target/debug/vp`. JavaScript commands such as `vp dev`, `vp test`, and `vp check` need `pnpm -F vite-plus build`, which compiles the native binding against Rolldown. `just test` runs the Rust crate tests. `pnpm test:unit` is `vp test` and needs that JavaScript build. The image Node satisfies `engines.node` (`>=22.18.0`). `.node-version` pins `22.18.0` for project runtimes.

@@ -90,10 +90,10 @@ just init
 
 ### Shared Rust build cache
 
-The contributor setup uses [mbx](https://mr-boxington.jdx.dev/) to reuse Rust build artifacts across checkouts and worktrees. Install the pinned version with Cargo and set up its Cargo shim once per machine:
+The contributor setup uses [mbx](https://mr-boxington.jdx.dev/) to reuse Rust build artifacts across checkouts and worktrees. Install it with Cargo and set up its Cargo shim once per machine:
 
 ```sh
-cargo install mbx --locked --version 1.26.0
+cargo install mbx --locked
 mbx setup
 ```
 
@@ -110,13 +110,9 @@ If you use `sccache`, remove its local Rust wrapper configuration before using m
 
 Run the build commands below normally, including in new worktrees. Each worktree keeps a separate managed target directory; mbx shares cached artifacts between them. Do not point multiple worktrees at one `CARGO_TARGET_DIR`. The Rust toolchain stays pinned by [`rust-toolchain.toml`](rust-toolchain.toml).
 
-To set a shared cache budget, for example `30GiB`, run:
+Start with mbx's [disk-scaled defaults](https://mr-boxington.jdx.dev/managed-targets#budgets-scale-with-the-disk); this repository does not prescribe a fixed cache size. Use `mbx stats` to inspect reuse and `mbx gc --dry-run` to preview collection. If you need a fixed budget across your projects, configure [`gc.max_total_size`](https://mr-boxington.jdx.dev/configuration#single-cache-budget) for your available disk space and workload. This user-level setting uses logical size and is not a hard limit on physical disk use; `MBX_GC_MAX_TOTAL_SIZE` can override it for a command.
 
-```sh
-mbx settings set gc.max_total_size 30GiB
-```
-
-This user-level setting is a garbage-collection target based on logical size, not a hard limit on physical disk use. `MBX_GC_MAX_TOTAL_SIZE` can override it for a command. Use `mbx stats` to inspect reuse and `mbx gc --dry-run` to preview collection. The first build normally moves an existing `target` directory under mbx management and preserves its contents; [`mbx adopt --dry-run`](https://mr-boxington.jdx.dev/cli/adopt) previews adoption.
+The first build normally moves an existing `target` directory under mbx management and preserves its contents; [`mbx adopt --dry-run`](https://mr-boxington.jdx.dev/cli/adopt) previews adoption.
 
 To bypass mbx for troubleshooting, set `MBX_DISABLE=1` for the command. See the [upstream setup guide](https://mr-boxington.jdx.dev/setup) for editor configuration and removal.
 

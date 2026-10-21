@@ -3,7 +3,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     rust-overlay.url = "github:oxalica/rust-overlay";
     rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
-    mr-boxington.url = "github:jdx/mr-boxington/v1.26.0";
+    mr-boxington.url = "github:jdx/mr-boxington";
     mr-boxington.inputs.nixpkgs.follows = "nixpkgs";
   };
 

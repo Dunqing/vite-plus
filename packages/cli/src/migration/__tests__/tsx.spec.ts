@@ -45,6 +45,10 @@ describe('rewriteTsxCommand', () => {
       'concurrently "tsx watch src/api.ts" "vp dev"',
       'concurrently "vpx --watch src/api.ts" "vp dev"',
     ],
+    [
+      'concurrently --names "api,web" "tsx watch src/api.ts" "vp dev"',
+      'concurrently --names "api,web" "vpx --watch src/api.ts" "vp dev"',
+    ],
     ["nodemon --exec 'tsx src/a.ts'", "nodemon --exec 'vpx src/a.ts'"],
     ["sh -c 'tsx src/a.ts && vp build'", "sh -c 'vpx src/a.ts && vp build'"],
     ["bash -lc 'tsx src/a.ts'", "bash -lc 'vpx src/a.ts'"],
@@ -89,6 +93,8 @@ describe('rewriteTsxCommand', () => {
     ['pnpm dlx tsx ./a.ts', 'does not rewrite this use of tsx'],
     // A quoted argument of a program that does not run commands is data.
     ['echo "tsx scripts/build.ts"', 'does not rewrite this use of tsx'],
+    // So is the value of a concurrently option such as `--names`.
+    ['concurrently --names "tsx a.ts" "vp dev"', 'does not rewrite this use of tsx'],
     // Only the value of `-c` is a command; the next argument is the shell's `$0`.
     [`sh -c 'echo "$0"' 'tsx a.ts'`, 'does not rewrite this use of tsx'],
     ['TSX_TSCONFIG_PATH=cli.json tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
@@ -203,6 +209,14 @@ describe('rewriteTsxCommand', () => {
       // tsx maps `@app/job` through tsconfig `paths`; Node.js does not.
       fs.writeFileSync(path.join(dir, 'alias.cts'), "const job = require('@app/job');\n");
       fs.writeFileSync(path.join(dir, 'builtin.cts'), "const fs = require('node:fs');\n");
+      fs.writeFileSync(
+        path.join(dir, 'module-filename.ts'),
+        "import fs from 'node:fs';\nconsole.log(module.filename);\n",
+      );
+      fs.writeFileSync(
+        path.join(dir, 'node-module.ts'),
+        "import module from 'node:module';\nconst require = module.createRequire(import.meta.url);\nrequire('node:fs');\n",
+      );
     });
 
     afterEach(() => {
@@ -228,6 +242,10 @@ describe('rewriteTsxCommand', () => {
       ['tsx bracket.ts', '`bracket.ts` mixes import or export with CommonJS globals'],
       ['tsx banner.ts', '`banner.ts` mixes import or export with CommonJS globals'],
       ['tsx cli-guard.ts', '`cli-guard.ts` mixes import or export with CommonJS globals'],
+      [
+        'tsx module-filename.ts',
+        '`module-filename.ts` mixes import or export with CommonJS globals',
+      ],
       ['tsx alias.cts', 'requires `@app/job`, which Node.js cannot resolve'],
       ['generate && tsx generated.ts', '`generated.ts` does not exist yet'],
       ['tsx inner.ts', '`inner.ts` mixes import or export with CommonJS globals'],
@@ -252,6 +270,7 @@ describe('rewriteTsxCommand', () => {
       ['tsx esm-idioms.ts', 'vpx esm-idioms.ts'],
       ['tsx require-bare.cts', 'vpx require-bare.cts'],
       ['tsx builtin.cts', 'vpx builtin.cts'],
+      ['tsx node-module.ts', 'vpx node-module.ts'],
       ['tsx import-equals.cts', 'vpx import-equals.cts'],
       ['tsx importer.ts', 'vpx importer.ts'],
       ['tsx --test plain.ts', 'vpx --test plain.ts'],
@@ -381,6 +400,12 @@ describe('migrateTsxToVpx', () => {
       'src/load.ts',
       "import { tsImport } from 'tsx/esm/api';\n",
       'src/load.ts still uses tsx',
+    ],
+    [
+      'a template-literal import of the tsx API',
+      'src/lazy.ts',
+      'const { tsImport } = await import(`tsx/esm/api`);\n',
+      'src/lazy.ts still uses tsx',
     ],
     [
       'a CI workflow',

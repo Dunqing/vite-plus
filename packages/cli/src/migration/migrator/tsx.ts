@@ -94,7 +94,7 @@ const TSX_LOADER_FLAG =
 // `nodeArguments: ['--import=tsx']` or `['--import', 'tsx']`.
 const TSX_CODE_REFERENCE = new RegExp(
   [
-    /(?:\bfrom|\bimport|\brequire(?:\.resolve)?)\s*\(?\s*['"]tsx(?:\/[^'"]*)?['"]/.source,
+    /(?:\bfrom|\bimport|\brequire(?:\.resolve)?)\s*\(?\s*['"`]tsx(?:\/[^'"`]*)?['"`]/.source,
     /['"`](?:npx |pnpm (?:exec )?|yarn |bunx )?tsx\s/.source,
     /\(\s*\[?\s*['"`]tsx['"`]\s*[,)\]]/.source,
     /\b(?:command|cmd|executable|program|runtimeExecutable)\s*:\s*['"`]tsx['"`]/.source,
@@ -172,7 +172,8 @@ const COMMONJS_GLOBALS = [
   ['require', /(?<![.\w$])require\s*(?:\(|\.\s*[\w$])/],
   // `exports.x`, `exports['x']`, `Object.assign(exports, ...)`; not `pkg.exports` or a key.
   ['exports', /(?<![.\w$'"`])exports(?![\w$'"`]|\s*:)/],
-  ['module', /(?<![.\w$])module\s*(?:\.\s*exports\b|\[\s*['"]exports['"]\s*\])/],
+  // `module.exports`, `module.filename`, `module['exports']`.
+  ['module', /(?<![.\w$])module\s*(?:\.\s*[\w$]|\[)/],
 ] as const;
 // A relative `require()` of a JavaScript path, which tsx also resolves to TypeScript.
 const RELATIVE_REQUIRE = /(?<![.\w$])require\s*\(\s*['"](\.{1,2}\/[^'"]+?)\.(js|cjs|mjs|jsx)['"]/g;
@@ -187,13 +188,33 @@ const TYPESCRIPT_EXTENSIONS: Record<string, readonly string[]> = {
   jsx: ['tsx'],
 };
 // Programs that run commands given as quoted arguments, and which arguments those are,
-// judged by the argument before: every one for `concurrently "tsx watch a.ts" "vp dev"`,
-// only the value of `-c` for a shell. Elsewhere, a quoted string is data, as for `echo`.
+// judged by the argument before: every one for `concurrently "tsx watch a.ts" "vp dev"`
+// except option values such as `--names`, only the value of `-c` for a shell. Elsewhere,
+// a quoted string is data, as for `echo`.
+const CONCURRENTLY_VALUE_OPTIONS = new Set([
+  '-c',
+  '--default-input-target',
+  '-k',
+  '-l',
+  '-n',
+  '--name-separator',
+  '--names',
+  '-p',
+  '--prefix',
+  '--prefix-colors',
+  '--prefix-length',
+  '--restart-after',
+  '--restart-tries',
+  '-s',
+  '--success',
+  '-t',
+  '--timestamp-format',
+]);
 const everyArgument = () => true;
 const shellCommand = (previous: string) => /^-[a-z]*c$/.test(previous);
 const COMMAND_LAUNCHERS = new Map<string, (previous: string) => boolean>([
   ['bash', shellCommand],
-  ['concurrently', everyArgument],
+  ['concurrently', (previous) => !CONCURRENTLY_VALUE_OPTIONS.has(previous)],
   ['nodemon', (previous) => previous === '--exec' || previous === '-x'],
   ['server-test', everyArgument],
   ['sh', shellCommand],
@@ -412,16 +433,20 @@ function stripComments(source: string): string {
 }
 
 /**
- * Whether `source` uses a CommonJS global it does not declare at module level, as in
- * `const require = createRequire(import.meta.url)`. A declaration inside a function,
- * which an unindented line does not start, covers only that function, and one in a
- * comment (absent from `code`) covers nothing.
+ * Whether `source` uses a CommonJS global it does not declare or import at module level,
+ * as in `const require = createRequire(import.meta.url)` or `import module from
+ * 'node:module'`. A declaration inside a function, which an unindented line does not
+ * start, covers only that function, and one in a comment (absent from `code`) covers
+ * nothing.
  */
 function usesCommonJsGlobals(source: string, code: string): boolean {
   return COMMONJS_GLOBALS.some(
     ([name, use]) =>
       use.test(source) &&
-      !new RegExp(`^(?:export\\s+)?(?:const|let|var|function)\\s+${name}\\b`, 'm').test(code),
+      !new RegExp(
+        `^(?:(?:export\\s+)?(?:const|let|var|function|class)\\s+${name}\\b|import\\s+(?:\\*\\s+as\\s+)?${name}\\b)`,
+        'm',
+      ).test(code),
   );
 }
 

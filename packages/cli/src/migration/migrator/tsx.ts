@@ -554,7 +554,7 @@ function scanOptions(tokens: LiteralCommandToken[], index: number, tsx: boolean)
           end: tokens[inline ? index : index + 1].end,
         });
         scanned.loaders++;
-      } else if (loader?.startsWith('.')) {
+      } else if (loader !== undefined && (loader.startsWith('.') || path.isAbsolute(loader))) {
         scanned.preloads.push(loader);
       }
       if (!inline) {

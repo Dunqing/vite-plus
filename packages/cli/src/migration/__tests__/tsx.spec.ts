@@ -280,6 +280,14 @@ describe('rewriteTsxCommand', () => {
       });
     });
 
+    it('checks a preload given as an absolute path', () => {
+      const command = `tsx --require '${path.join(dir, 'esm.cts')}' ./builtin.cts`;
+      expect(rewriteTsxCommand(command, dir)).toEqual({
+        command,
+        kept: [expect.stringContaining('esm.cts` uses import or export')],
+      });
+    });
+
     it.each([
       ['tsx cjs.cts', 'vpx cjs.cts'],
       ['tsx plain.ts', 'vpx plain.ts'],

@@ -86,13 +86,13 @@ const TSX_SHEBANG = /^#![^\n]*[\s/]tsx(?=\s|$)/;
 // dashless `node-option` value `import=tsx`.
 const TSX_LOADER_FLAG =
   /(?:(?:--import|--loader|--experimental-loader|--require|-r)[= \t]+|(?<![\w-])(?:import|loader|experimental-loader|require)=)['"]?tsx(?:\/(?:esm|cjs))?(?![\w./-])/;
-// In code: an import of tsx or a subpath such as `tsx/esm/api`, a string that starts a
-// tsx command, tsx as the program of a process call, as in `spawn('tsx')` or
-// `Bun.spawn(['tsx', ...])`, or a loader flag, as in `nodeArguments: ['--import=tsx']`
-// or `['--import', 'tsx']`.
+// In code: an import of tsx or a subpath such as `tsx/esm/api`, also after a comment as in
+// `import(/* @vite-ignore */ 'tsx/esm/api')`, a string that starts a tsx command, tsx as
+// the program of a process call, as in `spawn('tsx')` or `Bun.spawn(['tsx', ...])`, or a
+// loader flag, as in `nodeArguments: ['--import=tsx']` or `['--import', 'tsx']`.
 const TSX_CODE_REFERENCE = new RegExp(
   [
-    /(?:\bfrom|\bimport|\bimport\.meta\.resolve|\brequire(?:\.resolve)?)\s*\(?\s*['"`]tsx(?:\/[^'"`]*)?['"`]/
+    /(?:\bfrom|\bimport|\bimport\.meta\.resolve|\brequire(?:\.resolve)?)\s*\(?\s*(?:\/\*[\s\S]*?\*\/\s*)*['"`]tsx(?:\/[^'"`]*)?['"`]/
       .source,
     /['"`](?:npx |pnpm (?:exec )?|yarn |bunx )?tsx\s/.source,
     /\(\s*\[?\s*['"`]tsx['"`]\s*[,)\]]/.source,
@@ -788,7 +788,7 @@ function findTsxUse(dir: string): string | undefined {
         const field = Object.entries(pkg).find(
           ([key, value]) =>
             !IGNORED_FIELDS.has(key) &&
-            jsonUsesTsx(value, key === 'scripts' || key === 'lint-staged'),
+            jsonUsesTsx(value, ['imports', 'lint-staged', 'scripts'].includes(key)),
         )?.[0];
         if (field !== undefined) {
           found = `\`${field}\` in ${displayRelative(path.join(packageDir, 'package.json'))} still uses tsx`;
@@ -819,12 +819,13 @@ function fileUsesTsx(content: string, extension: string): boolean {
 /**
  * Whether a JSON value holds a string that runs or loads tsx: a tsx command with an
  * argument, a loader flag such as `--import=tsx` or `["--import", "tsx"]`, or a subpath
- * such as `tsx/cjs`. A bare `tsx` counts only in `commands` (scripts and lint-staged
- * tasks); elsewhere it is often a file extension, as in `moduleFileExtensions`.
+ * such as `tsx/cjs`. A bare `tsx` counts only in `commands` (scripts, lint-staged tasks,
+ * and `imports` aliases); elsewhere it is often a file extension, as in
+ * `moduleFileExtensions`.
  */
 function jsonUsesTsx(value: unknown, commands: boolean): boolean {
   if (typeof value === 'string') {
-    return (commands ? TSX_COMMAND : TSX_CONFIG_VALUE).test(value);
+    return (commands && TSX_COMMAND.test(value)) || TSX_CONFIG_VALUE.test(value);
   }
   if (Array.isArray(value)) {
     return value.some(

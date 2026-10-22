@@ -32,6 +32,8 @@ describe('rewriteTsxCommand', () => {
     ['tsx -r tsx/cjs --import ./setup.ts ./a.cts', 'vpx --import ./setup.ts ./a.cts'],
     ["tsx 'my script.ts'", "vpx 'my script.ts'"],
     ['npx tsx ./a.ts', 'vpx ./a.ts'],
+    ['npx --yes tsx ./a.ts', 'vpx ./a.ts'],
+    ['npx -y tsx ./a.ts', 'vpx ./a.ts'],
     ['pnpm exec tsx ./a.ts', 'vpx ./a.ts'],
     ['pnpm dlx tsx ./a.ts', 'vpx ./a.ts'],
     ['pnpm tsx ./a.ts', 'vpx ./a.ts'],
@@ -411,6 +413,12 @@ describe('migrateTsxToVpx', () => {
       'src/lazy.ts still uses tsx',
     ],
     [
+      'an annotated dynamic import of the tsx API',
+      'src/ignored.ts',
+      "const api = await import(/* @vite-ignore */ 'tsx/esm/api');\n",
+      'src/ignored.ts still uses tsx',
+    ],
+    [
       'a resolved tsx subpath',
       'src/register.ts',
       "const loader = import.meta.resolve('tsx/esm');\n",
@@ -600,6 +608,7 @@ describe('migrateTsxToVpx', () => {
 
   it.each([
     ['imports', { '#loader': { node: 'tsx/esm/api' } }],
+    ['imports', { '#loader': 'tsx' }],
     ['ava', { extensions: { ts: 'module' }, nodeArguments: ['--import=tsx'] }],
   ])('keeps the tsx dependency used by the %s field of package.json', (field, value) => {
     write('package.json', {

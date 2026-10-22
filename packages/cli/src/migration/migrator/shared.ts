@@ -33,6 +33,10 @@ export function getCommandStartIndex(argv: readonly string[]): number {
   if (argv[start] === 'exec' || argv[start] === 'x' || argv[start] === 'dlx') {
     start++;
   }
+  // `npx --yes tsx`: skip the install prompt flag.
+  if (argv[start] === '-y' || argv[start] === '--yes') {
+    start++;
+  }
   if (argv[start] === '--') {
     start++;
   }

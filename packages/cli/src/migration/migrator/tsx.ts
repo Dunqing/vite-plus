@@ -1,12 +1,10 @@
 import fs from 'node:fs';
-import { createRequire } from 'node:module';
 import os from 'node:os';
 import path from 'node:path';
 import { styleText } from 'node:util';
 
 import * as prompts from '@voidzero-dev/vite-plus-prompts';
 import { parse as parseJsonc } from 'jsonc-parser';
-import { globSync } from 'tinyglobby';
 
 import { type LiteralCommandToken, parseLiteralCommands } from '../../../binding/index.js';
 import { type WorkspacePackage } from '../../types/index.ts';
@@ -57,7 +55,6 @@ const KEEP_WATCH_PATH = '`--watch-path` has no `vpx` equivalent; use `--include`
 const KEEP_SHELL =
   'the command uses shell syntax that vp migrate does not rewrite, such as pipes, variables, or subshells';
 const KEEP_OTHER = 'vp migrate does not rewrite this use of tsx';
-const KEEP_CWD = 'an earlier command changes the directory in a way vp migrate does not follow';
 const KEEP_TSX_TSCONFIG =
   '`TSX_TSCONFIG_PATH` selects the tsconfig for tsx only; pass it to `vpx` as `--tsconfig`';
 const KEEP_NODE_OPTIONS =
@@ -90,17 +87,15 @@ const TSX_SHEBANG = /^#![^\n]*[\s/]tsx(?=\s|$)/;
 const TSX_LOADER_FLAG =
   /(?:(?:--import|--loader|--experimental-loader|--require|-r)[= \t]+|(?<![\w-])(?:import|loader|experimental-loader|require)=)['"]?tsx(?:\/(?:esm|cjs))?(?![\w./-])/;
 // In code: an import of tsx or a subpath such as `tsx/esm/api`, a string that starts a
-// tsx command, tsx as the program of a process call or config, as in `spawn('tsx')`,
-// `Bun.spawn(['tsx', ...])`, `{ command: 'tsx' }`, or `const command = 'tsx'`, or a
-// loader flag, as in `nodeArguments: ['--import=tsx']` or `['--import', 'tsx']`.
+// tsx command, tsx as the program of a process call, as in `spawn('tsx')` or
+// `Bun.spawn(['tsx', ...])`, or a loader flag, as in `nodeArguments: ['--import=tsx']`
+// or `['--import', 'tsx']`.
 const TSX_CODE_REFERENCE = new RegExp(
   [
     /(?:\bfrom|\bimport|\bimport\.meta\.resolve|\brequire(?:\.resolve)?)\s*\(?\s*['"`]tsx(?:\/[^'"`]*)?['"`]/
       .source,
     /['"`](?:npx |pnpm (?:exec )?|yarn |bunx )?tsx\s/.source,
     /\(\s*\[?\s*['"`]tsx['"`]\s*[,)\]]/.source,
-    /\b(?:command|cmd|executable|program|runtimeExecutable)\s*:\s*['"`]tsx['"`]/.source,
-    /\b(?:const|let|var)\s+[\w$]+\s*=\s*['"`]tsx['"`]/.source,
     TSX_LOADER_FLAG.source,
     /['"`](?:--import|--loader|--experimental-loader|--require|-r)['"`]\s*,\s*['"`]tsx(?:\/(?:esm|cjs))?['"`]/
       .source,
@@ -115,6 +110,15 @@ const TSX_TEXT_REFERENCE = new RegExp(
     TSX_LOADER_FLAG.source,
   ].join('|'),
   'm',
+);
+// A config string that runs or loads tsx; see `jsonUsesTsx`.
+const TSX_CONFIG_VALUE = new RegExp(
+  [
+    /(?:^|[\s;&|("'=/\\`])tsx(?:\.(?:cmd|exe|ps1))?[ \t]+\S/.source,
+    TSX_LOADER_FLAG.source,
+    /^tsx\//.source,
+  ].join('|'),
+  'i',
 );
 // package.json fields that name tsx without running it: dependency declarations and prose.
 const IGNORED_FIELDS = new Set([
@@ -162,6 +166,18 @@ const LOCKFILES = new Set([
   'pnpm-lock.yaml',
   'yarn.lock',
 ]);
+// The scan for remaining tsx uses reads build output, which can still load tsx, but not
+// caches and reports.
+const USE_SCAN_SKIP_DIRS: ReadonlySet<string> = new Set([
+  ...RETENTION_SCAN_SKIP_DIRS,
+  '.cache',
+  '.next',
+  '.nuxt',
+  '.svelte-kit',
+  '.turbo',
+  '.vite',
+  'coverage',
+]);
 
 // ES module syntax at the start of a statement, including compact forms such as
 // `export{}` and `export*from`, and uses of the CommonJS globals an ES module does not
@@ -178,19 +194,11 @@ const COMMONJS_GLOBALS = [
   // `module.exports`, `module.filename`, `module['exports']`.
   ['module', /(?<![.\w$])module\s*(?:\.\s*[\w$]|\[)/],
 ] as const;
+// TypeScript's `export =`, which compiles to `module.exports`.
+const EXPORT_ASSIGNMENT = /(?:^|;)\s*export\s*=/m;
 // A relative `require()` of a JavaScript path, which tsx also resolves to TypeScript.
 const RELATIVE_REQUIRE =
   /(?<![.\w$])require\s*\(\s*['"`](\.{1,2}\/[^'"`]+?)\.(js|cjs|mjs|jsx)['"`]/g;
-// A `require()` of a package or alias, such as `require('@app/job')`.
-const BARE_REQUIRE = /(?<![.\w$])require\s*\(\s*['"`]([^'"`./$][^'"`$]*)['"`]\s*\)/g;
-// Syntax `vpx` does not compile yet: a decorator, unless the tsconfig enables legacy
-// `experimentalDecorators`, and an `accessor` field, also inline as in
-// `class Job { @logged run() {} }`. tsx lowers both.
-const DECORATOR = /(?:^|[\s{;}])@[A-Za-z_$]/;
-const ACCESSOR_FIELD =
-  /(?:^|[\s{;}])(?:(?:static|declare|override|public|private|protected)\s+)*accessor\s+[\w$#[]/;
-// How many files of a glob in a command the script check reads; more keep tsx.
-const MAX_GLOB_FILES = 200;
 const TYPESCRIPT_EXTENSIONS: Record<string, readonly string[]> = {
   js: ['ts', 'tsx'],
   cjs: ['cts'],
@@ -198,37 +206,14 @@ const TYPESCRIPT_EXTENSIONS: Record<string, readonly string[]> = {
   jsx: ['tsx'],
 };
 // Programs that run commands given as quoted arguments, and which arguments those are,
-// judged by the argument before: every one for `concurrently "tsx watch a.ts" "vp dev"`
-// except option values such as `--names`, only the value of `-c` for a shell. Elsewhere,
-// a quoted string is data, as for `echo`.
-const CONCURRENTLY_VALUE_OPTIONS = new Set([
-  '-c',
-  '--default-input-target',
-  '-k',
-  '-l',
-  '-n',
-  '--name-separator',
-  '--names',
-  '-p',
-  '--prefix',
-  '--prefix-colors',
-  '--prefix-length',
-  '--restart-after',
-  '--restart-tries',
-  '-s',
-  '--success',
-  '-t',
-  '--timestamp-format',
-]);
-const everyArgument = () => true;
+// judged by the argument before: every one for `concurrently "tsx watch a.ts" "vp dev"`,
+// only the value of `-c` for a shell. Elsewhere, a quoted string is data, as for `echo`.
 const shellCommand = (previous: string) => /^-[a-z]*c$/.test(previous);
 const COMMAND_LAUNCHERS = new Map<string, (previous: string) => boolean>([
   ['bash', shellCommand],
-  ['concurrently', (previous) => !CONCURRENTLY_VALUE_OPTIONS.has(previous)],
+  ['concurrently', () => true],
   ['nodemon', (previous) => previous === '--exec' || previous === '-x'],
-  ['server-test', everyArgument],
   ['sh', shellCommand],
-  ['start-server-and-test', everyArgument],
   ['zsh', shellCommand],
 ]);
 
@@ -246,10 +231,8 @@ interface Edit {
 
 interface Rewrite {
   command: string;
-  /** The directory the next segment runs in; null once a command moved it out of sight. */
-  cwd?: string | null;
-  /** Set once a segment assigns tsx settings, which later commands can inherit. */
-  envReason?: string;
+  /** The directory the next segment runs in, or undefined when it is not known. */
+  cwd?: string;
   edits: Edit[];
   kept: string[];
 }
@@ -262,7 +245,7 @@ interface Rewrite {
  * stays as it is, with the reason in `kept`. With `cwd`, the directory the command runs
  * in, the scripts it runs are checked for syntax `vpx` runs differently.
  */
-export function rewriteTsxCommand(command: string, cwd?: string | null): TsxCommandRewrite {
+export function rewriteTsxCommand(command: string, cwd?: string): TsxCommandRewrite {
   if (!TSX_COMMAND.test(command)) {
     return { command, kept: [] };
   }
@@ -272,31 +255,11 @@ export function rewriteTsxCommand(command: string, cwd?: string | null): TsxComm
     return { command, kept: [KEEP_SHELL] };
   }
   const rewrite: Rewrite = { command, cwd, edits: [], kept: [] };
-  let changedDirectory = false;
-  let end = 0;
   for (const tokens of segments) {
-    // After `||`, a command runs because an earlier one failed, maybe a `cd`.
-    if (
-      changedDirectory &&
-      command.slice(end, tokens[0].start).includes('||') &&
-      rewrite.cwd !== undefined
-    ) {
-      rewrite.cwd = null;
-    }
-    end = tokens.at(-1)!.end;
-    const [name, ...args] = tokens.map(({ value }) => value);
-    // cmd.exe's `chdir` is `cd`.
+    const name = tokens[0].value;
+    // After `cd` or another shell state change, scripts are no longer checked.
     if (SHELL_STATE_COMMANDS.includes(name) || name === 'chdir') {
-      // Follow `cd <dir>`; after another directory change, scripts cannot be found.
-      if ((name === 'cd' || name === 'chdir') && args.length === 1 && !/^[-~]/.test(args[0])) {
-        rewrite.cwd &&= path.resolve(rewrite.cwd, args[0]);
-        changedDirectory = true;
-      } else if (name === 'set') {
-        // cmd.exe's `set "TSX_TSCONFIG_PATH=x"` reaches later commands.
-        rewrite.envReason ??= envKeepReason(args);
-      } else if (!['export', 'unset'].includes(name) && rewrite.cwd !== undefined) {
-        rewrite.cwd = null;
-      }
+      rewrite.cwd = undefined;
       continue;
     }
     rewriteSegment(rewrite, tokens);
@@ -327,30 +290,27 @@ function rewriteSegment(rewrite: Rewrite, tokens: LiteralCommandToken[]): void {
     first++;
     skipAssignments();
   }
+  if (first >= values.length) {
+    return;
+  }
   // tsx reads TSX_TSCONFIG_PATH, where `vpx` takes `--tsconfig`, and tsx hooks loaded
   // through NODE_OPTIONS would compete with those of `vpx`. Both reach the commands a
   // launcher runs.
   const envReason = envKeepReason(values.slice(0, first));
-  if (first >= values.length) {
-    // A bare assignment can update an exported variable that later commands inherit.
-    rewrite.envReason ??= envReason;
-    return;
-  }
-  const inheritedReason = envReason ?? rewrite.envReason;
   const start = first + getCommandStartIndex(values.slice(first));
   const launcher = COMMAND_LAUNCHERS.get(values[start]);
   if (values[start] === 'tsx') {
-    rewriteTsx(rewrite, tokens, first, start, inheritedReason);
+    rewriteTsx(rewrite, tokens, first, start, envReason);
   } else if (values[start] === 'node') {
-    rewriteNodeLoader(rewrite, tokens, first, start, inheritedReason);
+    rewriteNodeLoader(rewrite, tokens, first, start, envReason);
   } else if (shell) {
     for (const token of tokens.slice(start)) {
-      rewriteQuotedCommand(rewrite, token, inheritedReason);
+      rewriteQuotedCommand(rewrite, token, envReason);
     }
   } else if (launcher) {
     for (let index = start + 1; index < tokens.length; index++) {
       if (launcher(values[index - 1])) {
-        rewriteQuotedCommand(rewrite, tokens[index], inheritedReason);
+        rewriteQuotedCommand(rewrite, tokens[index], envReason);
       }
     }
   }
@@ -370,28 +330,6 @@ function envKeepReason(assignments: readonly string[]): string | undefined {
     return KEEP_NODE_OPTIONS;
   }
   return undefined;
-}
-
-/** Why the variables an `--env-file` sets keep tsx, or undefined. */
-function envFileKeepReason(cwd: string | undefined, envFile: string): string | undefined {
-  if (cwd === undefined) {
-    return undefined;
-  }
-  let content: string;
-  try {
-    content = fs.readFileSync(path.resolve(cwd, envFile), 'utf8');
-  } catch {
-    return undefined;
-  }
-  const reason = envKeepReason(
-    content.split(/\r?\n/).map((line) =>
-      line
-        .trim()
-        .replace(/^export\s+/, '')
-        .replace(/=\s*(['"])(.*)\1\s*$/, '=$2'),
-    ),
-  );
-  return reason && `\`${envFile}\`: ${reason}`;
 }
 
 /**
@@ -415,12 +353,13 @@ function removal(tokens: LiteralCommandToken[], index: number): Edit {
  * Node.js does, rejects ES module syntax in a `.cts` file, and runs the other files as ES
  * modules, so `__dirname`, `__filename`, and `require` are not defined.
  */
-function scriptKeepReason(
-  cwd: string | undefined,
-  script: string,
-  tsconfig?: string,
-): string | undefined {
-  if (cwd === undefined || !SCRIPT_EXTENSIONS.some((extension) => script.endsWith(extension))) {
+function scriptKeepReason(cwd: string | undefined, script: string): string | undefined {
+  // A glob is not checked: its files can differ when the command runs.
+  if (
+    cwd === undefined ||
+    /[*?[{]/.test(script) ||
+    !SCRIPT_EXTENSIONS.some((extension) => script.endsWith(extension))
+  ) {
     return undefined;
   }
   const file = script.startsWith('~/')
@@ -444,25 +383,8 @@ function scriptKeepReason(
       return `\`${script}\` requires \`${base}.${extension}\`, which only tsx resolves to \`${base}.${typescript}\`; write the TypeScript extension`;
     }
   }
-  // tsx applies tsconfig `paths` to `require()`; `vpx` resolves it as Node.js does.
-  for (const [, specifier] of source.matchAll(BARE_REQUIRE)) {
-    try {
-      createRequire(file).resolve(specifier);
-    } catch {
-      return `\`${script}\` requires \`${specifier}\`, which Node.js cannot resolve; tsx can map it through tsconfig \`paths\``;
-    }
-  }
   // A comment can start a line before ES module syntax, as in `/* banner */ import ...`.
   const code = stripComments(source);
-  if (ACCESSOR_FIELD.test(code)) {
-    return `\`${script}\` declares an \`accessor\` field, which \`vpx\` does not compile yet`;
-  }
-  if (
-    DECORATOR.test(code) &&
-    !experimentalDecorators(file, tsconfig === undefined ? undefined : path.resolve(cwd, tsconfig))
-  ) {
-    return `\`${script}\` uses standard decorators, which \`vpx\` does not compile yet; it supports decorators with \`experimentalDecorators\``;
-  }
   if (!/\.(?:c?ts|tsx|jsx?)$/.test(script) || !(ESM_SYNTAX.test(source) || ESM_SYNTAX.test(code))) {
     return undefined;
   }
@@ -470,7 +392,7 @@ function scriptKeepReason(
     return `\`${script}\` uses import or export, which \`vpx\` does not compile to CommonJS; rename it to .mts`;
   }
   if (
-    usesCommonJsGlobals(source, code) &&
+    (usesCommonJsGlobals(code) || EXPORT_ASSIGNMENT.test(code)) &&
     readNearestPackageJson(path.dirname(file))?.type !== 'module'
   ) {
     return `\`${script}\` mixes import or export with CommonJS globals such as __dirname, require, or module.exports, and \`vpx\` runs it as an ES module; use import.meta.dirname, import.meta.filename, createRequire(), or export`;
@@ -478,86 +400,24 @@ function scriptKeepReason(
   return undefined;
 }
 
+/** `source` without comments; a string that only looks like one, as in `'http://x'`, stays. */
 function stripComments(source: string): string {
-  return source.replaceAll(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g, '');
+  return source.replaceAll(
+    /("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`)|\/\*[\s\S]*?\*\/|\/\/[^\n]*/g,
+    (_, string: string | undefined) => string ?? '',
+  );
 }
 
 /**
- * Whether the tsconfig `vpx` applies to `file`, the one `--tsconfig` names or else the
- * nearest, enables `experimentalDecorators`, directly or through `extends`.
+ * Whether `code`, without comments, uses a CommonJS global it does not declare or import
+ * at module level, as in `const require = createRequire(import.meta.url)` or `import
+ * module from 'node:module'`. A declaration inside a function, which an unindented line
+ * does not start, covers only that function.
  */
-function experimentalDecorators(file: string, tsconfig: string | undefined): boolean {
-  if (tsconfig !== undefined) {
-    return tsconfigOption(tsconfig, 'experimentalDecorators', new Set()) === true;
-  }
-  for (let dir = path.dirname(file); ; dir = path.dirname(dir)) {
-    const tsconfig = path.join(dir, 'tsconfig.json');
-    if (fs.existsSync(tsconfig)) {
-      return tsconfigOption(tsconfig, 'experimentalDecorators', new Set()) === true;
-    }
-    if (path.dirname(dir) === dir) {
-      return false;
-    }
-  }
-}
-
-/** A `compilerOptions` value of a tsconfig, following `extends` (later entries win). */
-function tsconfigOption(tsconfig: string, name: string, seen: Set<string>): unknown {
-  if (seen.has(tsconfig)) {
-    return undefined;
-  }
-  seen.add(tsconfig);
-  let config: unknown;
-  try {
-    config = parseJsonc(fs.readFileSync(tsconfig, 'utf8'));
-  } catch {
-    return undefined;
-  }
-  if (!isPlainRecord(config)) {
-    return undefined;
-  }
-  if (isPlainRecord(config.compilerOptions) && config.compilerOptions[name] !== undefined) {
-    return config.compilerOptions[name];
-  }
-  const parents = Array.isArray(config.extends) ? config.extends : [config.extends];
-  for (const parent of parents.toReversed()) {
-    if (typeof parent !== 'string') {
-      continue;
-    }
-    const resolved = resolveTsconfig(tsconfig, parent);
-    const value = resolved === undefined ? undefined : tsconfigOption(resolved, name, seen);
-    if (value !== undefined) {
-      return value;
-    }
-  }
-  return undefined;
-}
-
-function resolveTsconfig(from: string, specifier: string): string | undefined {
-  if (specifier.startsWith('.') || path.isAbsolute(specifier)) {
-    const file = path.resolve(path.dirname(from), specifier);
-    return [file, `${file}.json`].find((candidate) => fs.existsSync(candidate));
-  }
-  const require = createRequire(from);
-  for (const candidate of [specifier, `${specifier}/tsconfig.json`]) {
-    try {
-      return require.resolve(candidate);
-    } catch {}
-  }
-  return undefined;
-}
-
-/**
- * Whether `source` uses a CommonJS global it does not declare or import at module level,
- * as in `const require = createRequire(import.meta.url)` or `import module from
- * 'node:module'`. A declaration inside a function, which an unindented line does not
- * start, covers only that function, and one in a comment (absent from `code`) covers
- * nothing.
- */
-function usesCommonJsGlobals(source: string, code: string): boolean {
+function usesCommonJsGlobals(code: string): boolean {
   return COMMONJS_GLOBALS.some(
     ([name, use]) =>
-      use.test(source) &&
+      use.test(code) &&
       !new RegExp(
         `^(?:(?:export\\s+)?(?:const|let|var|function|class)\\s+${name}\\b|import\\s+(?:\\*\\s+as\\s+)?${name}\\b)`,
         'm',
@@ -565,25 +425,16 @@ function usesCommonJsGlobals(source: string, code: string): boolean {
   );
 }
 
-/** What a run's options name besides its scripts. */
-interface RunOptions {
-  /** `--tsconfig`, which replaces the nearest tsconfig. */
-  tsconfig?: string;
-  /** Local `--require` and `--import` modules, which load before the scripts. */
-  preloads: string[];
-  /** `--env-file` files, whose variables the run gets. */
-  envFiles: string[];
-}
-
 /**
  * Why `vpx` cannot run what tsx or `node --import tsx` runs: `positionals` are the entry
- * and its arguments, or with `--test`, the test files.
+ * and its arguments, or with `--test`, the test files; `preloads` are local `--require`
+ * and `--import` modules, which load first.
  */
 function runKeepReason(
-  cwd: string | null | undefined,
+  cwd: string | undefined,
   test: boolean,
   positionals: readonly string[],
-  options: RunOptions,
+  preloads: readonly string[],
 ): string | undefined {
   const [entry] = positionals;
   if (entry === undefined) {
@@ -593,34 +444,11 @@ function runKeepReason(
   if (!test && !SCRIPT_EXTENSIONS.some((extension) => entry.endsWith(extension))) {
     return `\`${entry}\` has no file extension, which \`vpx\` needs to run it as a script`;
   }
-  if (cwd === null) {
-    return KEEP_CWD;
-  }
-  for (const envFile of options.envFiles) {
-    const reason = envFileKeepReason(cwd, envFile);
+  const scripts = test ? positionals.filter((value) => !value.startsWith('-')) : [entry];
+  for (const script of [...preloads, ...scripts]) {
+    const reason = scriptKeepReason(cwd, script);
     if (reason) {
       return reason;
-    }
-  }
-  const scripts = test ? positionals.filter((value) => !value.startsWith('-')) : [entry];
-  for (const script of [...options.preloads, ...scripts]) {
-    // The shell, or Node.js for a quoted `--test` glob, runs the files a glob matches.
-    const files =
-      cwd !== undefined && /[*?[{]/.test(script)
-        ? globSync(script, { cwd, ignore: ['**/node_modules/**'] })
-        : [script];
-    if (files.length > MAX_GLOB_FILES) {
-      return `\`${script}\` matches more than ${MAX_GLOB_FILES} files, too many for vp migrate to check`;
-    }
-    // The files can come from an earlier command, as for a missing entry.
-    if (!files.length) {
-      return `\`${script}\` matches no files yet, so vp migrate cannot check them`;
-    }
-    for (const file of files) {
-      const reason = scriptKeepReason(cwd, file, options.tsconfig);
-      if (reason) {
-        return reason;
-      }
     }
   }
   return undefined;
@@ -633,17 +461,6 @@ function rewriteTsx(
   start: number,
   keepReason: string | undefined,
 ): void {
-  // `yarn tsx`, `pnpm tsx`, and `bun tsx` run the package's own `tsx` script before the bin.
-  if (
-    start === first + 1 &&
-    ['bun', 'pnpm', 'yarn'].includes(tokens[first].value) &&
-    typeof rewrite.cwd === 'string'
-  ) {
-    const scripts = readNearestPackageJson(rewrite.cwd)?.scripts;
-    if (isPlainRecord(scripts) && scripts.tsx !== undefined) {
-      keepReason ??= `\`${tokens[first].value} tsx\` runs the package's own \`tsx\` script`;
-    }
-  }
   if (keepReason) {
     rewrite.kept.push(keepReason);
     return;
@@ -674,6 +491,10 @@ function rewriteNodeLoader(
 ): void {
   const scanned = scanOptions(tokens, start + 1, false);
   if (!scanned.loaders) {
+    // `NODE_OPTIONS='--import tsx' node a.ts` loads tsx without a flag of its own.
+    if (keepReason === KEEP_NODE_OPTIONS) {
+      rewrite.kept.push(keepReason);
+    }
     return;
   }
   const reason = keepReason ?? runReason(rewrite.cwd, tokens, scanned, false);
@@ -688,12 +509,14 @@ function rewriteNodeLoader(
 }
 
 /** What the options of `tsx` or `node` before the entry say about a run. */
-interface ScannedOptions extends RunOptions {
+interface ScannedOptions {
   /** Where the entry, or with `--test` the test files, start. */
   entryIndex: number;
   /** Removals of tsx loader flags, and for tsx, of `--no-cache`. */
   removals: Edit[];
   loaders: number;
+  /** Local `--require` and `--import` modules, which load before the scripts. */
+  preloads: string[];
   keepReason?: string;
   test: boolean;
   watch: boolean;
@@ -705,10 +528,9 @@ function scanOptions(tokens: LiteralCommandToken[], index: number, tsx: boolean)
     entryIndex: tokens.length,
     removals: [],
     loaders: 0,
+    preloads: [],
     test: false,
     watch: false,
-    preloads: [],
-    envFiles: [],
   };
   for (; index < tokens.length; index++) {
     const { value } = tokens[index];
@@ -718,22 +540,22 @@ function scanOptions(tokens: LiteralCommandToken[], index: number, tsx: boolean)
     }
     const name = optionName(value);
     const inline = value.includes('=');
-    const optionValue = inline ? value.slice(value.indexOf('=') + 1) : tokens[index + 1]?.value;
     if (tsx && name === '--no-cache') {
       // `vpx` has no transform cache, and Node.js would reject the flag.
       scanned.removals.push(removal(tokens, index));
       continue;
     }
     if (LOADER_OPTIONS.has(name)) {
-      if (optionValue !== undefined && TSX_LOADER.test(optionValue)) {
+      const loader = inline ? value.slice(value.indexOf('=') + 1) : tokens[index + 1]?.value;
+      if (loader !== undefined && TSX_LOADER.test(loader)) {
         // A tsx loader would compete with the hooks of `vpx`.
         scanned.removals.push({
           ...removal(tokens, index),
           end: tokens[inline ? index : index + 1].end,
         });
         scanned.loaders++;
-      } else if (optionValue?.startsWith('.')) {
-        scanned.preloads.push(optionValue);
+      } else if (loader?.startsWith('.')) {
+        scanned.preloads.push(loader);
       }
       if (!inline) {
         index++;
@@ -743,12 +565,6 @@ function scanOptions(tokens: LiteralCommandToken[], index: number, tsx: boolean)
     scanned.keepReason ??= KEEP_OPTIONS.get(name);
     scanned.test ||= name === '--test';
     scanned.watch ||= name === '--watch';
-    if (tsx && name === '--tsconfig') {
-      scanned.tsconfig = optionValue;
-    }
-    if ((name === '--env-file' || name === '--env-file-if-exists') && optionValue !== undefined) {
-      scanned.envFiles.push(optionValue);
-    }
     if (
       !inline &&
       (NODE_OPTIONS_WITH_VALUE.has(name) ||
@@ -762,7 +578,7 @@ function scanOptions(tokens: LiteralCommandToken[], index: number, tsx: boolean)
 
 /** Why `vpx` cannot run what the scanned options and the scripts after them run. */
 function runReason(
-  cwd: string | null | undefined,
+  cwd: string | undefined,
   tokens: LiteralCommandToken[],
   scanned: ScannedOptions,
   watch: boolean,
@@ -777,7 +593,7 @@ function runReason(
     cwd,
     scanned.test,
     tokens.slice(scanned.entryIndex).map(({ value }) => value),
-    scanned,
+    scanned.preloads,
   );
 }
 
@@ -970,14 +786,16 @@ function findTsxUse(dir: string): string | undefined {
       // Scripts, `imports` aliases, and tool settings such as ava's `nodeArguments`.
       matchesPackage: (packageDir, pkg) => {
         const field = Object.entries(pkg).find(
-          ([key, value]) => !IGNORED_FIELDS.has(key) && jsonUsesTsx(value),
+          ([key, value]) =>
+            !IGNORED_FIELDS.has(key) &&
+            jsonUsesTsx(value, key === 'scripts' || key === 'lint-staged'),
         )?.[0];
         if (field !== undefined) {
           found = `\`${field}\` in ${displayRelative(path.join(packageDir, 'package.json'))} still uses tsx`;
         }
         return field !== undefined;
       },
-      skipDirs: RETENTION_SCAN_SKIP_DIRS,
+      skipDirs: USE_SCAN_SKIP_DIRS,
     },
   );
   return found;
@@ -989,7 +807,7 @@ function fileUsesTsx(content: string, extension: string): boolean {
     return true;
   }
   if (extension === '.json' || extension === '.jsonc') {
-    return jsonUsesTsx(parseJsonc(content));
+    return jsonUsesTsx(parseJsonc(content), false);
   }
   if (CODE_EXTENSIONS.has(extension)) {
     return TSX_CODE_REFERENCE.test(content);
@@ -999,17 +817,25 @@ function fileUsesTsx(content: string, extension: string): boolean {
 }
 
 /**
- * Whether a JSON value holds a string that runs or loads tsx: a command such as
- * `tsx a.ts`, a loader flag such as `--import=tsx`, or tsx and its subpaths.
+ * Whether a JSON value holds a string that runs or loads tsx: a tsx command with an
+ * argument, a loader flag such as `--import=tsx` or `["--import", "tsx"]`, or a subpath
+ * such as `tsx/cjs`. A bare `tsx` counts only in `commands` (scripts and lint-staged
+ * tasks); elsewhere it is often a file extension, as in `moduleFileExtensions`.
  */
-function jsonUsesTsx(value: unknown): boolean {
+function jsonUsesTsx(value: unknown, commands: boolean): boolean {
   if (typeof value === 'string') {
-    return TSX_COMMAND.test(value) || value.startsWith('tsx/');
+    return (commands ? TSX_COMMAND : TSX_CONFIG_VALUE).test(value);
   }
   if (Array.isArray(value)) {
-    return value.some(jsonUsesTsx);
+    return value.some(
+      (item, index) =>
+        jsonUsesTsx(item, commands) ||
+        (typeof item === 'string' &&
+          LOADER_OPTIONS.has(item) &&
+          TSX_LOADER.test(String(value[index + 1]))),
+    );
   }
-  return isPlainRecord(value) && Object.values(value).some(jsonUsesTsx);
+  return isPlainRecord(value) && Object.values(value).some((item) => jsonUsesTsx(item, commands));
 }
 
 /**

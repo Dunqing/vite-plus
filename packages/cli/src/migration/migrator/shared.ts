@@ -30,7 +30,7 @@ export function getCommandStartIndex(argv: readonly string[]): number {
     return 0;
   }
   let start = 1;
-  if (argv[start] === 'exec' || argv[start] === 'x') {
+  if (argv[start] === 'exec' || argv[start] === 'x' || argv[start] === 'dlx') {
     start++;
   }
   if (argv[start] === '--') {

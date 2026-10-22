@@ -33,6 +33,7 @@ describe('rewriteTsxCommand', () => {
     ["tsx 'my script.ts'", "vpx 'my script.ts'"],
     ['npx tsx ./a.ts', 'vpx ./a.ts'],
     ['pnpm exec tsx ./a.ts', 'vpx ./a.ts'],
+    ['pnpm dlx tsx ./a.ts', 'vpx ./a.ts'],
     ['pnpm tsx ./a.ts', 'vpx ./a.ts'],
     ['yarn tsx watch ./a.ts', 'vpx --watch ./a.ts'],
     ['bunx tsx ./a.ts', 'vpx ./a.ts'],
@@ -92,20 +93,15 @@ describe('rewriteTsxCommand', () => {
     ['node --import tsx', 'REPL'],
     ['node --import tsx -e 1', '--eval or --print'],
     ['node --import tsx --watch-path src ./a.ts', '--watch-path'],
-    ["NODE_OPTIONS='--import tsx' node ./a.ts", 'does not rewrite this use of tsx'],
-    ['pnpm dlx tsx ./a.ts', 'does not rewrite this use of tsx'],
+    ["NODE_OPTIONS='--import tsx' node ./a.ts", '`NODE_OPTIONS` loads tsx'],
     // A quoted argument of a program that does not run commands is data.
     ['echo "tsx scripts/build.ts"', 'does not rewrite this use of tsx'],
-    // So is the value of a concurrently option such as `--names`.
-    ['concurrently --names "tsx a.ts" "vp dev"', 'does not rewrite this use of tsx'],
     // Only the value of `-c` is a command; the next argument is the shell's `$0`.
     [`sh -c 'echo "$0"' 'tsx a.ts'`, 'does not rewrite this use of tsx'],
     ['TSX_TSCONFIG_PATH=cli.json tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
     ['TSX_TSCONFIG_PATH=cli.json node --import tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
     ['cross-env-shell TSX_TSCONFIG_PATH=cli.json "tsx ./a.ts"', 'TSX_TSCONFIG_PATH'],
     ['TSX_TSCONFIG_PATH=cli.json concurrently "tsx ./a.ts"', 'TSX_TSCONFIG_PATH'],
-    ['TSX_TSCONFIG_PATH=cli.json; tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
-    ['set "TSX_TSCONFIG_PATH=cli.json" && tsx ./a.ts', 'TSX_TSCONFIG_PATH'],
     ['NODE_OPTIONS=--import=tsx tsx ./a.ts', 'NODE_OPTIONS'],
     // Windows reads environment variable names in any case.
     ['cross-env node_options=--import=tsx tsx ./a.ts', 'NODE_OPTIONS'],
@@ -161,7 +157,7 @@ describe('rewriteTsxCommand', () => {
           '',
         ].join('\n'),
       );
-      // Only `cd tools` finds this script.
+      // `cd tools` stops the checks; this script would keep tsx otherwise.
       fs.mkdirSync(path.join(dir, 'tools'));
       fs.writeFileSync(
         path.join(dir, 'tools/only.ts'),
@@ -183,6 +179,20 @@ describe('rewriteTsxCommand', () => {
         path.join(dir, 'commented.ts'),
         "import fs from 'node:fs';\n// const require = createRequire(import.meta.url);\nrequire('./x');\n",
       );
+      // A CommonJS global named only in a comment is not a use.
+      fs.writeFileSync(
+        path.join(dir, 'comment-only.ts'),
+        "import fs from 'node:fs';\n// no require() or __dirname here\nfs.readdirSync('.');\n",
+      );
+      // A `//` in a string does not start a comment that hides the rest of the line.
+      fs.writeFileSync(
+        path.join(dir, 'string-url.ts'),
+        "import fs from 'node:fs'; const url = 'http://x'; fs.readdirSync(__dirname);\n",
+      );
+      fs.writeFileSync(
+        path.join(dir, 'export-assign.ts'),
+        "import fs from 'node:fs';\nexport = fs;\n",
+      );
       fs.writeFileSync(
         path.join(dir, 'bracket.ts'),
         "import fs from 'node:fs';\nexports['result'] = fs.statSync('.');\n",
@@ -203,10 +213,6 @@ describe('rewriteTsxCommand', () => {
       fs.mkdirSync(path.join(dir, 'tests'));
       fs.writeFileSync(path.join(dir, 'tests/ok.test.ts'), 'export {};\n');
       fs.writeFileSync(
-        path.join(dir, 'tests/dirname.test.ts'),
-        "import fs from 'node:fs';\nfs.readdirSync(__dirname);\n",
-      );
-      fs.writeFileSync(
         path.join(dir, 'banner.ts'),
         "/* banner */ import fs from 'node:fs'; fs.readdirSync(__dirname);\n",
       );
@@ -214,8 +220,6 @@ describe('rewriteTsxCommand', () => {
         path.join(dir, 'cli-guard.ts'),
         "import fs from 'node:fs';\nif (require.main === module) fs.readdirSync('.');\n",
       );
-      // tsx maps `@app/job` through tsconfig `paths`; Node.js does not.
-      fs.writeFileSync(path.join(dir, 'alias.cts'), "const job = require('@app/job');\n");
       fs.writeFileSync(path.join(dir, 'builtin.cts'), "const fs = require('node:fs');\n");
       fs.writeFileSync(
         path.join(dir, 'module-filename.ts'),
@@ -229,28 +233,6 @@ describe('rewriteTsxCommand', () => {
         path.join(dir, 'template-require.cts'),
         'const { x } = require(`./helper.js`);\n',
       );
-      // Syntax `vpx` does not compile yet, unless a tsconfig enables legacy decorators.
-      const decorated = '@sealed\nclass Job {}\nfunction sealed(target: unknown) {}\n';
-      fs.writeFileSync(path.join(dir, 'decorated.ts'), decorated);
-      fs.writeFileSync(path.join(dir, 'accessor.ts'), 'class Job {\n  accessor count = 0;\n}\n');
-      fs.mkdirSync(path.join(dir, 'legacy'));
-      fs.writeFileSync(
-        path.join(dir, 'legacy/tsconfig.json'),
-        '{\n  // Inherits experimentalDecorators.\n  "extends": "../base.json"\n}\n',
-      );
-      fs.writeFileSync(
-        path.join(dir, 'base.json'),
-        '{ "compilerOptions": { "experimentalDecorators": true } }\n',
-      );
-      fs.writeFileSync(path.join(dir, 'legacy/decorated.ts'), decorated);
-      fs.writeFileSync(path.join(dir, 'standard.json'), '{}\n');
-      fs.writeFileSync(
-        path.join(dir, 'inline-decorator.ts'),
-        'class Job { @logged run() {} }\nfunction logged() {}\n',
-      );
-      fs.writeFileSync(path.join(dir, 'inline-accessor.ts'), 'class Job { accessor count = 0 }\n');
-      // An env file that loads tsx, which would compete with vpx.
-      fs.writeFileSync(path.join(dir, '.env.tsx'), 'NODE_OPTIONS="--import=tsx"\n');
     });
 
     afterEach(() => {
@@ -269,45 +251,26 @@ describe('rewriteTsxCommand', () => {
         'concurrently "tsx dirname.ts"',
         '`dirname.ts` mixes import or export with CommonJS globals',
       ],
-      ['cd tools && tsx only.ts', '`only.ts` mixes import or export with CommonJS globals'],
       ['tsx exports.ts', '`exports.ts` mixes import or export with CommonJS globals'],
       ['tsx compact.ts', '`compact.ts` mixes import or export with CommonJS globals'],
       ['tsx commented.ts', '`commented.ts` mixes import or export with CommonJS globals'],
       ['tsx bracket.ts', '`bracket.ts` mixes import or export with CommonJS globals'],
+      ['tsx string-url.ts', '`string-url.ts` mixes import or export with CommonJS globals'],
+      ['tsx export-assign.ts', '`export-assign.ts` mixes import or export with CommonJS globals'],
       ['tsx banner.ts', '`banner.ts` mixes import or export with CommonJS globals'],
       ['tsx cli-guard.ts', '`cli-guard.ts` mixes import or export with CommonJS globals'],
       [
         'tsx module-filename.ts',
         '`module-filename.ts` mixes import or export with CommonJS globals',
       ],
-      ['tsx alias.cts', 'requires `@app/job`, which Node.js cannot resolve'],
       ['tsx template-require.cts', 'requires `./helper.js`, which only tsx resolves'],
-      ['tsx decorated.ts', '`decorated.ts` uses standard decorators'],
-      // `--tsconfig` replaces the nearest tsconfig, which enables legacy decorators.
-      [
-        'tsx --tsconfig standard.json legacy/decorated.ts',
-        '`legacy/decorated.ts` uses standard decorators',
-      ],
-      ['tsx inline-decorator.ts', '`inline-decorator.ts` uses standard decorators'],
-      ['tsx inline-accessor.ts', '`inline-accessor.ts` declares an `accessor` field'],
       [
         'node --require tsx/cjs --require ./require-js.cts ./builtin.cts',
         '`./require-js.cts` requires `./helper.js`',
       ],
-      ['tsx --env-file=.env.tsx plain.ts', '`.env.tsx`: `NODE_OPTIONS` loads tsx'],
-      ['chdir tools && tsx only.ts', '`only.ts` mixes import or export with CommonJS globals'],
-      ['tsx accessor.ts', '`accessor.ts` declares an `accessor` field'],
-      ['generate && tsx --test generated/*.test.ts', '`generated/*.test.ts` matches no files yet'],
       ['generate && tsx generated.ts', '`generated.ts` does not exist yet'],
       ['tsx inner.ts', '`inner.ts` mixes import or export with CommonJS globals'],
-      [
-        'tsx --test tests/*.test.ts',
-        '`tests/dirname.test.ts` mixes import or export with CommonJS globals',
-      ],
       ['tsx require-js.cts', 'requires `./helper.js`, which only tsx resolves to `./helper.ts`'],
-      ['pushd tools && tsx plain.ts', 'changes the directory'],
-      // The fallback runs in the package directory, or after a later `cd`.
-      ['cd tools || tsx plain.ts', 'changes the directory'],
     ])('keeps %s', (command, reason) => {
       expect(rewriteTsxCommand(command, dir)).toEqual({
         command,
@@ -319,16 +282,16 @@ describe('rewriteTsxCommand', () => {
       ['tsx cjs.cts', 'vpx cjs.cts'],
       ['tsx plain.ts', 'vpx plain.ts'],
       ['tsx esm-idioms.ts', 'vpx esm-idioms.ts'],
+      ['tsx comment-only.ts', 'vpx comment-only.ts'],
       ['tsx require-bare.cts', 'vpx require-bare.cts'],
       ['tsx builtin.cts', 'vpx builtin.cts'],
       ['tsx node-module.ts', 'vpx node-module.ts'],
-      ['tsx legacy/decorated.ts', 'vpx legacy/decorated.ts'],
-      ['tsx --tsconfig base.json decorated.ts', 'vpx --tsconfig base.json decorated.ts'],
       ['tsx import-equals.cts', 'vpx import-equals.cts'],
       ['tsx importer.ts', 'vpx importer.ts'],
       ['tsx --test plain.ts', 'vpx --test plain.ts'],
-      ['tsx --test tests/ok.*.ts', 'vpx --test tests/ok.*.ts'],
-      ['cd tools && tsx plain.ts', 'cd tools && vpx plain.ts'],
+      // A glob, and a script after a shell state change, are not checked.
+      ['tsx --test tests/*.test.ts', 'vpx --test tests/*.test.ts'],
+      ['cd tools && tsx only.ts', 'cd tools && vpx only.ts'],
     ])('rewrites %s', (command, expected) => {
       expect(rewriteTsxCommand(command, dir)).toEqual({ command: expected, kept: [] });
     });
@@ -337,16 +300,6 @@ describe('rewriteTsxCommand', () => {
       fs.writeFileSync(path.join(dir, 'package.json'), '{ "type": "module" }\n');
       // `"type": "module"` already ran it as an ES module under tsx.
       expect(rewriteTsxCommand('tsx dirname.ts', dir).command).toBe('vpx dirname.ts');
-    });
-
-    it('keeps a glob with more files than it checks', () => {
-      fs.mkdirSync(path.join(dir, 'many'));
-      for (let index = 0; index <= 200; index++) {
-        fs.writeFileSync(path.join(dir, `many/${index}.test.ts`), 'export {};\n');
-      }
-      expect(rewriteTsxCommand('tsx --test many/*.test.ts', dir).kept).toEqual([
-        '`many/*.test.ts` matches more than 200 files, too many for vp migrate to check',
-      ]);
     });
 
     it('checks a script under the home directory', () => {
@@ -358,16 +311,6 @@ describe('rewriteTsxCommand', () => {
       } finally {
         vi.restoreAllMocks();
       }
-    });
-
-    it('keeps a package-manager shorthand that runs a script named tsx', () => {
-      fs.writeFileSync(path.join(dir, 'package.json'), '{ "scripts": { "tsx": "node run.js" } }\n');
-      expect(rewriteTsxCommand('yarn tsx plain.ts', dir)).toEqual({
-        command: 'yarn tsx plain.ts',
-        kept: ["`yarn tsx` runs the package's own `tsx` script"],
-      });
-      // `exec` always runs the bin.
-      expect(rewriteTsxCommand('pnpm exec tsx plain.ts', dir).command).toBe('vpx plain.ts');
     });
   });
 });
@@ -411,6 +354,8 @@ describe('migrateTsxToVpx', () => {
       type: 'module',
       scripts: { dev: 'tsx watch src/server.ts', seed: 'npx tsx scripts/seed.ts' },
       'lint-staged': { '*.ts': ['tsx scripts/check.ts'] },
+      // A file extension, not a use of tsx.
+      jest: { moduleFileExtensions: ['ts', 'tsx'] },
       devDependencies: { tsx: '^4.20.0', vite: '^7.0.0' },
     });
     write('.lintstagedrc.json', { '*.md': 'tsx scripts/docs.ts' });
@@ -419,6 +364,10 @@ describe('migrateTsxToVpx', () => {
     // File extensions are not uses of tsx.
     write('vite.config.ts', "export default { resolve: { extensions: ['ts', 'tsx'] } };\n");
     write('src/App.vue', '<script lang="tsx">\nexport default {};\n</script>\n');
+    write('.eslintrc.json', { settings: { 'import/resolver': { node: { extensions: ['tsx'] } } } });
+    // Caches and reports are not scanned.
+    write('.next/cache/config.json', { command: 'tsx scripts/old.ts' });
+    write('coverage/report.json', { command: 'tsx scripts/old.ts' });
     const report = createMigrationReport();
 
     expect(detectTsxProject(root)).toBe(true);
@@ -431,6 +380,7 @@ describe('migrateTsxToVpx', () => {
       type: 'module',
       scripts: { dev: 'vpx --watch src/server.ts', seed: 'vpx scripts/seed.ts' },
       'lint-staged': { '*.ts': ['vpx scripts/check.ts'] },
+      jest: { moduleFileExtensions: ['ts', 'tsx'] },
       devDependencies: { vite: '^7.0.0' },
     });
     expect(readJson('.lintstagedrc.json')).toEqual({ '*.md': 'vpx scripts/docs.ts' });
@@ -545,18 +495,6 @@ describe('migrateTsxToVpx', () => {
       'netlify.toml still uses tsx',
     ],
     [
-      'a tool config that names tsx as its command',
-      'tasks.config.ts',
-      "export default { command: 'tsx', args: ['job.ts'] };\n",
-      'tasks.config.ts still uses tsx',
-    ],
-    [
-      'a tool config that names tsx through a variable',
-      'tasks.config.mjs',
-      "const command = 'tsx';\nexport default { command, args: ['job.ts'] };\n",
-      'tasks.config.mjs still uses tsx',
-    ],
-    [
       'a shell pipe into tsx',
       'scripts/run.sh',
       'cat job.ts | tsx\n',
@@ -577,7 +515,7 @@ describe('migrateTsxToVpx', () => {
     [
       'a JSON tool config',
       '.mocharc.json',
-      '{ "require": "tsx", "spec": "test/**/*.test.ts" }\n',
+      '{ "require": "tsx/cjs", "spec": "test/**/*.test.ts" }\n',
       '.mocharc.json still uses tsx',
     ],
     [

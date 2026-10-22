@@ -281,10 +281,12 @@ describe('rewriteTsxCommand', () => {
     });
 
     it('checks a preload given as an absolute path', () => {
-      const command = `tsx --require '${path.join(dir, 'esm.cts')}' ./builtin.cts`;
+      // A root-level path is absolute on Windows too, unlike a temporary directory with
+      // an 8.3 name such as `RUNNER~1`, which reads as shell syntax.
+      const command = 'tsx --require /vp-missing-preload/setup.cts ./builtin.cts';
       expect(rewriteTsxCommand(command, dir)).toEqual({
         command,
-        kept: [expect.stringContaining('esm.cts` uses import or export')],
+        kept: [expect.stringContaining('`/vp-missing-preload/setup.cts` does not exist yet')],
       });
     });
 

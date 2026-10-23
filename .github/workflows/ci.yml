@@ -1061,11 +1061,12 @@ jobs:
             "$snapshot_shell" --version
           done
 
-      # https://github.com/marketplace/actions/setup-nu
+      # Includes release lookup retries: https://github.com/hustcer/setup-nu/pull/225.
       - name: Install Nushell
-        uses: hustcer/setup-nu@ccd5bb5426b05a32009c2ba967946231f3919c97 # v3.25
+        uses: hustcer/setup-nu@eacad52a4634c4f8d17a94916f93be6856861b9c # v3.29
         with:
-          version: '*'
+          # renovate: datasource=github-releases depName=nushell/nushell
+          version: '0.116.1'
 
       - uses: ./.github/actions/setup-ci-node
 

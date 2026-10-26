@@ -157,6 +157,10 @@ describe('rewriteVitePlusImportSpecifier', () => {
     // `./test/package.json`, so rewriting would break resolution. Mirrors the
     // migrate rewriter's exclusion.
     expect(rewriteVitePlusImportSpecifier('vitest/package.json')).toBeNull();
+    // Same for `vite/rolldown` and its subpaths.
+    expect(rewriteVitePlusImportSpecifier('vite/rolldown')).toBeNull();
+    expect(rewriteVitePlusImportSpecifier('vite/rolldown/plugins')).toBeNull();
+    expect(rewriteVitePlusImportSpecifier('vite/rolldownish')).toBe('vite-plus/rolldownish');
     // ...but other `vitest/<sub>` specifiers still rewrite normally.
     expect(rewriteVitePlusImportSpecifier('vitest/node')).toBe('vite-plus/test/node');
     expect(rewriteVitePlusImportSpecifier('vitest/coverage')).toBe('vite-plus/test/node');
@@ -430,6 +434,16 @@ new RuleTester({
     {
       code: `import { expect } from 'vitest';\nimport { defineConfig } from 'vitest/config';\nimport { page } from '@vitest/browser/context';`,
       filename: vitestPeerPackageSource,
+    },
+    // `vite-plus` exports no `rolldown` subpaths, so these stay on `vite` even
+    // in config entry files (same as the migrate rewriter).
+    {
+      code: `import { rolldown } from 'vite/rolldown'`,
+      filename: 'vite.config.ts',
+    },
+    {
+      code: `import { viteJsonPlugin } from 'vite/rolldown/plugins'`,
+      filename: 'vite.config.ts',
     },
   ],
   invalid: [
